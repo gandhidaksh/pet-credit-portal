@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PET Plastic Credit Portal — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0d1117; --surface:#161b22; --surface2:#1e2631;
+    --border:#30363d; --accent-teal:#1a9e8f; --accent-green:#2ea043;
+    --accent-amber:#d29922; --accent-red:#f85149;
+    --text-primary:#e6edf3; --text-secondary:#adbac7; --text-muted:#6e7681;
+    --mono:'IBM Plex Mono',monospace; --sans:'Inter',sans-serif;
+    --display:'Syne',sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--bg); color:var(--text-primary); font-family:var(--sans);
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:24px;
+  }
+  body::before {
+    content:''; position:fixed; top:-100px; left:50%; transform:translateX(-50%);
+    width:600px; height:400px;
+    background:radial-gradient(ellipse, rgba(26,158,143,0.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .logo { text-align:center; margin-bottom:32px; }
+  .logo-icon { font-size:40px; }
+  .logo-title { font-family:var(--display); font-size:22px; font-weight:800; margin-top:8px; }
+  .logo-title span { color:var(--accent-teal); }
+  .logo-sub { font-size:12px; color:var(--text-muted); margin-top:4px; font-family:var(--mono); }
+
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:32px; width:100%; max-width:440px; }
+
+  .tabs { display:flex; margin-bottom:24px; border-bottom:1px solid var(--border); }
+  .tab { flex:1; padding:10px; text-align:center; background:none; border:none; border-bottom:2px solid transparent; color:var(--text-muted); font-family:var(--display); font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+  .tab.active { color:var(--accent-teal); border-bottom-color:var(--accent-teal); }
+
+  .step { display:none; }
+  .step.active { display:block; }
+
+  .step-title { font-family:var(--display); font-size:15px; font-weight:700; margin-bottom:4px; }
+  .step-desc { font-size:13px; color:var(--text-secondary); margin-bottom:18px; line-height:1.5; }
+
+  .form-group { margin-bottom:16px; }
+  .form-label { display:block; font-size:13px; color:var(--text-primary); margin-bottom:6px; font-family:var(--mono); font-weight:600; }
+  .form-label span { color:var(--text-muted); font-weight:400; }
+  .form-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text-primary); font-family:var(--sans); font-size:14px; padding:11px 14px; outline:none; transition:border-color 0.2s; }
+  .form-input:focus { border-color:var(--accent-teal); }
+  .form-input::placeholder { color:var(--text-muted); }
+
+  .otp-row { display:flex; gap:10px; justify-content:center; margin:16px 0; }
+  .otp-digit { width:50px; height:56px; text-align:center; font-size:22px; font-weight:700; font-family:var(--mono); background:var(--bg); border:2px solid var(--border); border-radius:8px; color:var(--accent-teal); outline:none; transition:border-color 0.2s; }
+  .otp-digit:focus { border-color:var(--accent-teal); }
+
+  .btn { width:100%; padding:12px; border-radius:6px; font-family:var(--display); font-size:14px; font-weight:700; cursor:pointer; border:none; transition:all 0.2s; margin-top:4px; }
+  .btn-primary { background:var(--accent-teal); color:#fff; }
+  .btn-primary:hover { background:#16897c; }
+  .btn-primary:disabled { background:var(--border); color:var(--text-muted); cursor:not-allowed; }
+  .btn-ghost { background:none; color:var(--text-secondary); font-size:13px; padding:8px; margin-top:8px; border:none; font-family:var(--sans); cursor:pointer; text-decoration:underline; width:auto; }
+  .btn-ghost:hover { color:var(--text-primary); }
+
+  .error-box { background:rgba(248,81,73,0.1); border:1px solid rgba(248,81,73,0.3); color:var(--accent-red); border-radius:6px; padding:10px 14px; font-size:13px; margin-bottom:14px; display:none; }
+  .info-box { background:rgba(26,158,143,0.1); border:1px solid rgba(26,158,143,0.3); color:var(--accent-teal); border-radius:6px; padding:10px 14px; font-size:13px; margin-bottom:14px; }
+
+  .timer { font-family:var(--mono); font-size:12px; color:var(--text-muted); text-align:center; margin-top:6px; margin-bottom:10px; }
+  .timer span { color:var(--accent-amber); }
+
+  .back-btn { background:none; border:none; color:var(--text-muted); font-size:13px; cursor:pointer; padding:0; margin-bottom:16px; font-family:var(--sans); }
+  .back-btn:hover { color:var(--text-primary); }
+
+  .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.6s linear infinite; vertical-align:middle; margin-right:6px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .footer-note { text-align:center; margin-top:24px; font-size:11px; color:var(--text-muted); line-height:1.6; }
+  .footer-note strong { color:var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<div class="logo">
+  <div class="logo-icon">♻️</div>
+  <div class="logo-title">Indian <span>PET Plastic</span> Credit Portal</div>
+  <div class="logo-sub">IIT Delhi · EPR Aligned · ESG Weighted</div>
+</div>
+
+<div class="card">
+  <div class="tabs">
+    <button class="tab active" id="tab-login" onclick="showMainTab('login')">Login</button>
+    <button class="tab" id="tab-register" onclick="showMainTab('register')">Create Account</button>
+  </div>
+
+  <!-- LOGIN FLOW -->
+  <div id="flow-login">
+    <div class="step active" id="login-s1">
+      <div id="login-err" class="error-box"></div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="l-email" placeholder="company@example.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Login</button>
+      <div style="text-align:center;margin-top:12px;">
+        <button class="btn-ghost" onclick="showForgot()">Forgot password?</button>
+      </div>
+    </div>
+
+    <div class="step" id="login-s2">
+      <button class="back-btn" onclick="showStep('login','s1')">← Back</button>
+      <div class="step-title">Enter your OTP</div>
+      <div class="step-desc" id="login-otp-msg">A 6-digit OTP has been sent to your email.</div>
+      <div id="login-otp-err" class="error-box"></div>
+      <div class="info-box">Check your inbox — OTP is valid for 10 minutes.</div>
+      <div class="otp-row" id="login-otp-row">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,0,'login')" onkeydown="otpBack(event,this,0,'login')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,1,'login')" onkeydown="otpBack(event,this,1,'login')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,2,'login')" onkeydown="otpBack(event,this,2,'login')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,3,'login')" onkeydown="otpBack(event,this,3,'login')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,4,'login')" onkeydown="otpBack(event,this,4,'login')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,5,'login')" onkeydown="otpBack(event,this,5,'login')">
+      </div>
+      <div class="timer" id="login-timer"></div>
+      <button class="btn btn-primary" id="login-otp-btn" onclick="doVerifyLogin()">Verify OTP</button>
+    </div>
+  </div>
+
+  <!-- REGISTER FLOW -->
+  <div id="flow-register" style="display:none;">
+    <div class="step active" id="register-s1">
+      <div id="reg-err" class="error-box"></div>
+      <div class="form-group">
+        <label class="form-label">Company Name</label>
+        <input class="form-input" type="text" id="r-company" placeholder="e.g. Greenway Recyclers Pvt. Ltd.">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="r-email" placeholder="company@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password <span>(min. 6 characters)</span></label>
+        <input class="form-input" type="password" id="r-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()">
+      </div>
+      <button class="btn btn-primary" id="reg-btn" onclick="doRegister()">Create Account</button>
+    </div>
+
+    <div class="step" id="register-s2">
+      <button class="back-btn" onclick="showStep('register','s1')">← Back</button>
+      <div class="step-title">Verify your email</div>
+      <div class="step-desc" id="reg-otp-msg">OTP sent to your email address.</div>
+      <div id="reg-otp-err" class="error-box"></div>
+      <div class="info-box">Check your inbox — OTP is valid for 10 minutes.</div>
+      <div class="otp-row" id="register-otp-row">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,0,'register')" onkeydown="otpBack(event,this,0,'register')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,1,'register')" onkeydown="otpBack(event,this,1,'register')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,2,'register')" onkeydown="otpBack(event,this,2,'register')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,3,'register')" onkeydown="otpBack(event,this,3,'register')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,4,'register')" onkeydown="otpBack(event,this,4,'register')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,5,'register')" onkeydown="otpBack(event,this,5,'register')">
+      </div>
+      <div class="timer" id="register-timer"></div>
+      <button class="btn btn-primary" id="reg-otp-btn" onclick="doVerifyRegister()">Verify &amp; Activate Account</button>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD FLOW -->
+  <div id="flow-forgot" style="display:none;">
+    <div class="step active" id="forgot-s1">
+      <button class="back-btn" onclick="showMainTab('login')">← Back to login</button>
+      <div class="step-title">Reset your password</div>
+      <div class="step-desc">Enter your registered email — we'll send you a reset OTP.</div>
+      <div id="forgot-err" class="error-box"></div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="f-email" placeholder="company@example.com" onkeydown="if(event.key==='Enter')doForgot()">
+      </div>
+      <button class="btn btn-primary" id="forgot-btn" onclick="doForgot()">Send Reset OTP</button>
+    </div>
+
+    <div class="step" id="forgot-s2">
+      <button class="back-btn" onclick="showStep('forgot','s1')">← Back</button>
+      <div class="step-title">Enter OTP &amp; new password</div>
+      <div class="step-desc" id="forgot-otp-msg">Enter the OTP sent to your email.</div>
+      <div id="forgot-otp-err" class="error-box"></div>
+      <div class="otp-row" id="forgot-otp-row">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,0,'forgot')" onkeydown="otpBack(event,this,0,'forgot')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,1,'forgot')" onkeydown="otpBack(event,this,1,'forgot')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,2,'forgot')" onkeydown="otpBack(event,this,2,'forgot')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,3,'forgot')" onkeydown="otpBack(event,this,3,'forgot')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,4,'forgot')" onkeydown="otpBack(event,this,4,'forgot')">
+        <input class="otp-digit" maxlength="1" oninput="otpNav(this,5,'forgot')" onkeydown="otpBack(event,this,5,'forgot')">
+      </div>
+      <div class="timer" id="forgot-timer"></div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">New Password <span>(min. 6 characters)</span></label>
+        <input class="form-input" type="password" id="f-newpass" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary" id="forgot-otp-btn" onclick="doResetPassword()">Reset Password</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer-note">
+  <strong>IIT Delhi</strong> · Prof Sovik Das · Prof A K Nema · Prof Sudip K. Pattanayek · Dr Anil Dhanda<br>
+  Developed by Daksh Gandhi
+</div>
+
+<script>
+let pendingEmail = '';
+const timers = {};
+
+function showMainTab(tab) {
+  ['login','register','forgot'].forEach(f => {
+    document.getElementById('flow-'+f).style.display = f===tab ? 'block':'none';
+  });
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+}
+
+function showStep(flow, step) {
+  document.querySelectorAll('#flow-'+flow+' .step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(flow+'-'+step).classList.add('active');
+}
+
+function showForgot() {
+  ['login','register'].forEach(f=>document.getElementById('flow-'+f).style.display='none');
+  document.getElementById('flow-forgot').style.display='block';
+  document.getElementById('tab-login').classList.remove('active');
+}
+
+function otpNav(el, idx, flow) {
+  el.value = el.value.replace(/\D/g,'');
+  const digits = document.querySelectorAll('#'+flow+'-otp-row .otp-digit');
+  if (el.value && idx < 5) digits[idx+1].focus();
+  const otp = Array.from(digits).map(d=>d.value).join('');
+  if (otp.length===6) {
+    if (flow==='login')    doVerifyLogin();
+    if (flow==='register') doVerifyRegister();
+  }
+}
+
+function otpBack(e, el, idx, flow) {
+  if (e.key==='Backspace' && !el.value && idx>0)
+    document.querySelectorAll('#'+flow+'-otp-row .otp-digit')[idx-1].focus();
+}
+
+function getOtp(flow) {
+  return Array.from(document.querySelectorAll('#'+flow+'-otp-row .otp-digit')).map(d=>d.value).join('');
+}
+
+function clearOtp(flow) {
+  document.querySelectorAll('#'+flow+'-otp-row .otp-digit').forEach(d=>d.value='');
+  document.querySelectorAll('#'+flow+'-otp-row .otp-digit')[0].focus();
+}
+
+function startTimer(flow, secs) {
+  if (timers[flow]) clearInterval(timers[flow]);
+  const el = document.getElementById(flow+'-timer');
+  let r = secs;
+  timers[flow] = setInterval(()=>{
+    r--;
+    if (r<=0) { clearInterval(timers[flow]); el.innerHTML='<span>OTP expired. Go back and try again.</span>'; }
+    else { const m=Math.floor(r/60),s=r%60; el.innerHTML=`Expires in <span>${m}:${s.toString().padStart(2,'0')}</span>`; }
+  },1000);
+}
+
+function setLoading(id, loading, text) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.disabled = loading;
+  b.innerHTML = loading ? '<span class="spinner"></span>Please wait...' : text;
+}
+
+function showErr(id, msg) { const e=document.getElementById(id); e.textContent=msg; e.style.display='block'; }
+function hideErr(id) { const e=document.getElementById(id); if(e) e.style.display='none'; }
+
+async function post(url, body) {
+  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  return r.json();
+}
+
+// LOGIN
+async function doLogin() {
+  hideErr('login-err');
+  const email=document.getElementById('l-email').value.trim();
+  const password=document.getElementById('l-pass').value;
+  if (!email||!password){showErr('login-err','Please enter email and password.');return;}
+  setLoading('login-btn',true,'Login');
+  const d = await post('/api/login',{email,password});
+  setLoading('login-btn',false,'Login');
+  if (d.ok && d.redirect) { window.location.href=d.redirect; }
+  else if (d.ok && d.step==='otp') {
+    pendingEmail=email;
+    document.getElementById('login-otp-msg').textContent=`OTP sent to ${email}`;
+    showStep('login','s2'); startTimer('login',600); clearOtp('login');
+  } else { showErr('login-err', d.error||'Something went wrong.'); }
+}
+
+async function doVerifyLogin() {
+  hideErr('login-otp-err');
+  const otp=getOtp('login');
+  if (otp.length<6){showErr('login-otp-err','Enter the full 6-digit OTP.');return;}
+  setLoading('login-otp-btn',true,'Verify OTP');
+  const d = await post('/api/verify-login-otp',{email:pendingEmail,otp});
+  setLoading('login-otp-btn',false,'Verify OTP');
+  if (d.ok) { window.location.href=d.redirect; }
+  else { showErr('login-otp-err',d.error||'Invalid OTP.'); clearOtp('login'); }
+}
+
+// REGISTER
+async function doRegister() {
+  hideErr('reg-err');
+  const company_name=document.getElementById('r-company').value.trim();
+  const email=document.getElementById('r-email').value.trim();
+  const password=document.getElementById('r-pass').value;
+  if (!company_name||!email||!password){showErr('reg-err','All fields are required.');return;}
+  setLoading('reg-btn',true,'Create Account');
+  const d = await post('/api/register',{company_name,email,password});
+  setLoading('reg-btn',false,'Create Account');
+  if (d.ok) {
+    pendingEmail=email;
+    document.getElementById('reg-otp-msg').textContent=`OTP sent to ${email}`;
+    showStep('register','s2'); startTimer('register',600); clearOtp('register');
+  } else { showErr('reg-err',d.error||'Something went wrong.'); }
+}
+
+async function doVerifyRegister() {
+  hideErr('reg-otp-err');
+  const otp=getOtp('register');
+  if (otp.length<6){showErr('reg-otp-err','Enter the full 6-digit OTP.');return;}
+  setLoading('reg-otp-btn',true,'Verify & Activate Account');
+  const d = await post('/api/verify-registration',{email:pendingEmail,otp});
+  setLoading('reg-otp-btn',false,'Verify & Activate Account');
+  if (d.ok) { window.location.href=d.redirect; }
+  else { showErr('reg-otp-err',d.error||'Invalid OTP.'); clearOtp('register'); }
+}
+
+// FORGOT PASSWORD
+async function doForgot() {
+  hideErr('forgot-err');
+  const email=document.getElementById('f-email').value.trim();
+  if (!email){showErr('forgot-err','Please enter your email address.');return;}
+  setLoading('forgot-btn',true,'Send Reset OTP');
+  const d = await post('/api/forgot-password',{email});
+  setLoading('forgot-btn',false,'Send Reset OTP');
+  pendingEmail=email;
+  document.getElementById('forgot-otp-msg').textContent=`OTP sent to ${email} (if registered)`;
+  showStep('forgot','s2'); startTimer('forgot',600); clearOtp('forgot');
+}
+
+async function doResetPassword() {
+  hideErr('forgot-otp-err');
+  const otp=getOtp('forgot');
+  const new_password=document.getElementById('f-newpass').value;
+  if (otp.length<6){showErr('forgot-otp-err','Enter the full 6-digit OTP.');return;}
+  if (new_password.length<6){showErr('forgot-otp-err','Password must be at least 6 characters.');return;}
+  setLoading('forgot-otp-btn',true,'Reset Password');
+  const d = await post('/api/reset-password',{email:pendingEmail,otp,new_password});
+  setLoading('forgot-otp-btn',false,'Reset Password');
+  if (d.ok) {
+    showMainTab('login');
+    const e=document.getElementById('login-err');
+    e.style.cssText='background:rgba(46,160,67,0.1);border-color:rgba(46,160,67,0.3);color:#2ea043;display:block;';
+    e.textContent='✓ Password reset successfully. Please log in.';
+  } else { showErr('forgot-otp-err',d.error||'Invalid OTP.'); clearOtp('forgot'); }
+}
+</script>
+</body>
+</html>

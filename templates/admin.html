@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — PET Plastic Credit Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0d1117; --surface:#161b22; --surface2:#1e2631; --border:#30363d;
+    --accent-teal:#1a9e8f; --accent-green:#2ea043; --accent-blue:#1f6feb;
+    --accent-amber:#d29922; --accent-red:#f85149;
+    --text-primary:#e6edf3; --text-secondary:#adbac7; --text-muted:#6e7681;
+    --mono:'IBM Plex Mono',monospace; --sans:'Inter',sans-serif; --display:'Syne',sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text-primary); font-family:var(--sans); font-size:14px; }
+  .header { background:linear-gradient(135deg,#0d1117,#0f2027,#0d1117); border-bottom:1px solid var(--border); padding:18px 32px; }
+  .header-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
+  .header-title { font-family:var(--display); font-size:20px; font-weight:800; }
+  .header-title span { color:var(--accent-teal); }
+  .header-sub { font-size:12px; color:var(--text-muted); margin-top:2px; }
+  .main { max-width:1400px; margin:0 auto; padding:28px 32px 60px; }
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:18px 20px; position:relative; overflow:hidden; }
+  .stat-card::after { content:''; position:absolute; top:0; left:0; width:3px; height:100%; border-radius:8px 0 0 8px; }
+  .stat-card.teal::after { background:var(--accent-teal); }
+  .stat-card.green::after { background:var(--accent-green); }
+  .stat-card.blue::after { background:var(--accent-blue); }
+  .stat-card.amber::after { background:var(--accent-amber); }
+  .stat-label { font-family:var(--mono); font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px; }
+  .stat-value { font-family:var(--display); font-size:28px; font-weight:800; }
+  .stat-sub { font-size:12px; color:var(--text-secondary); margin-top:4px; }
+  .tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:20px; }
+  .tab { padding:12px 22px; background:none; border:none; border-bottom:2px solid transparent; color:var(--text-muted); font-family:var(--display); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+  .tab.active { color:var(--accent-teal); border-bottom-color:var(--accent-teal); }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:20px; }
+  .card-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .card-title { font-family:var(--display); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-primary); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  thead th { background:var(--bg); padding:10px 14px; text-align:left; font-family:var(--mono); font-size:11px; color:var(--text-secondary); font-weight:600; letter-spacing:0.5px; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
+  tbody tr { border-bottom:1px solid rgba(48,54,61,0.4); transition:background 0.1s; }
+  tbody tr:hover { background:rgba(255,255,255,0.02); }
+  tbody td { padding:11px 14px; color:var(--text-secondary); vertical-align:middle; }
+  tbody td:first-child { color:var(--text-primary); }
+  .mono { font-family:var(--mono); }
+  .teal { color:var(--accent-teal) !important; font-family:var(--mono); }
+  .green { color:var(--accent-green) !important; font-family:var(--mono); }
+  .badge { display:inline-block; padding:2px 8px; border-radius:12px; font-family:var(--mono); font-size:10px; font-weight:600; }
+  .badge-login { background:rgba(26,158,143,0.15); color:var(--accent-teal); }
+  .badge-logout { background:rgba(48,54,61,0.5); color:var(--text-muted); }
+  .badge-register { background:rgba(46,160,67,0.15); color:var(--accent-green); }
+  .badge-reset { background:rgba(210,153,34,0.15); color:var(--accent-amber); }
+  .badge-verified { background:rgba(46,160,67,0.15); color:var(--accent-green); font-size:10px; padding:2px 7px; border-radius:10px; }
+  .badge-unverified { background:rgba(248,81,73,0.15); color:var(--accent-red); font-size:10px; padding:2px 7px; border-radius:10px; }
+  .btn { padding:7px 14px; border-radius:5px; font-family:var(--display); font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:5px; }
+  .btn-sm { padding:5px 10px; font-size:11px; }
+  .btn-teal { background:rgba(26,158,143,0.15); color:var(--accent-teal); border:1px solid rgba(26,158,143,0.3); }
+  .btn-teal:hover { background:rgba(26,158,143,0.25); }
+  .btn-red { background:rgba(248,81,73,0.15); color:var(--accent-red); border:1px solid rgba(248,81,73,0.3); }
+  .btn-red:hover { background:rgba(248,81,73,0.25); }
+  .btn-amber { background:rgba(210,153,34,0.15); color:var(--accent-amber); border:1px solid rgba(210,153,34,0.3); }
+  .btn-amber:hover { background:rgba(210,153,34,0.25); }
+  .btn-primary { background:var(--accent-teal); color:#fff; border:none; padding:10px 20px; font-size:13px; }
+  .btn-primary:hover { background:#16897c; }
+  .btn-logout { background:rgba(248,81,73,0.15); border:1px solid rgba(248,81,73,0.3); color:var(--accent-red); font-family:var(--mono); font-size:11px; padding:6px 14px; border-radius:4px; cursor:pointer; }
+  .btn-logout:hover { background:rgba(248,81,73,0.25); }
+  .search-input { background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text-primary); font-family:var(--sans); font-size:12px; padding:7px 12px; outline:none; width:220px; }
+  .search-input:focus { border-color:var(--accent-teal); }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:28px; width:100%; max-width:460px; position:relative; }
+  .modal-title { font-family:var(--display); font-size:16px; font-weight:800; margin-bottom:18px; }
+  .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer; }
+  .modal-close:hover { color:var(--text-primary); }
+  .form-group { margin-bottom:14px; }
+  .form-label { display:block; font-size:12px; color:var(--text-secondary); margin-bottom:5px; font-family:var(--mono); font-weight:600; }
+  .form-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:5px; color:var(--text-primary); font-family:var(--sans); font-size:13px; padding:9px 12px; outline:none; }
+  .form-input:focus { border-color:var(--accent-teal); }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
+  .alert { padding:10px 14px; border-radius:6px; font-size:13px; margin-bottom:14px; display:none; }
+  .alert-ok { background:rgba(46,160,67,0.1); border:1px solid rgba(46,160,67,0.3); color:var(--accent-green); }
+  .alert-err { background:rgba(248,81,73,0.1); border:1px solid rgba(248,81,73,0.3); color:var(--accent-red); }
+  .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .empty { text-align:center; padding:32px; color:var(--text-muted); font-style:italic; }
+  @media(max-width:900px) { .stats-grid { grid-template-columns:1fr 1fr; } .main { padding:16px; } .settings-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">♻️ <span>PET Plastic Credit</span> — Admin</div>
+      <div class="header-sub">Portal Management · IIT Delhi</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="btn btn-teal btn-sm" onclick="loadAll()">⟳ Refresh</button>
+      <button class="btn-logout" onclick="doLogout()">⎋ Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="stats-grid">
+    <div class="stat-card teal"><div class="stat-label">Companies</div><div class="stat-value" id="s-companies">—</div><div class="stat-sub">registered accounts</div></div>
+    <div class="stat-card green"><div class="stat-label">Total PCC</div><div class="stat-value" id="s-pcc">—</div><div class="stat-sub">collection credits</div></div>
+    <div class="stat-card blue"><div class="stat-label">Total PPC</div><div class="stat-value" id="s-ppc">—</div><div class="stat-sub">processing credits</div></div>
+    <div class="stat-card amber"><div class="stat-label">Total Logins</div><div class="stat-value" id="s-logins">—</div><div class="stat-sub">portal accesses</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('companies',this)">🏢 Companies</button>
+    <button class="tab" onclick="showPanel('logs',this)">📋 Access Log</button>
+    <button class="tab" onclick="showPanel('admins',this)">👑 Admins</button>
+    <button class="tab" onclick="showPanel('settings',this)">⚙️ Email Settings</button>
+  </div>
+
+  <!-- COMPANIES -->
+  <div class="panel active" id="panel-companies">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Registered Companies</div>
+        <input class="search-input" type="text" placeholder="Search..." oninput="filterCompanies(this.value)">
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Company Name</th><th>Email</th>
+            <th>Verified</th><th>Registered</th>
+            <th>PCC Entries</th><th>PPC Entries</th>
+            <th>Total PCC</th><th>Total PPC</th><th>Total CO₂ (kg)</th>
+            <th>Actions</th>
+          </tr></thead>
+          <tbody id="companies-tbody"><tr><td colspan="11" class="empty">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGS -->
+  <div class="panel" id="panel-logs">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Access Log — Last 200 Events</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input class="search-input" type="text" placeholder="Search..." oninput="filterLogs(this.value)">
+          <button class="btn btn-red btn-sm" onclick="confirmClearLogs()">Clear All</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
+        <table>
+          <thead style="position:sticky;top:0;"><tr>
+            <th>Timestamp</th><th>Company</th><th>Email</th><th>Action</th><th>IP</th>
+          </tr></thead>
+          <tbody id="logs-tbody"><tr><td colspan="5" class="empty">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMINS -->
+  <div class="panel" id="panel-admins">
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header"><div class="card-title">➕ Create New Admin</div></div>
+      <div style="padding:20px;">
+        <div id="create-admin-alert" class="alert"></div>
+        <div class="settings-grid">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" type="text" id="new-admin-name" placeholder="e.g. Rahul Sharma">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" id="new-admin-email" placeholder="admin@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password <span style="color:var(--text-muted);font-weight:400;">(min. 6 characters)</span></label>
+            <input class="form-input" type="password" id="new-admin-password" placeholder="••••••••">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="createAdmin()">➕ Create Admin Account</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">👑 Current Admins</div></div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Created</th><th>Actions</th></tr></thead>
+          <tbody id="admins-tbody"><tr><td colspan="5" class="empty">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="panel" id="panel-settings">
+    <div class="card">
+      <div class="card-header"><div class="card-title">📧 Email / SMTP Settings</div></div>
+      <div style="padding:20px;">
+        <div id="settings-alert" class="alert"></div>
+        <div class="settings-grid">
+          <div class="form-group">
+            <label class="form-label">Sender Email (Gmail)</label>
+            <input class="form-input" type="email" id="set-email" placeholder="yourname@gmail.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">App Password <span style="color:var(--text-muted);font-weight:400;">(Gmail App Password)</span></label>
+            <input class="form-input" type="password" id="set-password" placeholder="••••••••••••••••">
+          </div>
+          <div class="form-group">
+            <label class="form-label">SMTP Host</label>
+            <input class="form-input" type="text" id="set-host" placeholder="smtp.gmail.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">SMTP Port</label>
+            <input class="form-input" type="number" id="set-port" placeholder="587">
+          </div>
+        </div>
+        <div style="background:rgba(26,158,143,0.08);border:1px solid rgba(26,158,143,0.2);border-radius:6px;padding:14px;margin:14px 0;font-size:12px;color:var(--text-secondary);line-height:1.7;">
+          <strong style="color:var(--text-primary);">How to get a Gmail App Password:</strong><br>
+          1. Go to your Google Account → Security → 2-Step Verification (must be enabled)<br>
+          2. Search for "App Passwords" → Select app: Mail → Select device: Other → Name it "PET Portal"<br>
+          3. Copy the 16-character password and paste it above.
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+          <button class="btn btn-teal" onclick="testEmail()">Send Test Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('edit')">×</button>
+    <div class="modal-title">✏️ Edit Company</div>
+    <input type="hidden" id="edit-id">
+    <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" type="text" id="edit-name"></div>
+    <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" id="edit-email"></div>
+    <div id="edit-alert" class="alert"></div>
+    <div class="modal-actions">
+      <button class="btn btn-teal" onclick="closeModal('edit')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD MODAL -->
+<div class="modal-overlay" id="modal-reset">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reset')">×</button>
+    <div class="modal-title">🔑 Reset Password</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">Set a new password for <strong id="reset-name" style="color:var(--text-primary);"></strong></div>
+    <input type="hidden" id="reset-id">
+    <div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" id="reset-pass" placeholder="Min. 6 characters"></div>
+    <div id="reset-alert" class="alert"></div>
+    <div class="modal-actions">
+      <button class="btn btn-teal" onclick="closeModal('reset')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveReset()">Reset Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="modal-delete">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('delete')">×</button>
+    <div class="modal-title" style="color:var(--accent-red);">⚠️ Delete Company</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.6;">
+      You are about to permanently delete <strong id="delete-name" style="color:var(--text-primary);"></strong>.<br>
+      This will also delete all their PCC and PPC entries. <strong style="color:var(--accent-red);">This cannot be undone.</strong>
+    </div>
+    <input type="hidden" id="delete-id">
+    <div class="modal-actions">
+      <button class="btn btn-teal" onclick="closeModal('delete')">Cancel</button>
+      <button class="btn btn-red" onclick="confirmDelete()">Delete Permanently</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let companiesData = [], logsData = [];
+const CO2_R = {'Bottle-to-bottle PET':1700,'Reusable shopping bag':1800,'Polyester apparel':1800,'Blanket / Comforter':430,'Carpet / Rug':430,'Geotextile':430,'Plastic crate':430,'WPC panel':250,'Road construction':250};
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name==='settings') loadSettings();
+  if (name==='admins') loadAdmins();
+}
+
+function openModal(name) { document.getElementById('modal-'+name).classList.add('open'); }
+function closeModal(name) { document.getElementById('modal-'+name).classList.remove('open'); }
+
+function showAlert(id, type, msg) {
+  const el=document.getElementById(id);
+  el.className='alert alert-'+(type==='ok'?'ok':'err');
+  el.textContent=msg; el.style.display='block';
+}
+
+async function loadAll() { await Promise.all([loadSummary(), loadCompanies(), loadLogs()]); }
+
+async function loadSummary() {
+  const d = await (await fetch('/api/admin/summary')).json();
+  document.getElementById('s-companies').textContent = d.total_companies;
+  document.getElementById('s-pcc').textContent = d.total_pcc.toFixed(2);
+  document.getElementById('s-ppc').textContent = d.total_ppc.toFixed(2);
+  document.getElementById('s-logins').textContent = d.total_logins;
+}
+
+async function loadCompanies() {
+  companiesData = await (await fetch('/api/admin/companies')).json();
+  renderCompanies(companiesData);
+}
+
+function renderCompanies(data) {
+  const tbody = document.getElementById('companies-tbody');
+  if (!data.length) { tbody.innerHTML='<tr><td colspan="11" class="empty">No companies registered yet.</td></tr>'; return; }
+  tbody.innerHTML = data.map((c,i) => `
+    <tr>
+      <td class="mono" style="color:var(--text-muted)">${i+1}</td>
+      <td><strong>${c.company_name}</strong></td>
+      <td style="font-size:12px;">${c.email}</td>
+      <td><span class="badge ${c.is_verified?'badge-verified':'badge-unverified'}">${c.is_verified?'Verified':'Unverified'}</span></td>
+      <td class="mono" style="font-size:11px;color:var(--text-muted);">${(c.created_at||'').split('.')[0]}</td>
+      <td class="teal">${c.pcc_count}</td>
+      <td class="green">${c.ppc_count}</td>
+      <td class="teal">${parseFloat(c.total_pcc).toFixed(2)}</td>
+      <td class="green">${parseFloat(c.total_ppc).toFixed(2)}</td>
+      <td style="color:#f0a500;font-family:var(--mono);">${Math.round((c.total_co2||0)).toLocaleString()}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-teal btn-sm" onclick="openEdit(${c.id},'${c.company_name.replace(/'/g,"\\'")}','${c.email}')">✏️ Edit</button>
+          <button class="btn btn-amber btn-sm" onclick="openReset(${c.id},'${c.company_name.replace(/'/g,"\\'")}')">🔑 Reset PW</button>
+          <button class="btn btn-teal btn-sm" onclick="downloadReport(${c.id},'${c.company_name.replace(/'/g,"\\'")}','excel')">📥 Excel</button>
+          <button class="btn btn-teal btn-sm" onclick="downloadReport(${c.id},'${c.company_name.replace(/'/g,"\\'")}','pdf')">📄 PDF</button>
+          <button class="btn btn-red btn-sm" onclick="openDelete(${c.id},'${c.company_name.replace(/'/g,"\\'")}')">🗑 Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function filterCompanies(q) {
+  renderCompanies(companiesData.filter(c=>
+    c.company_name.toLowerCase().includes(q.toLowerCase()) ||
+    c.email.toLowerCase().includes(q.toLowerCase())
+  ));
+}
+
+function openEdit(id, name, email) {
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-name').value = name;
+  document.getElementById('edit-email').value = email;
+  document.getElementById('edit-alert').style.display = 'none';
+  openModal('edit');
+}
+
+async function saveEdit() {
+  const id=document.getElementById('edit-id').value;
+  const name=document.getElementById('edit-name').value.trim();
+  const email=document.getElementById('edit-email').value.trim();
+  if (!name||!email) { showAlert('edit-alert','err','All fields required.'); return; }
+  const d = await (await fetch(`/api/admin/companies/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({company_name:name,email})})).json();
+  if (d.ok) { closeModal('edit'); loadAll(); }
+  else showAlert('edit-alert','err',d.error||'Failed to save.');
+}
+
+function openReset(id, name) {
+  document.getElementById('reset-id').value = id;
+  document.getElementById('reset-name').textContent = name;
+  document.getElementById('reset-pass').value = '';
+  document.getElementById('reset-alert').style.display = 'none';
+  openModal('reset');
+}
+
+async function saveReset() {
+  const id=document.getElementById('reset-id').value;
+  const pass=document.getElementById('reset-pass').value;
+  if (pass.length<6) { showAlert('reset-alert','err','Password must be at least 6 characters.'); return; }
+  const d = await (await fetch(`/api/admin/companies/${id}/reset-password`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pass})})).json();
+  if (d.ok) { closeModal('reset'); }
+  else showAlert('reset-alert','err','Failed.');
+}
+
+function openDelete(id, name) {
+  document.getElementById('delete-id').value = id;
+  document.getElementById('delete-name').textContent = name;
+  openModal('delete');
+}
+
+async function confirmDelete() {
+  const id=document.getElementById('delete-id').value;
+  await fetch(`/api/admin/companies/${id}`,{method:'DELETE'});
+  closeModal('delete');
+  loadAll();
+}
+
+async function loadLogs() {
+  logsData = await (await fetch('/api/admin/logs')).json();
+  renderLogs(logsData);
+}
+
+function renderLogs(data) {
+  const tbody=document.getElementById('logs-tbody');
+  if (!data.length) { tbody.innerHTML='<tr><td colspan="5" class="empty">No logs yet.</td></tr>'; return; }
+  const badgeMap={logged_in:'badge-login',logged_out:'badge-logout',registered:'badge-register',password_reset:'badge-reset'};
+  tbody.innerHTML=data.map(l=>`
+    <tr>
+      <td class="mono" style="font-size:11px;color:var(--text-muted);">${(l.timestamp||'').split('.')[0]}</td>
+      <td>${l.company_name||'—'}</td>
+      <td style="font-size:12px;">${l.email||'—'}</td>
+      <td><span class="badge ${badgeMap[l.action]||''}">${l.action}</span></td>
+      <td class="mono" style="font-size:11px;color:var(--text-muted);">${l.ip_address||'—'}</td>
+    </tr>`).join('');
+}
+
+function filterLogs(q) {
+  renderLogs(logsData.filter(l=>
+    (l.company_name||'').toLowerCase().includes(q.toLowerCase())||
+    (l.email||'').toLowerCase().includes(q.toLowerCase())||
+    (l.action||'').toLowerCase().includes(q.toLowerCase())
+  ));
+}
+
+async function confirmClearLogs() {
+  if (!confirm('Clear all access logs? This cannot be undone.')) return;
+  await fetch('/api/admin/logs',{method:'DELETE'});
+  loadLogs();
+}
+
+async function loadAdmins() {
+  const admins = await (await fetch('/api/admin/admins')).json();
+  const tbody = document.getElementById('admins-tbody');
+  if (!admins.length) { tbody.innerHTML='<tr><td colspan="5" class="empty">No admins yet.</td></tr>'; return; }
+  tbody.innerHTML = admins.map((a,i) => `
+    <tr>
+      <td class="mono" style="color:var(--text-muted)">${i+1}</td>
+      <td><strong>${a.company_name}</strong> ${a.email==='gandhijidaksh@gmail.com'?'<span style="background:rgba(210,153,34,0.2);color:#d29922;border:1px solid rgba(210,153,34,0.4);font-size:10px;padding:1px 6px;border-radius:10px;font-family:var(--mono);">SUPERADMIN</span>':''}</td>
+      <td style="font-size:12px;">${a.email}</td>
+      <td class="mono" style="font-size:11px;color:var(--text-muted);">${(a.created_at||'').split('.')[0]}</td>
+      <td>${a.email==='gandhijidaksh@gmail.com'
+        ? '<span style="color:var(--text-muted);font-size:12px;">Protected</span>'
+        : '<button class="btn btn-red btn-sm" onclick="deleteAdmin('+a.id+')">🗑 Delete</button>'
+      }</td>
+    </tr>`).join('');
+}
+
+async function createAdmin() {
+  const name=document.getElementById('new-admin-name').value.trim();
+  const email=document.getElementById('new-admin-email').value.trim();
+  const password=document.getElementById('new-admin-password').value;
+  if (!name||!email||!password) { showAlert('create-admin-alert','err','All fields required.'); return; }
+  const d = await (await fetch('/api/admin/create-admin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password})})).json();
+  if (d.ok) {
+    showAlert('create-admin-alert','ok','✓ Admin account created successfully.');
+    document.getElementById('new-admin-name').value='';
+    document.getElementById('new-admin-email').value='';
+    document.getElementById('new-admin-password').value='';
+    loadAdmins();
+  } else {
+    showAlert('create-admin-alert','err',d.error||'Failed.');
+  }
+}
+
+async function deleteAdmin(id) {
+  if (!confirm('Delete this admin account? They will lose admin access.')) return;
+  const d = await (await fetch(`/api/admin/admins/${id}`,{method:'DELETE'})).json();
+  if (d.ok) loadAdmins();
+  else alert(d.error||'Failed.');
+}
+
+async function loadSettings() {
+  const d = await (await fetch('/api/admin/settings')).json();
+  document.getElementById('set-email').value=d.smtp_email||'';
+  document.getElementById('set-password').value=d.smtp_password||'';
+  document.getElementById('set-host').value=d.smtp_host||'smtp.gmail.com';
+  document.getElementById('set-port').value=d.smtp_port||'587';
+}
+
+async function saveSettings() {
+  const d = await (await fetch('/api/admin/settings',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      smtp_email:document.getElementById('set-email').value.trim(),
+      smtp_password:document.getElementById('set-password').value,
+      smtp_host:document.getElementById('set-host').value.trim(),
+      smtp_port:document.getElementById('set-port').value.trim()
+    })
+  })).json();
+  showAlert('settings-alert',d.ok?'ok':'err',d.ok?'✓ Settings saved successfully.':'Failed to save.');
+}
+
+async function testEmail() {
+  showAlert('settings-alert','ok','Sending test email...');
+  const d = await (await fetch('/api/admin/test-email',{method:'POST'})).json();
+  showAlert('settings-alert',d.ok?'ok':'err',d.message);
+}
+
+async function downloadReport(id, name, format) {
+  const res = await fetch(`/api/admin/report/${id}/json`);
+  const data = await res.json();
+  if (format==='excel') generateExcel(data,name);
+  else generatePDF(data,name);
+}
+
+function generateExcel(data, name) {
+  const MONTHS=data.months;
+  let csv=`PET Plastic Credit Report — ${data.company.company_name}\nEmail: ${data.company.email}\nGenerated: ${new Date().toLocaleDateString('en-IN')}\n\n`;
+  csv+=`PET COLLECTION CREDITS (PCC)\nMonth,Date,Category,Weight (t),ESG Score,ESG Weightage,Location F,Eco E,PCC\n`;
+  data.pcc.forEach(r=>{csv+=`${MONTHS[r.month_idx]},${r.date_str},${r.category},${r.weight},${r.esg},${r.esg_g},${r.loc_f},${r.eco_e},${r.pcc.toFixed(4)}\n`;});
+  const totalPCC=data.pcc.reduce((s,r)=>s+r.pcc,0);
+  csv+=`\nPCC Monthly Summary\nMonth,Total Weight (t),Total PCC\n`;
+  MONTHS.forEach((m,i)=>{const rows=data.pcc.filter(r=>r.month_idx===i);if(rows.length){csv+=`${m},${rows.reduce((s,r)=>s+r.weight,0).toFixed(2)},${rows.reduce((s,r)=>s+r.pcc,0).toFixed(4)}\n`;}});
+  csv+=`TOTAL,,${totalPCC.toFixed(4)}\n`;
+  csv+=`\nPET PROCESSING CREDITS (PPC)\nMonth,Date,Product,Weight (t),ESG Score,ESG Weightage,Service Life,Exposure P,W,PPC\n`;
+  data.ppc.forEach(r=>{csv+=`${MONTHS[r.month_idx]},${r.date_str},${r.product},${r.weight},${r.esg},${r.esg_g},${r.service_life},${r.exposure_p},${r.proc_w.toFixed(4)},${r.ppc.toFixed(4)}\n`;});
+  const totalPPC=data.ppc.reduce((s,r)=>s+r.ppc,0);
+  csv+=`\nPPC Monthly Summary\nMonth,Total Weight (t),Total PPC\n`;
+  MONTHS.forEach((m,i)=>{const rows=data.ppc.filter(r=>r.month_idx===i);if(rows.length){csv+=`${m},${rows.reduce((s,r)=>s+r.weight,0).toFixed(2)},${rows.reduce((s,r)=>s+r.ppc,0).toFixed(4)}\n`;}});
+  csv+=`TOTAL,,${totalPPC.toFixed(4)}\n`;
+  csv+=`\nCO2 SAVINGS\nType,Month,Date,Category / Product,Weight (t),CO2 Rate (kg/t),CO2 Saved (kg)\n`;
+  let tCO2=0;
+  data.pcc.forEach(r=>{const co2=r.weight*430;tCO2+=co2;csv+=`PCC,${MONTHS[r.month_idx]},${r.date_str},${r.category},${r.weight},430,${Math.round(co2)}\n`;});
+  data.ppc.forEach(r=>{const rate=CO2_R[r.product]||430;const co2=r.weight*rate;tCO2+=co2;csv+=`PPC,${MONTHS[r.month_idx]},${r.date_str},${r.product},${r.weight},${rate},${Math.round(co2)}\n`;});
+  csv+=`TOTAL CO2 SAVED (kg),,,,,, ${Math.round(tCO2)}\n\nCOMBINED SUMMARY\nTotal PCC,${totalPCC.toFixed(4)}\nTotal PPC,${totalPPC.toFixed(4)}\nCombined Credits,${(totalPCC+totalPPC).toFixed(4)}\nTotal CO2 Saved (kg),${Math.round(tCO2)}\n`;
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`${name.replace(/\s+/g,'_')}_PET_Credit_Report.csv`;a.click();URL.revokeObjectURL(url);
+}
+
+function generatePDF(data, name) {
+  const MONTHS=data.months;
+  const totalPCC=data.pcc.reduce((s,r)=>s+r.pcc,0);
+  const totalPPC=data.ppc.reduce((s,r)=>s+r.ppc,0);
+  const pccMonthly=MONTHS.map((m,i)=>{const rows=data.pcc.filter(r=>r.month_idx===i);return{month:m,count:rows.length,weight:rows.reduce((s,r)=>s+r.weight,0),credits:rows.reduce((s,r)=>s+r.pcc,0)};}).filter(r=>r.count>0);
+  const ppcMonthly=MONTHS.map((m,i)=>{const rows=data.ppc.filter(r=>r.month_idx===i);return{month:m,count:rows.length,weight:rows.reduce((s,r)=>s+r.weight,0),credits:rows.reduce((s,r)=>s+r.ppc,0)};}).filter(r=>r.count>0);
+  const catGroup={};data.pcc.forEach(r=>{catGroup[r.category]=(catGroup[r.category]||0)+r.pcc;});
+  const prodGroup={};data.ppc.forEach(r=>{prodGroup[r.product]=(prodGroup[r.product]||0)+r.ppc;});
+  let tCO2=0;
+  const co2Rows=[
+    ...data.pcc.map(r=>{const co2=r.weight*430;tCO2+=co2;return`<tr><td>PCC</td><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.category}</td><td>${r.weight}</td><td>430</td><td>${r.weight}×430</td><td><strong>${Math.round(co2).toLocaleString()}</strong></td></tr>`;}),
+    ...data.ppc.map(r=>{const rate=CO2_R[r.product]||430;const co2=r.weight*rate;tCO2+=co2;return`<tr><td>PPC</td><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.product}</td><td>${r.weight}</td><td>${rate}</td><td>${r.weight}×${rate}</td><td><strong>${Math.round(co2).toLocaleString()}</strong></td></tr>`;})
+  ];
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>PET Credit Report — ${data.company.company_name}</title>
+  <style>body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;padding:32px;}h1{font-size:20px;color:#1a9e8f;margin-bottom:4px;}h2{font-size:15px;color:#333;margin:24px 0 8px;border-bottom:2px solid #1a9e8f;padding-bottom:4px;}h3{font-size:13px;color:#555;margin:16px 0 6px;}.meta{color:#666;font-size:12px;margin-bottom:24px;}.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}.summary-box{background:#f0faf9;border:1px solid #1a9e8f;border-radius:6px;padding:12px;text-align:center;}.summary-val{font-size:20px;font-weight:bold;color:#1a9e8f;}.summary-lbl{font-size:11px;color:#666;margin-top:2px;}table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:12px;}th{background:#1a9e8f;color:white;padding:7px 10px;text-align:left;}td{padding:6px 10px;border-bottom:1px solid #e0e0e0;}tr:nth-child(even) td{background:#f9f9f9;}.total-row td{background:#e6f7f5!important;font-weight:700;}.footer{margin-top:32px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px;}@media print{body{padding:16px;}}</style>
+  </head><body>
+  <h1>♻️ PET Plastic Credit Report</h1>
+  <div class="meta"><strong>${data.company.company_name}</strong> · ${data.company.email}<br>Generated: ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})} · IIT Delhi PET Plastic Credit Framework</div>
+  <div class="summary-grid">
+    <div class="summary-box"><div class="summary-val">${totalPCC.toFixed(2)}</div><div class="summary-lbl">Total PCC</div></div>
+    <div class="summary-box"><div class="summary-val">${totalPPC.toFixed(2)}</div><div class="summary-lbl">Total PPC</div></div>
+    <div class="summary-box"><div class="summary-val">${(totalPCC+totalPPC).toFixed(2)}</div><div class="summary-lbl">Combined Credits</div></div>
+    <div class="summary-box"><div class="summary-val">${Math.round(tCO2||0).toLocaleString()}</div><div class="summary-lbl">CO₂ Saved (kg)</div></div>
+  </div>
+  <h2>Collection Credits (PCC)</h2>
+  <h3>Monthly Summary</h3>
+  <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PCC Credits</th></tr>
+  ${pccMonthly.map(r=>`<tr><td>${r.month}</td><td>${r.count}</td><td>${r.weight.toFixed(2)}</td><td><strong>${r.credits.toFixed(4)}</strong></td></tr>`).join('')}
+  <tr class="total-row"><td colspan="3">Total</td><td>${totalPCC.toFixed(4)}</td></tr></table>
+  <h3>Category Breakdown</h3>
+  <table><tr><th>Category</th><th>PCC Credits</th></tr>${Object.entries(catGroup).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${k}</td><td>${v.toFixed(4)}</td></tr>`).join('')}</table>
+  <h3>All PCC Entries</h3>
+  <table><tr><th>Month</th><th>Date</th><th>Category</th><th>Weight (t)</th><th>ESG</th><th>ESG Wt.</th><th>F</th><th>E</th><th>PCC</th></tr>
+  ${data.pcc.map(r=>`<tr><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.category}</td><td>${r.weight}</td><td>${r.esg}</td><td>${r.esg_g}</td><td>${r.loc_f}</td><td>${r.eco_e}</td><td><strong>${r.pcc.toFixed(4)}</strong></td></tr>`).join('')}</table>
+  <h2>Processing Credits (PPC)</h2>
+  <h3>Monthly Summary</h3>
+  <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PPC Credits</th></tr>
+  ${ppcMonthly.map(r=>`<tr><td>${r.month}</td><td>${r.count}</td><td>${r.weight.toFixed(2)}</td><td><strong>${r.credits.toFixed(4)}</strong></td></tr>`).join('')}
+  <tr class="total-row"><td colspan="3">Total</td><td>${totalPPC.toFixed(4)}</td></tr></table>
+  <h3>Product Breakdown</h3>
+  <table><tr><th>Product</th><th>PPC Credits</th></tr>${Object.entries(prodGroup).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${k}</td><td>${v.toFixed(4)}</td></tr>`).join('')}</table>
+  <h3>All PPC Entries</h3>
+  <table><tr><th>Month</th><th>Date</th><th>Product</th><th>Weight (t)</th><th>ESG</th><th>ESG Wt.</th><th>Life</th><th>P</th><th>W</th><th>PPC</th></tr>
+  ${data.ppc.map(r=>`<tr><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.product}</td><td>${r.weight}</td><td>${r.esg}</td><td>${r.esg_g}</td><td>${r.service_life}</td><td>${r.exposure_p}</td><td>${r.proc_w.toFixed(4)}</td><td><strong>${r.ppc.toFixed(4)}</strong></td></tr>`).join('')}</table>
+  <h2>CO₂ Savings</h2>
+  <table><tr><th>Type</th><th>Month</th><th>Date</th><th>Category / Product</th><th>Weight (t)</th><th>CO₂ Rate</th><th>Calculation</th><th>CO₂ Saved (kg)</th></tr>
+  ${co2Rows.join('')}
+  <tr class="total-row"><td colspan="7">Total CO₂ Saved</td><td>${Math.round(tCO2).toLocaleString()} kg</td></tr></table>
+  <div class="footer">Indian PET Plastic Credit Framework · IIT Delhi · Prof Sovik Das · Prof A K Nema · Prof Sudip K. Pattanayek · Dr Anil Dhanda · Developed by Daksh Gandhi</div>
+  </body></html>`;
+
+  const win=window.open('','_blank');
+  win.document.write(html);
+  win.document.close();
+}
+
+async function doLogout() {
+  await fetch('/api/logout',{method:'POST'});
+  window.location.href='/login';
+}
+
+loadAll();
+</script>
+</body>
+</html>
