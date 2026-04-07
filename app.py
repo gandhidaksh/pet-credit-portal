@@ -76,7 +76,8 @@ def send_email(to_email, subject, html_body):
     try:
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
-        msg['From']    = smtp_email
+        from email.utils import formataddr
+        msg['From'] = formataddr(('IIT Delhi PET Credit Portal', smtp_email))
         msg['To']      = to_email
         msg.attach(MIMEText(html_body, 'html'))
         with smtplib.SMTP(smtp_host, smtp_port) as server:
