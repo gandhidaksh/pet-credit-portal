@@ -12,6 +12,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import psycopg2
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'pet-credit-iitdelhi-2026-xK9m2pQnv8')
@@ -74,7 +76,7 @@ def send_email(to_email, subject, html_body):
     try:
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
-        msg['From'] = f'IIT Delhi PET Credit Portal <{smtp_email}>'
+        msg['From']    = smtp_email
         msg['To']      = to_email
         msg.attach(MIMEText(html_body, 'html'))
         with smtplib.SMTP(smtp_host, smtp_port) as server:
@@ -341,10 +343,11 @@ def add_pcc():
     d = request.get_json()
     conn = get_db()
     c = conn.cursor()
+    record_date = datetime.now().strftime('%d %B %Y')
     c.execute('''INSERT INTO pcc_entries
-        (company_id, month_idx, date_str, category, weight, esg, loc_f, eco_e, esg_g, pcc)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
-        (session['company_id'], d['month_idx'], d['date_str'], d['category'],
+        (company_id, month_idx, date_str, record_date, category, weight, esg, loc_f, eco_e, esg_g, pcc)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
+        (session['company_id'], d['month_idx'], d['date_str'], record_date, d['category'],
          d['weight'], d['esg'], d['loc_f'], d['eco_e'], d['esg_g'], d['pcc']))
     new_id = c.fetchone()[0]
     conn.commit()
@@ -395,11 +398,12 @@ def add_ppc():
     d = request.get_json()
     conn = get_db()
     c = conn.cursor()
+    record_date = datetime.now().strftime('%d %B %Y')
     c.execute('''INSERT INTO ppc_entries
-        (company_id, month_idx, date_str, product, weight, esg,
+        (company_id, month_idx, date_str, record_date, product, weight, esg,
          service_life, exposure_p, proc_w, esg_g, ppc)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
-        (session['company_id'], d['month_idx'], d['date_str'], d['product'],
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
+        (session['company_id'], d['month_idx'], d['date_str'], record_date, d['product'],
          d['weight'], d['esg'], d['service_life'], d['exposure_p'],
          d['proc_w'], d['esg_g'], d['ppc']))
     new_id = c.fetchone()[0]
