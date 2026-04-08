@@ -66,10 +66,10 @@ def get_setting(key):
     return row['value'] if row else ''
 
 def send_email(to_email, subject, html_body):
-    smtp_email    = get_setting('smtp_email')
-    smtp_password = get_setting('smtp_password')
-    smtp_host     = get_setting('smtp_host')
-    smtp_port     = int(get_setting('smtp_port') or 587)
+    smtp_email    = os.environ.get('SMTP_EMAIL') or get_setting('smtp_email')
+    smtp_password = os.environ.get('SMTP_PASSWORD') or get_setting('smtp_password')
+    smtp_host     = os.environ.get('SMTP_HOST') or get_setting('smtp_host')
+    smtp_port     = int(os.environ.get('SMTP_PORT') or get_setting('smtp_port') or 587)
     if not smtp_password:
         print(f'[EMAIL] No SMTP password set. Would send to {to_email}: {subject}')
         return False
