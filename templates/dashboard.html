@@ -80,7 +80,7 @@
     border: 1px solid rgba(26,158,143,0.4);
     color: var(--accent-teal);
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 11px;
     padding: 4px 10px;
     border-radius: 20px;
     white-space: nowrap;
@@ -106,8 +106,7 @@
     border-bottom: 3px solid transparent;
     color: var(--text-secondary);
     font-family: var(--display);
-    font-size: 16px;
-    padding-bottom: 60px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -172,7 +171,7 @@
     display: block;
     font-size: 13px;
     color: var(--text-primary);
-    fmargin-bottom: 8px;
+    margin-bottom: 6px;
     font-family: var(--mono);
     font-weight: 600;
   }
@@ -215,7 +214,7 @@
     border: 1px solid var(--border);
     border-radius: 4px;
     color: var(--text-secondary);
-    font-size: 13px;
+    font-size: 11px;
     font-family: var(--mono);
     padding: 5px;
     cursor: pointer;
@@ -279,7 +278,7 @@
     display: flex;
     justify-content: space-between;
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 11px;
     margin-top: 3px;
   }
 
@@ -408,7 +407,7 @@
   }
   .formula-box .formula-comment {
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 11px;
   }
 
   /* FACTOR TABLE */
@@ -528,7 +527,7 @@
     border: 1px solid rgba(26,158,143,0.3);
     color: var(--accent-teal);
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 11px;
     padding: 2px 8px;
     border-radius: 3px;
     margin-left: 6px;
@@ -571,7 +570,7 @@
     border: 1px solid rgba(46,160,67,0.4);
     color: var(--accent-green);
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 11px;
     padding: 3px 10px;
     border-radius: 20px;
     margin-top: 4px;
@@ -590,7 +589,7 @@
     text-align: center;
   }
   .compare-label {
-    font-size: 13px;
+    font-size: 11px;
     color: var(--text-muted);
     text-align: center;
     font-family: var(--mono);
@@ -660,7 +659,7 @@
     font-weight: 800;
     color: var(--accent-teal);
   }
-  .upload-stat-label { font-size: 13px; color: var(--text-muted); margin-top: 3px; font-family: var(--mono); }
+  .upload-stat-label { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-family: var(--mono); }
   .upload-status-ok {
     background: rgba(46,160,67,0.1);
     border: 1px solid rgba(46,160,67,0.3);
@@ -700,8 +699,8 @@
     </div>
     <div style="text-align:right;">
       <div class="header-badge">PCC &amp; PPC Calculator</div>
-      <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">EPR Aligned · ESG Weighted</div>
-      <button onclick="doLogout()" style="margin-top:10px;background:rgba(248,81,73,0.15);border:1px solid rgba(248,81,73,0.3);color:#f85149;font-family:var(--mono);font-size:13px;padding:4px 12px;border-radius:4px;cursor:pointer;">⎋ Logout</button>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">EPR Aligned · ESG Weighted</div>
+      <button onclick="doLogout()" style="margin-top:10px;background:rgba(248,81,73,0.15);border:1px solid rgba(248,81,73,0.3);color:#f85149;font-family:var(--mono);font-size:11px;padding:4px 12px;border-radius:4px;cursor:pointer;">⎋ Logout</button>
     </div>
   </div>
 </div>
@@ -739,32 +738,20 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title">📥 Add Collection Entry</div>
-            <div id="pcc-month-label" style="font-family:var(--mono);font-size:13px;color:var(--accent-teal);">JAN</div>
+            <div id="pcc-month-label" style="font-family:var(--mono);font-size:11px;color:var(--accent-teal);">JAN</div>
           </div>
           <div class="card-body">
-            <div class="section-label">Monthly Ledger <span style="font-size:10px;color:var(--text-muted);font-family:var(--sans);text-transform:none;letter-spacing:0;font-weight:400;">— select which month's records you are adding this entry to</span></div>
-            <div class="month-grid" id="pcc-month-grid"></div>
-
-            <div class="section-label">Entry Details</div>
-            <div class="form-group">
-              <label class="form-label">Date <span>— the actual date this collection event occurred</span></label>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <select class="form-select" id="pcc-day">
-                  <option value="">Day</option>
-                </select>
-                <select class="form-select" id="pcc-month-sel">
-                  <option value="">Month</option>
-                  <option>January</option><option>February</option><option>March</option>
-                  <option>April</option><option>May</option><option>June</option>
-                  <option>July</option><option>August</option><option>September</option>
-                  <option>October</option><option>November</option><option>December</option>
-                </select>
-                <select class="form-select" id="pcc-year">
-                  <option value="">Year</option>
-                  <option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option>
-                </select>
-              </div>
+            <div class="section-label">Ledger Date <span style="font-size:10px;color:var(--text-muted);font-family:var(--sans);text-transform:none;letter-spacing:0;font-weight:400;">— select the date this collection event occurred (no future dates)</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+              <select class="form-select" id="pcc-year" onchange="updatePccMonths()"></select>
+              <select class="form-select" id="pcc-month-sel" onchange="updatePccDays()">
+                <option value="">Month</option>
+              </select>
+              <select class="form-select" id="pcc-day">
+                <option value="">Day</option>
+              </select>
             </div>
+            <div class="section-label">Entry Details</div>
             <div class="form-group">
               <label class="form-label">Collection Category</label>
               <select class="form-select" id="pcc-category">
@@ -778,11 +765,11 @@
             </div>
             <div class="form-group">
               <label class="form-label">Weight Collected <span>(tonnes)</span></label>
-              <input class="form-input" type="number" id="pcc-weight" placeholder="e.g. 5" min="0" step="0.001">
+              <input class="form-input" type="number" id="pcc-weight" placeholder="e.g. 5" min="0" step="0.001" inputmode="decimal" onkeypress="return (event.charCode>=48&&event.charCode<=57)||event.charCode===46">
             </div>
             <div class="form-group">
               <label class="form-label">ESG Score <span>(0–100)</span></label>
-              <input class="form-input" type="number" id="pcc-esg" placeholder="e.g. 75" min="0" max="100" oninput="updateEsgBar('pcc')">
+              <input class="form-input" type="number" id="pcc-esg" placeholder="e.g. 75" min="0" max="100" inputmode="numeric" onkeypress="return event.charCode>=48&&event.charCode<=57" oninput="updateEsgBar('pcc')">
               <div class="esg-bar"><div class="esg-fill" id="pcc-esg-fill" style="width:0%;background:var(--accent-amber)"></div></div>
               <div class="esg-label">
                 <span id="pcc-esg-tier" style="color:var(--text-muted)">—</span>
@@ -846,7 +833,8 @@
               <table>
                 <thead>
                   <tr>
-                    <th>Date</th>
+                    <th>Entry Date</th>
+                    <th>Record Date</th>
                     <th>Category</th>
                     <th>Weight (t)</th>
                     <th>ESG Score</th>
@@ -886,32 +874,20 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title">📥 Add Processing Entry</div>
-            <div id="ppc-month-label" style="font-family:var(--mono);font-size:13px;color:var(--accent-teal);">JAN</div>
+            <div id="ppc-month-label" style="font-family:var(--mono);font-size:11px;color:var(--accent-teal);">JAN</div>
           </div>
           <div class="card-body">
-            <div class="section-label">Monthly Ledger <span style="font-size:10px;color:var(--text-muted);font-family:var(--sans);text-transform:none;letter-spacing:0;font-weight:400;">— select which month's records you are adding this entry to</span></div>
-            <div class="month-grid" id="ppc-month-grid"></div>
-
-            <div class="section-label">Entry Details</div>
-            <div class="form-group">
-              <label class="form-label">Date <span>— the actual date this processing event occurred</span></label>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <select class="form-select" id="ppc-day">
-                  <option value="">Day</option>
-                </select>
-                <select class="form-select" id="ppc-month-sel">
-                  <option value="">Month</option>
-                  <option>January</option><option>February</option><option>March</option>
-                  <option>April</option><option>May</option><option>June</option>
-                  <option>July</option><option>August</option><option>September</option>
-                  <option>October</option><option>November</option><option>December</option>
-                </select>
-                <select class="form-select" id="ppc-year">
-                  <option value="">Year</option>
-                  <option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option>
-                </select>
-              </div>
+            <div class="section-label">Ledger Date <span style="font-size:10px;color:var(--text-muted);font-family:var(--sans);text-transform:none;letter-spacing:0;font-weight:400;">— select the date this processing event occurred (no future dates)</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+              <select class="form-select" id="ppc-year" onchange="updatePpcMonths()"></select>
+              <select class="form-select" id="ppc-month-sel" onchange="updatePpcDays()">
+                <option value="">Month</option>
+              </select>
+              <select class="form-select" id="ppc-day">
+                <option value="">Day</option>
+              </select>
             </div>
+            <div class="section-label">Entry Details</div>
             <div class="form-group">
               <label class="form-label">Product Type</label>
               <select class="form-select" id="ppc-product" onchange="updatePpcProductInfo()">
@@ -926,17 +902,17 @@
                 <option value="Road construction">Road construction</option>
               </select>
               <div style="margin-top:6px;display:flex;gap:8px;">
-                <div style="font-size:13px;color:var(--text-muted);">Service life: <span id="ppc-life-display" style="color:var(--accent-teal);font-family:var(--mono);">4 yrs</span></div>
-                <div style="font-size:13px;color:var(--text-muted);">Exposure factor: <span id="ppc-exp-display" style="color:var(--accent-amber);font-family:var(--mono);">1.0</span></div>
+                <div style="font-size:11px;color:var(--text-muted);">Service life: <span id="ppc-life-display" style="color:var(--accent-teal);font-family:var(--mono);">4 yrs</span></div>
+                <div style="font-size:11px;color:var(--text-muted);">Exposure factor: <span id="ppc-exp-display" style="color:var(--accent-amber);font-family:var(--mono);">1.0</span></div>
               </div>
             </div>
             <div class="form-group">
               <label class="form-label">Weight Processed <span>(tonnes)</span></label>
-              <input class="form-input" type="number" id="ppc-weight" placeholder="e.g. 10" min="0" step="0.001">
+              <input class="form-input" type="number" id="ppc-weight" placeholder="e.g. 10" min="0" step="0.001" inputmode="decimal" onkeypress="return (event.charCode>=48&&event.charCode<=57)||event.charCode===46">
             </div>
             <div class="form-group">
               <label class="form-label">ESG Score <span>(0–100)</span></label>
-              <input class="form-input" type="number" id="ppc-esg" placeholder="e.g. 81" min="0" max="100" oninput="updateEsgBar('ppc')">
+              <input class="form-input" type="number" id="ppc-esg" placeholder="e.g. 81" min="0" max="100" inputmode="numeric" onkeypress="return event.charCode>=48&&event.charCode<=57" oninput="updateEsgBar('ppc')">
               <div class="esg-bar"><div class="esg-fill" id="ppc-esg-fill" style="width:0%;background:var(--accent-amber)"></div></div>
               <div class="esg-label">
                 <span id="ppc-esg-tier" style="color:var(--text-muted)">—</span>
@@ -998,7 +974,8 @@
               <table>
                 <thead>
                   <tr>
-                    <th>Date</th>
+                    <th>Entry Date</th>
+                    <th>Record Date</th>
                     <th>Product</th>
                     <th>Weight (t)</th>
                     <th>ESG Score</th>
@@ -1133,20 +1110,17 @@
               <tr><th>Category</th><th>Location F</th><th>Eco Factor E</th><th>ESZ?</th><th>ESG Weightage (G)</th></tr>
             </thead>
             <tbody>
-              <tr><td>Land-recovered PET</td><td class="factor-val">1.0</td><td class="factor-val">1.0</td><td style="color:var(--text-muted);">No</td><td style="color:var(--text-muted);font-size:13px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
-              <tr><td>Floating PET</td><td class="factor-val">1.2</td><td class="factor-val">1.0</td><td style="color:var(--text-muted);">No</td><td style="color:var(--text-muted);font-size:13px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
-              <tr><td>Ocean-bound PET</td><td class="factor-val">1.3</td><td class="factor-val">1.0</td><td style="color:var(--text-muted);">No</td><td style="color:var(--text-muted);font-size:13px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
-              <tr><td>ESZ-PET (Land)</td><td class="factor-val">1.0</td><td class="factor-val">1.1</td><td style="color:var(--accent-green);">Yes</td><td style="color:var(--text-muted);font-size:13px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
-              <tr><td>ESZ-PET (Floating)</td><td class="factor-val">1.2</td><td class="factor-val">1.1</td><td style="color:var(--accent-green);">Yes</td><td style="color:var(--text-muted);font-size:13px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
-              <tr><td>ESZ-PET (Ocean-bound)</td><td class="factor-val">1.3</td><td class="factor-val">1.1</td><td style="color:var(--accent-green);">Yes</td><td style="color:var(--text-muted);font-size:13px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
+              <tr><td>Land-recovered PET</td><td class="factor-val">1.0</td><td class="factor-val">1.0</td><td style="color:var(--text-muted);">No</td><td style="color:var(--text-muted);font-size:11px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
+              <tr><td>Floating PET</td><td class="factor-val">1.2</td><td class="factor-val">1.0</td><td style="color:var(--text-muted);">No</td><td style="color:var(--text-muted);font-size:11px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
+              <tr><td>Ocean-bound PET</td><td class="factor-val">1.3</td><td class="factor-val">1.0</td><td style="color:var(--text-muted);">No</td><td style="color:var(--text-muted);font-size:11px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
+              <tr><td>ESZ-PET (Land)</td><td class="factor-val">1.0</td><td class="factor-val">1.1</td><td style="color:var(--accent-green);">Yes</td><td style="color:var(--text-muted);font-size:11px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
+              <tr><td>ESZ-PET (Floating)</td><td class="factor-val">1.2</td><td class="factor-val">1.1</td><td style="color:var(--accent-green);">Yes</td><td style="color:var(--text-muted);font-size:11px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
+              <tr><td>ESZ-PET (Ocean-bound)</td><td class="factor-val">1.3</td><td class="factor-val">1.1</td><td style="color:var(--accent-green);">Yes</td><td style="color:var(--text-muted);font-size:11px;font-family:var(--mono);">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td></tr>
             </tbody>
           </table>
         </div>
         <div class="card-body" style="padding-top:0;">
-          <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;margin-top:8px;">
-            <strong style="color:var(--text-primary);">500m rule:</strong> Collection within 500m of coastline (CRZ), riverbanks (RRZ flood level), or Eco-Sensitive Zone boundary qualifies for enhanced factors.<br><br>
-            <strong style="color:var(--text-primary);">Overlapping zones:</strong> Maximum applicable weightage is applied when CRZ, RRZ, and ESZ overlap.
-          </div>
+         
         </div>
       </div>
 
@@ -1162,10 +1136,7 @@
           </table>
         </div>
         <div class="card-body" style="padding-top:0;">
-          <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;margin-top:8px;">
-            <strong style="color:var(--text-primary);">Service life cap:</strong> min 1 year, max 15 years enforced to prevent over-crediting.<br><br>
-            <strong style="color:var(--text-primary);">Exposure factor P:</strong> Products directly exposed to the environment (roads, geotextiles) carry lower P values reflecting residual environmental risk.
-          </div>
+          
         </div>
       </div>
 
@@ -1231,10 +1202,10 @@
           <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Based on PPC entries you have added. Add processing entries to see estimates here.</div>
           <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center;">
             <div style="font-family:var(--display);font-size:36px;font-weight:800;color:var(--accent-green);" id="insight-co2-ppc">0</div>
-            <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">kg CO₂ saved (estimated from processing entries)</div>
+            <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">kg CO₂ saved (PCC + PPC combined)</div>
           </div>
           <div id="co2-table" style="margin-top:16px;"></div>
-          <div style="font-size:13px;color:var(--text-muted);margin-top:12px;line-height:1.6;">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:12px;line-height:1.6;">
             Sources: ALPLA 2017 · TecRecyc · Greiner 2024 · NPC India · Zhang et al. 2020
           </div>
         </div>
@@ -1247,12 +1218,12 @@
         <table class="factor-table" style="width:100%;">
           <thead><tr><th>Application</th><th>CO₂ Saving</th><th>Source</th></tr></thead>
           <tbody>
-            <tr><td>PET bottle-to-bottle recycling</td><td class="factor-val">1.7 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:13px;">ALPLA, 2017</td></tr>
-            <tr><td>Textile / r-PET fibre</td><td class="factor-val">1.8 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:13px;">TecRecyc</td></tr>
-            <tr><td>Wood-plastic composite (WPC)</td><td class="factor-val">0.25 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:13px;">Greiner, 2024</td></tr>
-            <tr><td>Road construction</td><td class="factor-val">3.5 t CO₂/km</td><td style="color:var(--text-muted);font-size:13px;">NPC India</td></tr>
-            <tr><td>r-PET flakes (carbon footprint)</td><td class="factor-val">0.43 kg CO₂e/kg</td><td style="color:var(--text-muted);font-size:13px;">Greiner, 2024</td></tr>
-            <tr><td>r-PET fibre (carbon footprint)</td><td class="factor-val">0.96 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:13px;">Zhang et al., 2020</td></tr>
+            <tr><td>PET bottle-to-bottle recycling</td><td class="factor-val">1.7 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:11px;">ALPLA, 2017</td></tr>
+            <tr><td>Textile / r-PET fibre</td><td class="factor-val">1.8 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:11px;">TecRecyc</td></tr>
+            <tr><td>Wood-plastic composite (WPC)</td><td class="factor-val">0.25 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:11px;">Greiner, 2024</td></tr>
+            <tr><td>Road construction</td><td class="factor-val">3.5 t CO₂/km</td><td style="color:var(--text-muted);font-size:11px;">NPC India</td></tr>
+            <tr><td>r-PET flakes (carbon footprint)</td><td class="factor-val">0.43 kg CO₂e/kg</td><td style="color:var(--text-muted);font-size:11px;">Greiner, 2024</td></tr>
+            <tr><td>r-PET fibre (carbon footprint)</td><td class="factor-val">0.96 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:11px;">Zhang et al., 2020</td></tr>
           </tbody>
         </table>
       </div>
@@ -1270,12 +1241,12 @@
       <div class="upload-type-card active" id="utype-pcc" onclick="setUploadType('pcc')">
         <div style="font-size:28px;margin-bottom:6px;">📋</div>
         <div style="font-family:var(--display);font-weight:700;font-size:13px;">PET Collection Credits</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:3px;">PET_Collection_credits_calculations.xlsx</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">PET_Collection_credits_calculations.xlsx</div>
       </div>
       <div class="upload-type-card" id="utype-ppc" onclick="setUploadType('ppc')">
         <div style="font-size:28px;margin-bottom:6px;">🏭</div>
         <div style="font-family:var(--display);font-weight:700;font-size:13px;">PET Processing Credits</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:3px;">PET_Processing_credits_calculation.xlsx</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">PET_Processing_credits_calculation.xlsx</div>
       </div>
     </div>
 
@@ -1332,12 +1303,9 @@
     </div>
   </div>
 
-<div style="text-align:center;margin:24px 0;">
-  <button class="btn btn-primary" onclick="exportDashboard('pdf')" style="margin-right:10px;">📄 Export Full Report (PDF)</button>
-  <button class="btn btn-secondary" onclick="exportDashboard('excel')">📥 Export Full Report (Excel)</button>
-</div>
+
 <div class="footer">
-  👨‍💻 Developed by <strong>Daksh Gandhi under the guidance of</strong> · IIT Delhi (Prof Sovik Das, Prof A K Nema, Prof Sudip K. Pattanayek &amp; Dr Anil Dhanda)<br>
+  👨‍💻 Developed by <strong>Daksh Gandhi</strong> · IIT Delhi (Prof Sovik Das, Prof A K Nema, Prof Sudip K. Pattanayek &amp; Dr Anil Dhanda)<br>
   <a href="https://cpcb.nic.in/rules-4/" target="_blank">CPCB EPR Rules</a> ·
   <a href="https://crz.elaw.in/crz2019.html" target="_blank">CRZ Notification 2019</a>
 </div>
@@ -1369,12 +1337,21 @@ const PPC_PRODUCTS = {
   'Road construction':     { life: 12,   P: 0.3 }
 };
 
-// pccData[month][entries]
-const pccData = Array.from({length:12}, () => []);
-const ppcData = Array.from({length:12}, () => []);
+// pccData["2026_3"] = entries for April 2026
+const pccData = {};
+const ppcData = {};
 
-let pccActiveMonth = 0;
-let ppcActiveMonth = 0;
+let pccActiveKey = '';
+let ppcActiveKey = '';
+
+function makeKey(year, monthIdx) { return `${year}_${monthIdx}`; }
+function getPccData(key) { return pccData[key] || []; }
+function getPpcData(key) { return ppcData[key] || []; }
+function ensureKey(data, key) { if (!data[key]) data[key] = []; }
+
+// Legacy: pccActiveMonth for summary chart (0-11)
+let pccActiveMonth = new Date().getMonth();
+let ppcActiveMonth = new Date().getMonth();
 
 let pccMonthChart = null;
 let ppcMonthChart = null;
@@ -1438,16 +1415,7 @@ function buildMonthGrids() {
 }
 
 function selectMonth(type, idx) {
-  if (type === 'pcc') pccActiveMonth = idx;
-  else ppcActiveMonth = idx;
-
-  const grid = document.getElementById(`${type}-month-grid`);
-  grid.querySelectorAll('.month-chip').forEach((c, i) => {
-    c.classList.toggle('active', i === idx);
-  });
-  document.getElementById(`${type}-month-label`).textContent = MONTHS[idx].toUpperCase();
-  renderTable(type);
-  renderStats(type);
+  // Legacy - kept for compatibility
 }
 
 // ============================================================
@@ -1483,6 +1451,88 @@ function updatePpcProductInfo() {
 // ============================================================
 // DATE HELPER
 // ============================================================
+const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function getTodayStr() {
+  const t = new Date();
+  return `${t.getDate()} ${MONTHS_FULL[t.getMonth()]} ${t.getFullYear()}`;
+}
+
+function buildYearSelect(selId) {
+  const sel = document.getElementById(selId);
+  const currentYear = new Date().getFullYear();
+  sel.innerHTML = '<option value="">Year</option>';
+  const maxYear = Math.max(currentYear, 2035);
+  for (let y = 2020; y <= maxYear; y++) {
+    const isFuture = y > currentYear;
+    sel.innerHTML += `<option value="${y}" ${isFuture ? 'disabled style="color:var(--text-muted)"' : ''}>${y}</option>`;
+  }
+}
+
+function updateMonths(yearSelId, monthSelId) {
+  const yr = parseInt(document.getElementById(yearSelId).value);
+  const monthSel = document.getElementById(monthSelId);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth(); // 0-indexed
+  monthSel.innerHTML = '<option value="">Month</option>';
+  MONTHS_FULL.forEach((m, i) => {
+    const isFuture = yr === currentYear && i > currentMonth;
+    if (!isFuture) monthSel.innerHTML += `<option value="${m}">${m}</option>`;
+  });
+}
+
+function updateDays(yearSelId, monthSelId, daySelId) {
+  const yr = parseInt(document.getElementById(yearSelId).value);
+  const mon = document.getElementById(monthSelId).value;
+  const daySel = document.getElementById(daySelId);
+  if (!yr || !mon) { daySel.innerHTML = '<option value="">Day</option>'; return; }
+  const now = new Date();
+  const mIdx = MONTHS_FULL.indexOf(mon);
+  const daysInMonth = new Date(yr, mIdx+1, 0).getDate();
+  daySel.innerHTML = '<option value="">Day</option>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateObj = new Date(yr, mIdx, d);
+    const isFuture = dateObj > now;
+    if (!isFuture) daySel.innerHTML += `<option value="${d}">${d}</option>`;
+  }
+}
+
+function updatePccMonths() {
+  updateMonths('pcc-year','pcc-month-sel');
+  document.getElementById('pcc-day').innerHTML='<option value="">Day</option>';
+}
+function updatePpcMonths() {
+  updateMonths('ppc-year','ppc-month-sel');
+  document.getElementById('ppc-day').innerHTML='<option value="">Day</option>';
+}
+function updatePccDays() {
+  updateDays('pcc-year','pcc-month-sel','pcc-day');
+  const mon = document.getElementById('pcc-month-sel').value;
+  const yr  = document.getElementById('pcc-year').value;
+  if (mon && yr) {
+    const mIdx = MONTHS_FULL.indexOf(mon);
+    pccActiveKey = makeKey(yr, mIdx);
+    pccActiveMonth = mIdx;
+    document.getElementById('pcc-month-label').textContent = MONTHS[mIdx].toUpperCase() + ' ' + yr;
+    renderTable('pcc');
+    renderStats('pcc');
+  }
+}
+function updatePpcDays() {
+  updateDays('ppc-year','ppc-month-sel','ppc-day');
+  const mon = document.getElementById('ppc-month-sel').value;
+  const yr  = document.getElementById('ppc-year').value;
+  if (mon && yr) {
+    const mIdx = MONTHS_FULL.indexOf(mon);
+    ppcActiveKey = makeKey(yr, mIdx);
+    ppcActiveMonth = mIdx;
+    document.getElementById('ppc-month-label').textContent = MONTHS[mIdx].toUpperCase() + ' ' + yr;
+    renderTable('ppc');
+    renderStats('ppc');
+  }
+}
+
 function getPccDate() {
   const day = document.getElementById('pcc-day').value;
   const mon = document.getElementById('pcc-month-sel').value;
@@ -1496,11 +1546,6 @@ function getPpcDate() {
   const yr  = document.getElementById('ppc-year').value;
   if (!day || !mon || !yr) return null;
   return `${day} ${mon} ${yr}`;
-}
-function buildDayOptions(selId) {
-  const sel = document.getElementById(selId);
-  sel.innerHTML = '<option value="">Day</option>';
-  for (let d=1; d<=31; d++) sel.innerHTML += `<option value="${d}">${d}</option>`;
 }
 
 // ============================================================
@@ -1520,7 +1565,8 @@ function addPccEntry() {
   if (g === 0) { alert('ESG score below 50 — entity is ineligible for credits.'); return; }
 
   const pcc = calcPCC(weight, category, esg);
-  pccData[pccActiveMonth].push({ date, category, weight, esg, F: f.F, E: f.E, G: g, pcc });
+  ensureKey(pccData, pccActiveKey);
+  pccData[pccActiveKey].push({ date, record_date: getTodayStr(), category, weight, esg, F: f.F, E: f.E, G: g, pcc });
 
   renderTable('pcc');
   renderStats('pcc');
@@ -1545,7 +1591,8 @@ function addPpcEntry() {
   const W = 0.85 * Math.log10(tAdj) * p.P;
   const ppc = calcPPC(weight, product, esg);
 
-  ppcData[ppcActiveMonth].push({ date, product, weight, esg, life: p.life, P: p.P, W, G: g, ppc });
+  ensureKey(ppcData, ppcActiveKey);
+  ppcData[ppcActiveKey].push({ date, record_date: getTodayStr(), product, weight, esg, life: p.life, P: p.P, W, G: g, ppc });
 
   renderTable('ppc');
   renderStats('ppc');
@@ -1556,9 +1603,9 @@ function addPpcEntry() {
 // ============================================================
 // DELETE
 // ============================================================
-function deleteEntry(type, month, idx) {
-  if (type === 'pcc') pccData[month].splice(idx, 1);
-  else ppcData[month].splice(idx, 1);
+function deleteEntry(type, key, idx) {
+  if (type === 'pcc') { if (pccData[key]) pccData[key].splice(idx, 1); }
+  else { if (ppcData[key]) ppcData[key].splice(idx, 1); }
   renderTable(type);
   renderStats(type);
   renderBreakdown(type);
@@ -1569,49 +1616,51 @@ function deleteEntry(type, month, idx) {
 // RENDER TABLE
 // ============================================================
 function renderTable(type) {
-  const month = type === 'pcc' ? pccActiveMonth : ppcActiveMonth;
-  const data  = type === 'pcc' ? pccData[month] : ppcData[month];
+  const key   = type === 'pcc' ? pccActiveKey : ppcActiveKey;
+  const data  = type === 'pcc' ? getPccData(key) : getPpcData(key);
   const tbody = document.getElementById(`${type}-table-body`);
-  const cols  = type === 'pcc' ? 9 : 10;
+  const cols  = type === 'pcc' ? 10 : 11;
 
-  if (!data.length) {
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="${cols}">No entries for ${MONTHS[month]}.</td></tr>`;
+  if (!key || !data.length) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="${cols}">No entries for selected period.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = data.map((e, i) => {
     if (type === 'pcc') {
       return `<tr>
-        <td contenteditable="true" onblur="editCell('pcc',${month},${i},'date',this.textContent)">${e.date}</td>
+        <td style="font-size:12px;color:var(--text-secondary);">${e.date}</td>
+        <td style="font-size:12px;color:var(--text-muted);">${e.record_date||'—'}</td>
         <td>
-          <select style="background:transparent;border:none;color:var(--text-secondary);font-size:12px;width:100%;" onchange="editCellVal('pcc',${month},${i},'category',this.value)">
+          <select style="background:transparent;border:none;color:var(--text-secondary);font-size:12px;width:100%;" onchange="editCellVal('pcc','${key}',${i},'category',this.value)">
             ${Object.keys(PCC_FACTORS).map(k=>`<option value="${k}" ${k===e.category?'selected':''}>${k}</option>`).join('')}
           </select>
         </td>
-        <td contenteditable="true" onblur="editNumCell('pcc',${month},${i},'weight',this.textContent)">${e.weight}</td>
-        <td contenteditable="true" onblur="editNumCell('pcc',${month},${i},'esg',this.textContent)">${e.esg}</td>
+        <td contenteditable="true" onblur="editNumCell('pcc','${key}',${i},'weight',this.textContent)">${e.weight}</td>
+        <td contenteditable="true" onblur="editNumCell('pcc','${key}',${i},'esg',this.textContent)">${e.esg}</td>
         <td style="font-family:var(--mono);color:var(--accent-teal)">${e.G}</td>
         <td style="font-family:var(--mono)">${e.F}</td>
         <td style="font-family:var(--mono)">${e.E}</td>
         <td class="td-credit">${fmt(e.pcc)}</td>
-        <td class="td-delete" onclick="deleteEntry('pcc',${month},${i})">×</td>
+        <td class="td-delete" onclick="deleteEntry('pcc','${key}',${i})">×</td>
       </tr>`;
     } else {
       return `<tr>
-        <td contenteditable="true" onblur="editCell('ppc',${month},${i},'date',this.textContent)">${e.date}</td>
+        <td style="font-size:12px;color:var(--text-secondary);">${e.date}</td>
+        <td style="font-size:12px;color:var(--text-muted);">${e.record_date||'—'}</td>
         <td>
-          <select style="background:transparent;border:none;color:var(--text-secondary);font-size:12px;width:100%;" onchange="editCellVal('ppc',${month},${i},'product',this.value)">
+          <select style="background:transparent;border:none;color:var(--text-secondary);font-size:12px;width:100%;" onchange="editCellVal('ppc','${key}',${i},'product',this.value)">
             ${Object.keys(PPC_PRODUCTS).map(k=>`<option value="${k}" ${k===e.product?'selected':''}>${k}</option>`).join('')}
           </select>
         </td>
-        <td contenteditable="true" onblur="editNumCell('ppc',${month},${i},'weight',this.textContent)">${e.weight}</td>
-        <td contenteditable="true" onblur="editNumCell('ppc',${month},${i},'esg',this.textContent)">${e.esg}</td>
+        <td contenteditable="true" onblur="editNumCell('ppc','${key}',${i},'weight',this.textContent)">${e.weight}</td>
+        <td contenteditable="true" onblur="editNumCell('ppc','${key}',${i},'esg',this.textContent)">${e.esg}</td>
         <td style="font-family:var(--mono);color:var(--accent-teal)">${e.G}</td>
         <td style="font-family:var(--mono)">${e.life}</td>
         <td style="font-family:var(--mono)">${e.P}</td>
         <td style="font-family:var(--mono)">${fmt(e.W,4)}</td>
         <td class="td-credit">${fmt(e.ppc)}</td>
-        <td class="td-delete" onclick="deleteEntry('ppc',${month},${i})">×</td>
+        <td class="td-delete" onclick="deleteEntry('ppc','${key}',${i})">×</td>
       </tr>`;
     }
   }).join('');
@@ -1644,11 +1693,6 @@ function editNumCell(type, month, idx, field, val) {
   }
   renderTable(type);
   renderStats(type);
-  const entry = data[month][idx];
-  if (entry.id) {
-    if (type === 'pcc') savePccToServer(entry, month);
-    else savePpcToServer(entry, month);
-  }
 }
 
 function editCellVal(type, month, idx, field, val) {
@@ -1666,24 +1710,20 @@ function editCellVal(type, month, idx, field, val) {
   }
   renderTable(type);
   renderStats(type);
-  const entry = (type === 'pcc' ? pccData : ppcData)[month][idx];
-  if (entry.id) {
-    if (type === 'pcc') savePccToServer(entry, month);
-    else savePpcToServer(entry, month);
-  }
 }
 
 // ============================================================
 // RENDER STATS
 // ============================================================
 function renderStats(type) {
-  const month = type === 'pcc' ? pccActiveMonth : ppcActiveMonth;
-  const data  = type === 'pcc' ? pccData : ppcData;
-  const key   = type === 'pcc' ? 'pcc' : 'ppc';
+  const activeKey = type === 'pcc' ? pccActiveKey : ppcActiveKey;
+  const data      = type === 'pcc' ? pccData : ppcData;
+  const creditKey = type === 'pcc' ? 'pcc' : 'ppc';
 
-  const monthCredits = data[month].reduce((s, e) => s + e[key], 0);
-  const monthWeight  = data[month].reduce((s, e) => s + e.weight, 0);
-  const annualCredits = data.reduce((s, arr) => s + arr.reduce((a, e) => a + e[key], 0), 0);
+  const activeArr = data[activeKey] || [];
+  const monthCredits  = activeArr.reduce((s, e) => s + e[creditKey], 0);
+  const monthWeight   = activeArr.reduce((s, e) => s + e.weight, 0);
+  const annualCredits = Object.values(data).reduce((s, arr) => s + arr.reduce((a, e) => a + e[creditKey], 0), 0);
 
   document.getElementById(`${type}-stat-month`).textContent  = fmt(monthCredits);
   document.getElementById(`${type}-stat-weight`).textContent = fmtT(monthWeight);
@@ -1695,13 +1735,13 @@ function renderStats(type) {
 // ============================================================
 function renderBreakdown(type) {
   const data = type === 'pcc' ? pccData : ppcData;
-  const key  = type === 'pcc' ? 'pcc' : 'ppc';
+  const creditKey  = type === 'pcc' ? 'pcc' : 'ppc';
   const groupKey = type === 'pcc' ? 'category' : 'product';
   const container = document.getElementById(`${type}-breakdown-content`);
 
   const grouped = {};
-  data.forEach(arr => arr.forEach(e => {
-    grouped[e[groupKey]] = (grouped[e[groupKey]] || 0) + e[key];
+  Object.values(data).forEach(arr => arr.forEach(e => {
+    grouped[e[groupKey]] = (grouped[e[groupKey]] || 0) + e[creditKey];
   }));
 
   const entries = Object.entries(grouped).sort((a,b) => b[1]-a[1]);
@@ -1726,12 +1766,20 @@ function renderBreakdown(type) {
 // MONTHLY CHART
 // ============================================================
 function renderMonthChart(type) {
-  const data = type === 'pcc' ? pccData : ppcData;
-  const key  = type === 'pcc' ? 'pcc' : 'ppc';
-  const canvasId = `${type}-monthly-chart`;
+  const data      = type === 'pcc' ? pccData : ppcData;
+  const creditKey = type === 'pcc' ? 'pcc' : 'ppc';
+  const activeKey = type === 'pcc' ? pccActiveKey : ppcActiveKey;
+  const canvasId  = `${type}-monthly-chart`;
   const ctx = document.getElementById(canvasId).getContext('2d');
 
-  const monthTotals = data.map(arr => arr.reduce((s,e) => s+e[key], 0));
+  // Sum credits per month index (across all years)
+  const monthTotals = MONTHS.map((_,i) => {
+    return Object.entries(data)
+      .filter(([k]) => parseInt(k.split('_')[1]) === i)
+      .reduce((s,[,arr]) => s + arr.reduce((a,e) => a + e[creditKey], 0), 0);
+  });
+
+  const activeMonthIdx = parseInt((activeKey||'_0').split('_')[1]);
 
   if (type === 'pcc' && pccMonthChart) { pccMonthChart.destroy(); }
   if (type === 'ppc' && ppcMonthChart) { ppcMonthChart.destroy(); }
@@ -1743,7 +1791,7 @@ function renderMonthChart(type) {
       datasets: [{
         label: type.toUpperCase() + ' Credits',
         data: monthTotals,
-        backgroundColor: MONTHS.map((_,i) => i === (type==='pcc'?pccActiveMonth:ppcActiveMonth) ? '#1a9e8f' : 'rgba(26,158,143,0.35)'),
+        backgroundColor: MONTHS.map((_,i) => i === activeMonthIdx ? '#1a9e8f' : 'rgba(26,158,143,0.35)'),
         borderColor: '#1a9e8f',
         borderWidth: 1,
         borderRadius: 4
@@ -1767,9 +1815,9 @@ function renderMonthChart(type) {
 // SUMMARY
 // ============================================================
 function renderSummary() {
-  const totalPCC = pccData.reduce((s,arr) => s + arr.reduce((a,e)=>a+e.pcc,0), 0);
-  const totalPPC = ppcData.reduce((s,arr) => s + arr.reduce((a,e)=>a+e.ppc,0), 0);
-  const totalWeight = [...pccData,...ppcData].reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.weight,0),0);
+  const totalPCC = Object.values(pccData).reduce((s,arr) => s + arr.reduce((a,e)=>a+e.pcc,0), 0);
+  const totalPPC = Object.values(ppcData).reduce((s,arr) => s + arr.reduce((a,e)=>a+e.ppc,0), 0);
+  const totalWeight = [...Object.values(pccData),...Object.values(ppcData)].reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.weight,0),0);
 
   document.getElementById('sum-pcc').textContent = fmt(totalPCC);
   document.getElementById('sum-ppc').textContent = fmt(totalPPC);
@@ -1779,9 +1827,11 @@ function renderSummary() {
   // Table
   const tbody = document.getElementById('summary-table-body');
   tbody.innerHTML = MONTHS.map((m,i) => {
-    const pcc = pccData[i].reduce((s,e)=>s+e.pcc,0);
-    const ppc = ppcData[i].reduce((s,e)=>s+e.ppc,0);
-    const w = pccData[i].reduce((s,e)=>s+e.weight,0) + ppcData[i].reduce((s,e)=>s+e.weight,0);
+    const pccArr = Object.entries(pccData).filter(([k])=>parseInt(k.split('_')[1])===i).flatMap(([,a])=>a);
+    const ppcArr = Object.entries(ppcData).filter(([k])=>parseInt(k.split('_')[1])===i).flatMap(([,a])=>a);
+    const pcc = pccArr.reduce((s,e)=>s+e.pcc,0);
+    const ppc = ppcArr.reduce((s,e)=>s+e.ppc,0);
+    const w = pccArr.reduce((s,e)=>s+e.weight,0) + ppcArr.reduce((s,e)=>s+e.weight,0);
     const combined = pcc + ppc;
     return `<tr>
       <td style="color:var(--text-primary)">${m}</td>
@@ -1800,9 +1850,9 @@ function renderSummary() {
     data: {
       labels: MONTHS,
       datasets: [
-  { label: 'PCC', data: MONTHS.map((_,i)=>pccData[i].reduce((s,e)=>s+e.pcc,0)), backgroundColor: 'rgba(26,158,143,0.85)', borderRadius: 3 },
-  { label: 'PPC', data: MONTHS.map((_,i)=>ppcData[i].reduce((s,e)=>s+e.ppc,0)), backgroundColor: 'rgba(255,165,0,0.75)', borderRadius: 3 }
-]
+        { label: 'PCC', data: MONTHS.map((_,i)=>pccData[i].reduce((s,e)=>s+e.pcc,0)), backgroundColor: 'rgba(26,158,143,0.7)', borderRadius: 3 },
+        { label: 'PPC', data: MONTHS.map((_,i)=>ppcData[i].reduce((s,e)=>s+e.ppc,0)), backgroundColor: 'rgba(46,160,67,0.7)', borderRadius: 3 }
+      ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -1820,7 +1870,7 @@ function renderSummary() {
 // ============================================================
 function buildRefTable() {
   const tbody = document.getElementById('ppc-ref-table');
-  const esgCol = `<td style="color:var(--text-muted);font-size:13px;font-family:var(--mono);line-height:1.8;">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td>`;
+  const esgCol = `<td style="color:var(--text-muted);font-size:11px;font-family:var(--mono);line-height:1.8;">Tier I &gt;80 → 1.10<br>Tier II 65–80 → 1.05<br>Tier III 50–65 → 1.00<br>Ineligible &lt;50 → 0</td>`;
   tbody.innerHTML = Object.entries(PPC_PRODUCTS).map(([name, p]) => {
     const tAdj = Math.min(15, Math.max(1, p.life));
     const W = (0.85 * Math.log10(tAdj) * p.P).toFixed(4);
@@ -1838,21 +1888,30 @@ function buildRefTable() {
 // MODE SWITCHING (updated)
 // ============================================================
 function switchInnerTab(type, tab) {
+  const card = document.getElementById(`mode-${type}`).querySelector('.card:last-child') ||
+               document.querySelector(`#mode-${type} .inner-tabs`).closest('.card');
   const tabs   = document.querySelectorAll(`#mode-${type} .inner-tab`);
   const panels = document.querySelectorAll(`#mode-${type} .inner-panel`);
   tabs.forEach(t => t.classList.remove('active'));
   panels.forEach(p => p.classList.remove('active'));
+
   const tabIdx = ['entries','chart','breakdown'].indexOf(tab);
   if (tabIdx >= 0 && tabs[tabIdx]) tabs[tabIdx].classList.add('active');
-  const panel = document.getElementById(`${type}-tab-${tab}`);
+
+  const panelId = `${type}-tab-${tab}`;
+  const panel = document.getElementById(panelId);
   if (panel) panel.classList.add('active');
+
   if (tab === 'chart')     renderMonthChart(type);
   if (tab === 'breakdown') renderBreakdown(type);
 }
+
 function switchMode(mode) {
- ['pcc','ppc','summary','ref','insights'].forEach(m => {
-    document.getElementById(`mode-${m}`).classList.toggle('hidden', m !== mode);
-    document.getElementById(`btn-${m}`).classList.toggle('active', m === mode);
+ ['pcc','ppc','summary','ref','insights','upload'].forEach(m => {
+    const panel = document.getElementById(`mode-${m}`);
+    const btn   = document.getElementById(`btn-${m}`);
+    if (panel) panel.classList.toggle('hidden', m !== mode);
+    if (btn)   btn.classList.toggle('active', m === mode);
   });
   if (mode === 'summary')  renderSummary();
   if (mode === 'pcc')      renderMonthChart('pcc');
@@ -2007,21 +2066,21 @@ function showUploadPreview(entries, skipped) {
   const thead = document.getElementById('upload-preview-head');
   if (uploadType === 'pcc') {
     thead.innerHTML = `<tr>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">Month</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">Date</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">Category</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">Weight (kg)</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">ESG</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--accent-teal);border-bottom:1px solid var(--border);">PCC (preview)</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">Month</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">Date</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">Category</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">Weight (kg)</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">ESG</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--accent-teal);border-bottom:1px solid var(--border);">PCC (preview)</th>
     </tr>`;
   } else {
     thead.innerHTML = `<tr>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">Month</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">Date</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">Product</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">Weight (kg)</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--text-muted);border-bottom:1px solid var(--border);">ESG</th>
-      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:13px;color:var(--accent-teal);border-bottom:1px solid var(--border);">PPC (preview)</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">Month</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">Date</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">Product</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">Weight (kg)</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);">ESG</th>
+      <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--accent-teal);border-bottom:1px solid var(--border);">PPC (preview)</th>
     </tr>`;
   }
 
@@ -2218,14 +2277,14 @@ function renderAllCompare() {
 
   collDiv.innerHTML = collEntries.map(({label, val}, i) => `
     <div class="breakdown-row">
-      <div class="breakdown-label" style="font-size:13px;">${label}</div>
+      <div class="breakdown-label" style="font-size:11px;">${label}</div>
       <div class="breakdown-bar-wrap"><div class="breakdown-bar" style="width:${(val/maxC*100).toFixed(1)}%;background:${BAR_C[i%BAR_C.length]}"></div></div>
       <div class="breakdown-val">${fmt(val)}</div>
     </div>`).join('');
 
   procDiv.innerHTML = procEntries.map(({label, val}, i) => `
     <div class="breakdown-row">
-      <div class="breakdown-label" style="font-size:13px;">${label}</div>
+      <div class="breakdown-label" style="font-size:11px;">${label}</div>
       <div class="breakdown-bar-wrap"><div class="breakdown-bar" style="width:${(val/maxP*100).toFixed(1)}%;background:${BAR_C[i%BAR_C.length]}"></div></div>
       <div class="breakdown-val">${fmt(val)}</div>
     </div>`).join('');
@@ -2247,43 +2306,43 @@ const CO2_SAVINGS = {
 };
 
 function renderInsights() {
-  const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  
-  const CO2_RATES_PPC = {
-    'Bottle-to-bottle PET': 1700, 'Reusable shopping bag': 1800,
-    'Polyester apparel': 1800, 'Blanket / Comforter': 430,
-    'Carpet / Rug': 430, 'Geotextile': 430,
-    'Plastic crate': 430, 'WPC panel': 250, 'Road construction': 250
-  };
-  const CO2_RATE_PCC = 430; // kg CO2 per tonne for collection (r-PET flakes baseline)
+  const MONTHS_FULL_INS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const CO2_RATES_PPC = CO2_SAVINGS;
+  const CO2_RATE_PCC = 430;
 
-  // CO2 bars
+  // CO2 reference bars
   const co2Div = document.getElementById('co2-bars');
-  const co2Entries = Object.entries(CO2_RATES_PPC).sort((a,b)=>b[1]-a[1]);
+  const co2Entries = Object.entries(CO2_SAVINGS).sort((a,b)=>b[1]-a[1]);
   const maxCO2 = co2Entries[0][1];
   co2Div.innerHTML = co2Entries.map(([label, val]) => `
     <div class="breakdown-row">
-      <div class="breakdown-label" style="font-size:13px;">${label}</div>
+      <div class="breakdown-label" style="font-size:11px;">${label}</div>
       <div class="breakdown-bar-wrap"><div class="breakdown-bar" style="width:${(val/maxCO2*100).toFixed(1)}%;background:var(--accent-green)"></div></div>
       <div class="breakdown-val" style="color:var(--accent-green);">${val >= 1000 ? (val/1000).toFixed(2)+'t' : val+' kg'} CO₂/t</div>
     </div>`).join('');
 
-  // Build rows for PCC
+  // Build PCC and PPC rows
   let totalCO2 = 0;
   let pccRows = [], ppcRows = [];
 
-  pccData.forEach((arr, mIdx) => arr.forEach(e => {
-    const co2 = e.weight * CO2_RATE_PCC;
-    totalCO2 += co2;
-    pccRows.push({ month: MONTHS_FULL[mIdx], date: e.date, label: e.category, weight: e.weight, rate: CO2_RATE_PCC, co2 });
-  }));
+  Object.entries(pccData).forEach(([key, arr]) => {
+    const mIdx = parseInt(key.split('_')[1]);
+    arr.forEach(e => {
+      const co2 = e.weight * CO2_RATE_PCC;
+      totalCO2 += co2;
+      pccRows.push({ month: MONTHS_FULL_INS[mIdx], date: e.date, label: e.category, weight: e.weight, rate: CO2_RATE_PCC, co2 });
+    });
+  });
 
-  ppcData.forEach((arr, mIdx) => arr.forEach(e => {
-    const rate = CO2_RATES_PPC[e.product] || 430;
-    const co2 = e.weight * rate;
-    totalCO2 += co2;
-    ppcRows.push({ month: MONTHS_FULL[mIdx], date: e.date, label: e.product, weight: e.weight, rate, co2 });
-  }));
+  Object.entries(ppcData).forEach(([key, arr]) => {
+    const mIdx = parseInt(key.split('_')[1]);
+    arr.forEach(e => {
+      const rate = CO2_RATES_PPC[e.product] || 430;
+      const co2 = e.weight * rate;
+      totalCO2 += co2;
+      ppcRows.push({ month: MONTHS_FULL_INS[mIdx], date: e.date, label: e.product, weight: e.weight, rate, co2 });
+    });
+  });
 
   document.getElementById('insight-co2-ppc').textContent = Math.round(totalCO2).toLocaleString();
 
@@ -2299,32 +2358,27 @@ function renderInsights() {
     return `
       <div style="font-family:var(--display);font-size:14px;font-weight:700;color:${color};margin:16px 0 8px;">${title}</div>
       <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;">
-          <thead>
-            <tr>
-              <th style="background:var(--bg);padding:9px 12px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);text-transform:uppercase;">Month</th>
-              <th style="background:var(--bg);padding:9px 12px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);text-transform:uppercase;">Date</th>
-              <th style="background:var(--bg);padding:9px 12px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);text-transform:uppercase;">Category / Product</th>
-              <th style="background:var(--bg);padding:9px 12px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);text-transform:uppercase;">Weight (t)</th>
-              <th style="background:var(--bg);padding:9px 12px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);text-transform:uppercase;">CO₂ Rate (kg/t)</th>
-              <th style="background:var(--bg);padding:9px 12px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);text-transform:uppercase;">Calculation</th>
-              <th style="background:var(--bg);padding:9px 12px;text-align:left;font-family:var(--mono);font-size:11px;color:${color};border-bottom:1px solid var(--border);text-transform:uppercase;">CO₂ Saved (kg)</th>
-            </tr>
-          </thead>
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead><tr>
+            <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);">Month</th>
+            <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);">Entry Date</th>
+            <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);">Category / Product</th>
+            <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);">Weight (t)</th>
+            <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);">CO₂ Rate</th>
+            <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:${color};border-bottom:1px solid var(--border);">CO₂ Saved (kg)</th>
+          </tr></thead>
           <tbody>
-            ${rows.map(r => `
-              <tr style="border-bottom:1px solid rgba(48,54,61,0.4);">
-                <td style="padding:9px 12px;color:var(--text-secondary);">${r.month}</td>
-                <td style="padding:9px 12px;color:var(--text-primary);">${r.date}</td>
-                <td style="padding:9px 12px;color:var(--text-secondary);">${r.label}</td>
-                <td style="padding:9px 12px;font-family:var(--mono);">${r.weight}</td>
-                <td style="padding:9px 12px;font-family:var(--mono);color:var(--text-muted);">${r.rate}</td>
-                <td style="padding:9px 12px;font-family:var(--mono);font-size:12px;color:var(--text-muted);">${r.weight} × ${r.rate}</td>
-                <td style="padding:9px 12px;font-family:var(--mono);font-weight:600;color:${color};">${Math.round(r.co2).toLocaleString()}</td>
-              </tr>`).join('')}
+            ${rows.map(r => `<tr style="border-bottom:1px solid rgba(48,54,61,0.4);">
+              <td style="padding:8px 10px;color:var(--text-secondary);">${r.month}</td>
+              <td style="padding:8px 10px;color:var(--text-primary);">${r.date}</td>
+              <td style="padding:8px 10px;color:var(--text-secondary);">${r.label}</td>
+              <td style="padding:8px 10px;font-family:var(--mono);">${r.weight}</td>
+              <td style="padding:8px 10px;font-family:var(--mono);color:var(--text-muted);">${r.rate} kg/t</td>
+              <td style="padding:8px 10px;font-family:var(--mono);font-weight:600;color:${color};">${Math.round(r.co2).toLocaleString()}</td>
+            </tr>`).join('')}
             <tr style="background:rgba(46,160,67,0.08);">
-              <td colspan="6" style="padding:10px 12px;font-weight:700;color:var(--text-primary);font-family:var(--mono);">SUBTOTAL</td>
-              <td style="padding:10px 12px;font-family:var(--mono);font-weight:800;color:${color};font-size:14px;">${Math.round(total).toLocaleString()} kg</td>
+              <td colspan="5" style="padding:10px;font-weight:700;color:var(--text-primary);font-family:var(--mono);">SUBTOTAL</td>
+              <td style="padding:10px;font-family:var(--mono);font-weight:800;color:${color};font-size:14px;">${Math.round(total).toLocaleString()} kg</td>
             </tr>
           </tbody>
         </table>
@@ -2349,9 +2403,12 @@ async function loadFromServer() {
     const pccRes = await fetch('/api/pcc');
     const pccRows = await pccRes.json();
     pccRows.forEach(r => {
-      pccData[r.month_idx].push({
+      const yr = r.date_str ? r.date_str.split(' ')[2] : new Date().getFullYear();
+      const key = makeKey(yr, r.month_idx);
+      ensureKey(pccData, key);
+      pccData[key].push({
         id: r.id,
-        date: r.date_str, category: r.category,
+        date: r.date_str, record_date: r.record_date||'—', category: r.category,
         weight: r.weight, esg: r.esg,
         F: r.loc_f, E: r.eco_e, G: r.esg_g, pcc: r.pcc
       });
@@ -2361,9 +2418,12 @@ async function loadFromServer() {
     const ppcRes = await fetch('/api/ppc');
     const ppcRows = await ppcRes.json();
     ppcRows.forEach(r => {
-      ppcData[r.month_idx].push({
+      const yr = r.date_str ? r.date_str.split(' ')[2] : new Date().getFullYear();
+      const key = makeKey(yr, r.month_idx);
+      ensureKey(ppcData, key);
+      ppcData[key].push({
         id: r.id,
-        date: r.date_str, product: r.product,
+        date: r.date_str, record_date: r.record_date||'—', product: r.product,
         weight: r.weight, esg: r.esg,
         life: r.service_life, P: r.exposure_p,
         W: r.proc_w, G: r.esg_g, ppc: r.ppc
@@ -2385,13 +2445,19 @@ async function loadFromServer() {
 // API — SAVE PCC ENTRY
 // ============================================================
 async function savePccToServer(entry, monthIdx) {
-  const res = await fetch(entry.id ? `/api/pcc/${entry.id}` : '/api/pcc', {
-    method: entry.id ? 'PUT' : 'POST',
+  const url    = entry.id ? `/api/pcc/${entry.id}` : '/api/pcc';
+  const method = entry.id ? 'PUT' : 'POST';
+  if (!entry.record_date || entry.record_date === '—') {
+    entry.record_date = getTodayStr();
+  }
+  const res = await fetch(url, {
+    method: method,
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
-      month_idx: monthIdx,
-      date_str:  entry.date,
-      category:  entry.category,
+      month_idx:   monthIdx,
+      date_str:    entry.date,
+      record_date: entry.record_date,
+      category:    entry.category,
       weight:    entry.weight,
       esg:       entry.esg,
       loc_f:     entry.F,
@@ -2408,12 +2474,18 @@ async function savePccToServer(entry, monthIdx) {
 // API — SAVE PPC ENTRY
 // ============================================================
 async function savePpcToServer(entry, monthIdx) {
-  const res = await fetch(entry.id ? `/api/ppc/${entry.id}` : '/api/ppc', {
-    method: entry.id ? 'PUT' : 'POST',
+  const url    = entry.id ? `/api/ppc/${entry.id}` : '/api/ppc';
+  const method = entry.id ? 'PUT' : 'POST';
+  if (!entry.record_date || entry.record_date === '—') {
+    entry.record_date = getTodayStr();
+  }
+  const res = await fetch(url, {
+    method: method,
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
       month_idx:    monthIdx,
       date_str:     entry.date,
+      record_date:  entry.record_date,
       product:      entry.product,
       weight:       entry.weight,
       esg:          entry.esg,
@@ -2455,9 +2527,10 @@ addPccEntry = async function() {
 
   const pcc = calcPCC(weight, category, esg);
   const entry = { date, category, weight, esg, F: f.F, E: f.E, G: g, pcc };
-  pccData[pccActiveMonth].push(entry);
-
-  await savePccToServer(entry, pccActiveMonth);
+  ensureKey(pccData, pccActiveKey);
+  pccData[pccActiveKey].push(entry);
+  const pccMIdx = parseInt(pccActiveKey.split('_')[1]);
+  await savePccToServer(entry, pccMIdx);
 
   renderTable('pcc');
   renderStats('pcc');
@@ -2485,9 +2558,10 @@ addPpcEntry = async function() {
   const W = 0.85 * Math.log10(tAdj) * p.P;
   const ppc = calcPPC(weight, product, esg);
   const entry = { date, product, weight, esg, life: p.life, P: p.P, W, G: g, ppc };
-  ppcData[ppcActiveMonth].push(entry);
-
-  await savePpcToServer(entry, ppcActiveMonth);
+  ensureKey(ppcData, ppcActiveKey);
+  ppcData[ppcActiveKey].push(entry);
+  const ppcMIdx = parseInt(ppcActiveKey.split('_')[1]);
+  await savePpcToServer(entry, ppcMIdx);
 
   renderTable('ppc');
   renderStats('ppc');
@@ -2501,9 +2575,10 @@ addPpcEntry = async function() {
 const _origDelete = deleteEntry;
 deleteEntry = async function(type, month, idx) {
   const data = type === 'pcc' ? pccData : ppcData;
-  const entryId = data[month][idx] ? data[month][idx].id : null;
+  const key = type === 'pcc' ? pccActiveKey : ppcActiveKey;
+  const entryId = data[key] && data[key][idx] ? data[key][idx].id : null;
 
-  data[month].splice(idx, 1);
+  if (data[key]) data[key].splice(idx, 1);
   renderTable(type);
   renderStats(type);
   renderBreakdown(type);
@@ -2515,129 +2590,6 @@ deleteEntry = async function(type, month, idx) {
 // ============================================================
 // LOGOUT
 // ============================================================
-function exportDashboard(format) {
-  const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const CO2_RATES = {'Bottle-to-bottle PET':1700,'Reusable shopping bag':1800,'Polyester apparel':1800,'Blanket / Comforter':430,'Carpet / Rug':430,'Geotextile':430,'Plastic crate':430,'WPC panel':250,'Road construction':250};
-  const CO2_RATE_PCC = 430;
-
-  const totalPCC = pccData.reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.pcc,0),0);
-  const totalPPC = ppcData.reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.ppc,0),0);
-  let totalCO2 = 0;
-  pccData.forEach(arr=>arr.forEach(e=>{totalCO2+=e.weight*CO2_RATE_PCC;}));
-  ppcData.forEach(arr=>arr.forEach(e=>{totalCO2+=e.weight*(CO2_RATES[e.product]||430);}));
-
-  if (format === 'excel') {
-    let csv = `PET Plastic Credit Report\nCompany: {{ company_name }}\nGenerated: ${new Date().toLocaleDateString('en-IN')}\n\n`;
-
-    csv += `COLLECTION CREDITS (PCC)\n`;
-    csv += `Month,Date,Category,Weight (t),ESG Score,ESG Weightage,F,E,PCC\n`;
-    pccData.forEach((arr,mIdx)=>arr.forEach(e=>{
-      csv += `${MONTHS_FULL[mIdx]},${e.date},${e.category},${e.weight},${e.esg},${e.G},${e.F},${e.E},${e.pcc.toFixed(4)}\n`;
-    }));
-    csv += `TOTAL PCC,,,,,,,, ${totalPCC.toFixed(4)}\n\n`;
-
-    csv += `PROCESSING CREDITS (PPC)\n`;
-    csv += `Month,Date,Product,Weight (t),ESG Score,ESG Weightage,Life,P,W,PPC\n`;
-    ppcData.forEach((arr,mIdx)=>arr.forEach(e=>{
-      csv += `${MONTHS_FULL[mIdx]},${e.date},${e.product},${e.weight},${e.esg},${e.G},${e.life},${e.P},${e.W.toFixed(4)},${e.ppc.toFixed(4)}\n`;
-    }));
-    csv += `TOTAL PPC,,,,,,,,, ${totalPPC.toFixed(4)}\n\n`;
-
-    csv += `CO2 SAVINGS\n`;
-    csv += `Type,Month,Date,Category / Product,Weight (t),CO2 Rate (kg/t),CO2 Saved (kg)\n`;
-    pccData.forEach((arr,mIdx)=>arr.forEach(e=>{
-      csv += `PCC,${MONTHS_FULL[mIdx]},${e.date},${e.category},${e.weight},${CO2_RATE_PCC},${Math.round(e.weight*CO2_RATE_PCC)}\n`;
-    }));
-    ppcData.forEach((arr,mIdx)=>arr.forEach(e=>{
-      const rate=CO2_RATES[e.product]||430;
-      csv += `PPC,${MONTHS_FULL[mIdx]},${e.date},${e.product},${e.weight},${rate},${Math.round(e.weight*rate)}\n`;
-    }));
-    csv += `TOTAL CO2 SAVED (kg),,,,,, ${Math.round(totalCO2)}\n\n`;
-
-    csv += `COMBINED SUMMARY\n`;
-    csv += `Total PCC,${totalPCC.toFixed(4)}\n`;
-    csv += `Total PPC,${totalPPC.toFixed(4)}\n`;
-    csv += `Combined Credits,${(totalPCC+totalPPC).toFixed(4)}\n`;
-    csv += `Total CO2 Saved (kg),${Math.round(totalCO2)}\n`;
-
-    const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `PET_Credit_Report_{{ company_name }}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-
-  } else {
-    // Monthly summaries
-    const pccMonthly = MONTHS_FULL.map((m,i)=>{const r=pccData[i];return{month:m,count:r.length,weight:r.reduce((s,e)=>s+e.weight,0),credits:r.reduce((s,e)=>s+e.pcc,0)};}).filter(r=>r.count>0);
-    const ppcMonthly = MONTHS_FULL.map((m,i)=>{const r=ppcData[i];return{month:m,count:r.length,weight:r.reduce((s,e)=>s+e.weight,0),credits:r.reduce((s,e)=>s+e.ppc,0)};}).filter(r=>r.count>0);
-
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>PET Credit Report</title>
-    <style>
-      body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;padding:32px;}
-      h1{font-size:20px;color:#1a9e8f;margin-bottom:4px;}
-      h2{font-size:15px;color:#333;margin:24px 0 8px;border-bottom:2px solid #1a9e8f;padding-bottom:4px;}
-      h3{font-size:13px;color:#555;margin:16px 0 6px;}
-      .meta{color:#666;font-size:12px;margin-bottom:20px;}
-      .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}
-      .summary-box{background:#f0faf9;border:1px solid #1a9e8f;border-radius:6px;padding:12px;text-align:center;}
-      .summary-val{font-size:20px;font-weight:bold;color:#1a9e8f;}
-      .summary-lbl{font-size:11px;color:#666;margin-top:2px;}
-      table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:12px;}
-      th{background:#1a9e8f;color:white;padding:7px 10px;text-align:left;}
-      td{padding:6px 10px;border-bottom:1px solid #e0e0e0;}
-      tr:nth-child(even) td{background:#f9f9f9;}
-      .total-row td{background:#e6f7f5!important;font-weight:700;}
-      .footer{margin-top:32px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px;}
-      @media print{body{padding:16px;}}
-    </style></head><body>
-    <h1>♻️ PET Plastic Credit Report</h1>
-    <div class="meta"><strong>{{ company_name }}</strong><br>Generated: ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</div>
-
-    <div class="summary-grid">
-      <div class="summary-box"><div class="summary-val">${totalPCC.toFixed(2)}</div><div class="summary-lbl">Total PCC</div></div>
-      <div class="summary-box"><div class="summary-val">${totalPPC.toFixed(2)}</div><div class="summary-lbl">Total PPC</div></div>
-      <div class="summary-box"><div class="summary-val">${(totalPCC+totalPPC).toFixed(2)}</div><div class="summary-lbl">Combined Credits</div></div>
-      <div class="summary-box"><div class="summary-val">${Math.round(totalCO2).toLocaleString()}</div><div class="summary-lbl">CO₂ Saved (kg)</div></div>
-    </div>
-
-    <h2>Collection Credits (PCC)</h2>
-    <h3>Monthly Summary</h3>
-    <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PCC Credits</th></tr>
-    ${pccMonthly.map(r=>`<tr><td>${r.month}</td><td>${r.count}</td><td>${r.weight.toFixed(2)}</td><td><strong>${r.credits.toFixed(4)}</strong></td></tr>`).join('')}
-    <tr class="total-row"><td colspan="3">Total</td><td>${totalPCC.toFixed(4)}</td></tr></table>
-    <h3>All PCC Entries</h3>
-    <table><tr><th>Month</th><th>Date</th><th>Category</th><th>Weight (t)</th><th>ESG</th><th>G</th><th>F</th><th>E</th><th>PCC</th></tr>
-    ${pccData.map((arr,mIdx)=>arr.map(e=>`<tr><td>${MONTHS_FULL[mIdx]}</td><td>${e.date}</td><td>${e.category}</td><td>${e.weight}</td><td>${e.esg}</td><td>${e.G}</td><td>${e.F}</td><td>${e.E}</td><td><strong>${e.pcc.toFixed(4)}</strong></td></tr>`).join('')).join('')}
-    </table>
-
-    <h2>Processing Credits (PPC)</h2>
-    <h3>Monthly Summary</h3>
-    <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PPC Credits</th></tr>
-    ${ppcMonthly.map(r=>`<tr><td>${r.month}</td><td>${r.count}</td><td>${r.weight.toFixed(2)}</td><td><strong>${r.credits.toFixed(4)}</strong></td></tr>`).join('')}
-    <tr class="total-row"><td colspan="3">Total</td><td>${totalPPC.toFixed(4)}</td></tr></table>
-    <h3>All PPC Entries</h3>
-    <table><tr><th>Month</th><th>Date</th><th>Product</th><th>Weight (t)</th><th>ESG</th><th>G</th><th>Life</th><th>P</th><th>W</th><th>PPC</th></tr>
-    ${ppcData.map((arr,mIdx)=>arr.map(e=>`<tr><td>${MONTHS_FULL[mIdx]}</td><td>${e.date}</td><td>${e.product}</td><td>${e.weight}</td><td>${e.esg}</td><td>${e.G}</td><td>${e.life}</td><td>${e.P}</td><td>${e.W.toFixed(4)}</td><td><strong>${e.ppc.toFixed(4)}</strong></td></tr>`).join('')).join('')}
-    </table>
-
-    <h2>CO₂ Savings</h2>
-    <table><tr><th>Type</th><th>Month</th><th>Date</th><th>Category / Product</th><th>Weight (t)</th><th>CO₂ Rate (kg/t)</th><th>Calculation</th><th>CO₂ Saved (kg)</th></tr>
-    ${pccData.map((arr,mIdx)=>arr.map(e=>`<tr><td>PCC</td><td>${MONTHS_FULL[mIdx]}</td><td>${e.date}</td><td>${e.category}</td><td>${e.weight}</td><td>${CO2_RATE_PCC}</td><td>${e.weight}×${CO2_RATE_PCC}</td><td><strong>${Math.round(e.weight*CO2_RATE_PCC).toLocaleString()}</strong></td></tr>`).join('')).join('')}
-    ${ppcData.map((arr,mIdx)=>arr.map(e=>{const rate=CO2_RATES[e.product]||430;return`<tr><td>PPC</td><td>${MONTHS_FULL[mIdx]}</td><td>${e.date}</td><td>${e.product}</td><td>${e.weight}</td><td>${rate}</td><td>${e.weight}×${rate}</td><td><strong>${Math.round(e.weight*rate).toLocaleString()}</strong></td></tr>`;}).join('')).join('')}
-    <tr class="total-row"><td colspan="7">Total CO₂ Saved</td><td>${Math.round(totalCO2).toLocaleString()} kg</td></tr>
-    </table>
-
-    <div class="footer">Indian PET Plastic Credit Framework · IIT Delhi · Prof Sovik Das · Prof A K Nema · Prof Sudip K. Pattanayek · Dr Anil Dhanda · Developed by Daksh Gandhi</div>
-    </body></html>`;
-
-    const win = window.open('','_blank');
-    win.document.write(html);
-    win.document.close();
-    setTimeout(()=>win.print(), 500);
-  }
-}
 async function doLogout() {
   await fetch('/api/logout', { method: 'POST' });
   window.location.href = '/login';
@@ -2647,11 +2599,40 @@ async function doLogout() {
 // INIT — load from server instead of local state
 // ============================================================
 async function init() {
-  buildMonthGrids();
   buildRefTable();
   updatePpcProductInfo();
-  buildDayOptions('pcc-day');
-  buildDayOptions('ppc-day');
+
+  // Build year dropdowns
+  buildYearSelect('pcc-year');
+  buildYearSelect('ppc-year');
+
+  // Pre-select current year and month
+  const now = new Date();
+  const currentYear = now.getFullYear().toString();
+  const currentMonthName = MONTHS_FULL[now.getMonth()];
+
+  // PCC
+  document.getElementById('pcc-year').value = currentYear;
+  updatePccMonths();
+  document.getElementById('pcc-month-sel').value = currentMonthName;
+  updatePccDays();
+
+  // PPC
+  document.getElementById('ppc-year').value = currentYear;
+  updatePpcMonths();
+  document.getElementById('ppc-month-sel').value = currentMonthName;
+  updatePpcDays();
+
+  // Update active key and month from current year/month
+  pccActiveMonth = now.getMonth();
+  ppcActiveMonth = now.getMonth();
+  pccActiveKey = makeKey(now.getFullYear(), now.getMonth());
+  ppcActiveKey = makeKey(now.getFullYear(), now.getMonth());
+
+  // Update month labels
+  document.getElementById('pcc-month-label').textContent = MONTHS[now.getMonth()].toUpperCase();
+  document.getElementById('ppc-month-label').textContent = MONTHS[now.getMonth()].toUpperCase();
+
   await loadFromServer();
 }
 
