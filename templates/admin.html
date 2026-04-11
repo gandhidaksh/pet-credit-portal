@@ -12,15 +12,20 @@
     --accent-amber:#d29922; --accent-red:#f85149;
     --text-primary:#e6edf3; --text-secondary:#adbac7; --text-muted:#6e7681;
     --mono:'IBM Plex Mono',monospace; --sans:'Inter',sans-serif; --display:'Syne',sans-serif;
+    --radius:8px;
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { background:var(--bg); color:var(--text-primary); font-family:var(--sans); font-size:14px; }
+
+  /* HEADER */
   .header { background:linear-gradient(135deg,#0d1117,#0f2027,#0d1117); border-bottom:1px solid var(--border); padding:18px 32px; }
   .header-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
   .header-title { font-family:var(--display); font-size:20px; font-weight:800; }
   .header-title span { color:var(--accent-teal); }
   .header-sub { font-size:12px; color:var(--text-muted); margin-top:2px; }
   .main { max-width:1400px; margin:0 auto; padding:28px 32px 60px; }
+
+  /* STATS */
   .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
   .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:18px 20px; position:relative; overflow:hidden; }
   .stat-card::after { content:''; position:absolute; top:0; left:0; width:3px; height:100%; border-radius:8px 0 0 8px; }
@@ -31,9 +36,13 @@
   .stat-label { font-family:var(--mono); font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px; }
   .stat-value { font-family:var(--display); font-size:28px; font-weight:800; }
   .stat-sub { font-size:12px; color:var(--text-secondary); margin-top:4px; }
-  .tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:20px; }
-  .tab { padding:12px 22px; background:none; border:none; border-bottom:2px solid transparent; color:var(--text-muted); font-family:var(--display); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+
+  /* TABS */
+  .tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:20px; flex-wrap:wrap; }
+  .tab { padding:12px 20px; background:none; border:none; border-bottom:2px solid transparent; color:var(--text-muted); font-family:var(--display); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; }
   .tab.active { color:var(--accent-teal); border-bottom-color:var(--accent-teal); }
+
+  /* CARDS & TABLE */
   .card { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:20px; }
   .card-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
   .card-title { font-family:var(--display); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-primary); }
@@ -46,27 +55,41 @@
   .mono { font-family:var(--mono); }
   .teal { color:var(--accent-teal) !important; font-family:var(--mono); }
   .green { color:var(--accent-green) !important; font-family:var(--mono); }
+
+  /* BADGES */
   .badge { display:inline-block; padding:2px 8px; border-radius:12px; font-family:var(--mono); font-size:10px; font-weight:600; }
-  .badge-login { background:rgba(26,158,143,0.15); color:var(--accent-teal); }
-  .badge-logout { background:rgba(48,54,61,0.5); color:var(--text-muted); }
-  .badge-register { background:rgba(46,160,67,0.15); color:var(--accent-green); }
-  .badge-reset { background:rgba(210,153,34,0.15); color:var(--accent-amber); }
-  .badge-verified { background:rgba(46,160,67,0.15); color:var(--accent-green); font-size:10px; padding:2px 7px; border-radius:10px; }
-  .badge-unverified { background:rgba(248,81,73,0.15); color:var(--accent-red); font-size:10px; padding:2px 7px; border-radius:10px; }
+  .badge-login    { background:rgba(26,158,143,0.15);  color:var(--accent-teal); }
+  .badge-logout   { background:rgba(48,54,61,0.5);     color:var(--text-muted); }
+  .badge-register { background:rgba(46,160,67,0.15);   color:var(--accent-green); }
+  .badge-reset    { background:rgba(210,153,34,0.15);  color:var(--accent-amber); }
+  .badge-verified   { background:rgba(46,160,67,0.15); color:var(--accent-green); font-size:10px; padding:2px 7px; border-radius:10px; }
+  .badge-unverified { background:rgba(248,81,73,0.15); color:var(--accent-red);   font-size:10px; padding:2px 7px; border-radius:10px; }
+
+  /* BUTTONS */
   .btn { padding:7px 14px; border-radius:5px; font-family:var(--display); font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:5px; }
   .btn-sm { padding:5px 10px; font-size:11px; }
-  .btn-teal { background:rgba(26,158,143,0.15); color:var(--accent-teal); border:1px solid rgba(26,158,143,0.3); }
-  .btn-teal:hover { background:rgba(26,158,143,0.25); }
-  .btn-red { background:rgba(248,81,73,0.15); color:var(--accent-red); border:1px solid rgba(248,81,73,0.3); }
-  .btn-red:hover { background:rgba(248,81,73,0.25); }
-  .btn-amber { background:rgba(210,153,34,0.15); color:var(--accent-amber); border:1px solid rgba(210,153,34,0.3); }
-  .btn-amber:hover { background:rgba(210,153,34,0.25); }
+  .btn-teal   { background:rgba(26,158,143,0.15);  color:var(--accent-teal);  border:1px solid rgba(26,158,143,0.3); }
+  .btn-teal:hover   { background:rgba(26,158,143,0.25); }
+  .btn-red    { background:rgba(248,81,73,0.15);   color:var(--accent-red);   border:1px solid rgba(248,81,73,0.3); }
+  .btn-red:hover    { background:rgba(248,81,73,0.25); }
+  .btn-amber  { background:rgba(210,153,34,0.15);  color:var(--accent-amber); border:1px solid rgba(210,153,34,0.3); }
+  .btn-amber:hover  { background:rgba(210,153,34,0.25); }
+  .btn-green  { background:rgba(46,160,67,0.15);   color:var(--accent-green); border:1px solid rgba(46,160,67,0.3); }
+  .btn-green:hover  { background:rgba(46,160,67,0.25); }
   .btn-primary { background:var(--accent-teal); color:#fff; border:none; padding:10px 20px; font-size:13px; }
   .btn-primary:hover { background:#16897c; }
   .btn-logout { background:rgba(248,81,73,0.15); border:1px solid rgba(248,81,73,0.3); color:var(--accent-red); font-family:var(--mono); font-size:11px; padding:6px 14px; border-radius:4px; cursor:pointer; }
   .btn-logout:hover { background:rgba(248,81,73,0.25); }
+
+  /* FORM */
   .search-input { background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text-primary); font-family:var(--sans); font-size:12px; padding:7px 12px; outline:none; width:220px; }
   .search-input:focus { border-color:var(--accent-teal); }
+  .form-group { margin-bottom:14px; }
+  .form-label { display:block; font-size:12px; color:var(--text-secondary); margin-bottom:5px; font-family:var(--mono); font-weight:600; }
+  .form-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:5px; color:var(--text-primary); font-family:var(--sans); font-size:13px; padding:9px 12px; outline:none; }
+  .form-input:focus { border-color:var(--accent-teal); }
+
+  /* PANEL / MODAL */
   .panel { display:none; }
   .panel.active { display:block; }
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; }
@@ -75,17 +98,67 @@
   .modal-title { font-family:var(--display); font-size:16px; font-weight:800; margin-bottom:18px; }
   .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer; }
   .modal-close:hover { color:var(--text-primary); }
-  .form-group { margin-bottom:14px; }
-  .form-label { display:block; font-size:12px; color:var(--text-secondary); margin-bottom:5px; font-family:var(--mono); font-weight:600; }
-  .form-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:5px; color:var(--text-primary); font-family:var(--sans); font-size:13px; padding:9px 12px; outline:none; }
-  .form-input:focus { border-color:var(--accent-teal); }
   .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
   .alert { padding:10px 14px; border-radius:6px; font-size:13px; margin-bottom:14px; display:none; }
-  .alert-ok { background:rgba(46,160,67,0.1); border:1px solid rgba(46,160,67,0.3); color:var(--accent-green); }
-  .alert-err { background:rgba(248,81,73,0.1); border:1px solid rgba(248,81,73,0.3); color:var(--accent-red); }
+  .alert-ok  { background:rgba(46,160,67,0.1);  border:1px solid rgba(46,160,67,0.3);  color:var(--accent-green); }
+  .alert-err { background:rgba(248,81,73,0.1);  border:1px solid rgba(248,81,73,0.3);  color:var(--accent-red); }
   .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .empty { text-align:center; padding:32px; color:var(--text-muted); font-style:italic; }
-  @media(max-width:900px) { .stats-grid { grid-template-columns:1fr 1fr; } .main { padding:16px; } .settings-grid { grid-template-columns:1fr; } }
+
+  /* ── COMPANY PROFILES TAB STYLES ── */
+  .co-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:10px; transition:border-color 0.2s; }
+  .co-card:hover { border-color:rgba(26,158,143,0.35); }
+  .co-card-header { padding:14px 18px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none; gap:12px; }
+  .co-card-header:hover { background:rgba(255,255,255,0.02); }
+  .co-name  { font-family:var(--display); font-size:14px; font-weight:700; color:var(--text-primary); }
+  .co-email { font-family:var(--mono); font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .co-badges { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  .co-badge { font-family:var(--mono); font-size:10px; padding:2px 8px; border-radius:3px; border:1px solid; }
+  .co-badge.verified { color:#2ea043; border-color:rgba(46,160,67,0.4);  background:rgba(46,160,67,0.1); }
+  .co-badge.pending  { color:#d29922; border-color:rgba(210,153,34,0.4); background:rgba(210,153,34,0.1); }
+  .co-badge.hasdocs  { color:#1a9e8f; border-color:rgba(26,158,143,0.4); background:rgba(26,158,143,0.1); }
+  .co-badge.nodocs   { color:#6e7681; border-color:rgba(110,118,129,0.3); background:transparent; }
+  .co-badge.filled   { color:#2ea043; border-color:rgba(46,160,67,0.3);  background:rgba(46,160,67,0.08); }
+  .co-chevron { color:var(--text-muted); font-size:11px; transition:transform 0.2s; flex-shrink:0; }
+  .co-chevron.open { transform:rotate(90deg); }
+  .co-body { display:none; border-top:1px solid var(--border); }
+  .co-body.open { display:block; }
+
+  .profile-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; padding:18px; }
+  .section-divider { font-family:var(--mono); font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .section-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+  .pf { margin-bottom:10px; }
+  .pf-label { font-family:var(--mono); font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px; }
+  .pf-value { font-size:13px; color:var(--text-primary); line-height:1.5; }
+  .pf-value.empty { color:var(--text-muted); font-style:italic; }
+
+  .doc-row { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; }
+  .doc-icon { font-size:22px; flex-shrink:0; }
+  .doc-info { flex:1; min-width:0; }
+  .doc-name { font-family:var(--mono); font-size:12px; color:var(--accent-teal); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .doc-meta { font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .doc-empty { color:var(--text-muted); font-style:italic; font-size:12px; background:var(--bg); border:1px dashed var(--border); border-radius:6px; padding:10px 14px; margin-bottom:8px; }
+
+  .co-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:0 18px 18px; }
+  .co-stat-box { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center; }
+  .co-stat-val { font-family:var(--display); font-size:20px; font-weight:800; }
+  .co-stat-lbl { font-size:10px; color:var(--text-muted); font-family:var(--mono); text-transform:uppercase; margin-top:2px; }
+
+  .profiles-toolbar { display:flex; gap:10px; margin-bottom:16px; align-items:center; flex-wrap:wrap; }
+  .profiles-search { flex:1; min-width:200px; background:var(--surface); border:1px solid var(--border); border-radius:5px; color:var(--text-primary); font-family:var(--sans); font-size:13px; padding:8px 12px; outline:none; }
+  .profiles-search:focus { border-color:var(--accent-teal); }
+  .profiles-filter { background:var(--surface); border:1px solid var(--border); border-radius:5px; color:var(--text-primary); font-family:var(--mono); font-size:11px; padding:8px 12px; outline:none; cursor:pointer; }
+  .profiles-filter option { background:var(--surface2); }
+  .ps-stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+
+  @media(max-width:900px) {
+    .stats-grid { grid-template-columns:1fr 1fr; }
+    .main { padding:16px; }
+    .settings-grid { grid-template-columns:1fr; }
+    .profile-detail-grid { grid-template-columns:1fr; }
+    .co-stats { grid-template-columns:1fr 1fr; }
+    .ps-stat-grid { grid-template-columns:1fr 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -113,12 +186,13 @@
 
   <div class="tabs">
     <button class="tab active" onclick="showPanel('companies',this)">🏢 Companies</button>
+    <button class="tab" onclick="showPanel('profiles',this)">👤 Company Profiles</button>
     <button class="tab" onclick="showPanel('logs',this)">📋 Access Log</button>
     <button class="tab" onclick="showPanel('admins',this)">👑 Admins</button>
     <button class="tab" onclick="showPanel('settings',this)">⚙️ Email Settings</button>
   </div>
 
-  <!-- COMPANIES -->
+  <!-- ===== COMPANIES ===== -->
   <div class="panel active" id="panel-companies">
     <div class="card">
       <div class="card-header">
@@ -140,7 +214,38 @@
     </div>
   </div>
 
-  <!-- LOGS -->
+  <!-- ===== COMPANY PROFILES ===== -->
+  <div class="panel" id="panel-profiles">
+
+    <!-- Summary stats -->
+    <div class="ps-stat-grid">
+      <div class="stat-card teal"><div class="stat-label">Total Companies</div><div class="stat-value" id="ps-total">—</div><div class="stat-sub">registered</div></div>
+      <div class="stat-card green"><div class="stat-label">Profiles Filled</div><div class="stat-value" id="ps-filled">—</div><div class="stat-sub">with contact info</div></div>
+      <div class="stat-card blue"><div class="stat-label">Docs Uploaded</div><div class="stat-value" id="ps-docs">—</div><div class="stat-sub">companies with files</div></div>
+      <div class="stat-card amber"><div class="stat-label">Pending Verify</div><div class="stat-value" id="ps-pending">—</div><div class="stat-sub">not verified</div></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="profiles-toolbar">
+      <input class="profiles-search" type="text" id="profiles-search" placeholder="🔍 Search by company name or email..." oninput="filterProfiles()">
+      <select class="profiles-filter" id="profiles-filter" onchange="filterProfiles()">
+        <option value="">All Companies</option>
+        <option value="docs">Has Documents</option>
+        <option value="nodocs">No Documents</option>
+        <option value="filled">Profile Filled</option>
+        <option value="verified">Verified</option>
+        <option value="pending">Pending Verification</option>
+      </select>
+      <button class="btn btn-teal btn-sm" onclick="loadAdminProfiles()">🔄 Refresh</button>
+    </div>
+
+    <!-- Company accordion list -->
+    <div id="profiles-list">
+      <div class="empty">Click the "Company Profiles" tab to load profiles.</div>
+    </div>
+  </div>
+
+  <!-- ===== LOGS ===== -->
   <div class="panel" id="panel-logs">
     <div class="card">
       <div class="card-header">
@@ -161,7 +266,7 @@
     </div>
   </div>
 
-  <!-- ADMINS -->
+  <!-- ===== ADMINS ===== -->
   <div class="panel" id="panel-admins">
     <div class="card" style="margin-bottom:20px;">
       <div class="card-header"><div class="card-title">➕ Create New Admin</div></div>
@@ -195,7 +300,7 @@
     </div>
   </div>
 
-  <!-- SETTINGS -->
+  <!-- ===== SETTINGS ===== -->
   <div class="panel" id="panel-settings">
     <div class="card">
       <div class="card-header"><div class="card-title">📧 Email / SMTP Settings</div></div>
@@ -232,7 +337,8 @@
       </div>
     </div>
   </div>
-</div>
+
+</div><!-- /.main -->
 
 <!-- EDIT MODAL -->
 <div class="modal-overlay" id="modal-edit">
@@ -284,29 +390,40 @@
 </div>
 
 <script>
-let companiesData = [], logsData = [];
+let companiesData = [], logsData = [], allProfilesData = [];
 const CO2_R = {'Bottle-to-bottle PET':1700,'Reusable shopping bag':1800,'Polyester apparel':1800,'Blanket / Comforter':430,'Carpet / Rug':430,'Geotextile':430,'Plastic crate':430,'WPC panel':250,'Road construction':250};
+const DOC_LABELS = { esg:'📊 Audited ESG Report', plastic:'♻️ Plastic Collected Report', extra:'📎 Additional Documents' };
 
+// ============================================================
+// PANEL SWITCHING
+// ============================================================
 function showPanel(name, btn) {
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
-  if (name==='settings') loadSettings();
-  if (name==='admins') loadAdmins();
+  if (name === 'settings')  loadSettings();
+  if (name === 'admins')    loadAdmins();
+  if (name === 'profiles')  loadAdminProfiles();
 }
 
-function openModal(name) { document.getElementById('modal-'+name).classList.add('open'); }
-function closeModal(name) { document.getElementById('modal-'+name).classList.remove('open'); }
+function openModal(name)  { document.getElementById('modal-' + name).classList.add('open'); }
+function closeModal(name) { document.getElementById('modal-' + name).classList.remove('open'); }
 
 function showAlert(id, type, msg) {
-  const el=document.getElementById(id);
-  el.className='alert alert-'+(type==='ok'?'ok':'err');
-  el.textContent=msg; el.style.display='block';
+  const el = document.getElementById(id);
+  el.className = 'alert alert-' + (type === 'ok' ? 'ok' : 'err');
+  el.textContent = msg;
+  el.style.display = 'block';
 }
 
-async function loadAll() { await Promise.all([loadSummary(), loadCompanies(), loadLogs()]); }
+async function loadAll() {
+  await Promise.all([loadSummary(), loadCompanies(), loadLogs()]);
+}
 
+// ============================================================
+// SUMMARY
+// ============================================================
 async function loadSummary() {
   const d = await (await fetch('/api/admin/summary')).json();
   document.getElementById('s-companies').textContent = d.total_companies;
@@ -315,6 +432,9 @@ async function loadSummary() {
   document.getElementById('s-logins').textContent = d.total_logins;
 }
 
+// ============================================================
+// COMPANIES
+// ============================================================
 async function loadCompanies() {
   companiesData = await (await fetch('/api/admin/companies')).json();
   renderCompanies(companiesData);
@@ -322,33 +442,35 @@ async function loadCompanies() {
 
 function renderCompanies(data) {
   const tbody = document.getElementById('companies-tbody');
-  if (!data.length) { tbody.innerHTML='<tr><td colspan="11" class="empty">No companies registered yet.</td></tr>'; return; }
-  tbody.innerHTML = data.map((c,i) => `
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="11" class="empty">No companies registered yet.</td></tr>'; return; }
+  tbody.innerHTML = data.map((c, i) => `
     <tr>
       <td class="mono" style="color:var(--text-muted)">${i+1}</td>
       <td><strong>${c.company_name}</strong></td>
       <td style="font-size:12px;">${c.email}</td>
-      <td><span class="badge ${c.is_verified?'badge-verified':'badge-unverified'}">${c.is_verified?'Verified':'Unverified'}</span></td>
+      <td><span class="badge ${c.is_verified ? 'badge-verified' : 'badge-unverified'}">${c.is_verified ? 'Verified' : 'Unverified'}</span></td>
       <td class="mono" style="font-size:11px;color:var(--text-muted);">${(c.created_at||'').split('.')[0]}</td>
       <td class="teal">${c.pcc_count}</td>
       <td class="green">${c.ppc_count}</td>
       <td class="teal">${parseFloat(c.total_pcc).toFixed(2)}</td>
       <td class="green">${parseFloat(c.total_ppc).toFixed(2)}</td>
-      <td style="color:#f0a500;font-family:var(--mono);">${Math.round((c.total_co2||0)).toLocaleString()}</td>
+      <td style="color:#f0a500;font-family:var(--mono);">${Math.round(c.total_co2||0).toLocaleString()}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="btn btn-teal btn-sm" onclick="openEdit(${c.id},'${c.company_name.replace(/'/g,"\\'")}','${c.email}')">✏️ Edit</button>
-          <button class="btn btn-amber btn-sm" onclick="openReset(${c.id},'${c.company_name.replace(/'/g,"\\'")}')">🔑 Reset PW</button>
-          <button class="btn btn-teal btn-sm" onclick="downloadReport(${c.id},'${c.company_name.replace(/'/g,"\\'")}','excel')">📥 Excel</button>
-          <button class="btn btn-teal btn-sm" onclick="downloadReport(${c.id},'${c.company_name.replace(/'/g,"\\'")}','pdf')">📄 PDF</button>
-          <button class="btn btn-red btn-sm" onclick="openDelete(${c.id},'${c.company_name.replace(/'/g,"\\'")}')">🗑 Delete</button>
+          <button class="btn btn-teal btn-sm" onclick="openEdit(${c.id},'${esc(c.company_name)}','${c.email}')">✏️ Edit</button>
+          <button class="btn btn-amber btn-sm" onclick="openReset(${c.id},'${esc(c.company_name)}')">🔑 Reset PW</button>
+          <button class="btn btn-teal btn-sm" onclick="downloadReport(${c.id},'${esc(c.company_name)}','excel')">📥 Excel</button>
+          <button class="btn btn-teal btn-sm" onclick="downloadReport(${c.id},'${esc(c.company_name)}','pdf')">📄 PDF</button>
+          <button class="btn btn-red btn-sm" onclick="openDelete(${c.id},'${esc(c.company_name)}')">🗑 Delete</button>
         </div>
       </td>
     </tr>`).join('');
 }
 
+function esc(s) { return (s||'').replace(/'/g, "\\'"); }
+
 function filterCompanies(q) {
-  renderCompanies(companiesData.filter(c=>
+  renderCompanies(companiesData.filter(c =>
     c.company_name.toLowerCase().includes(q.toLowerCase()) ||
     c.email.toLowerCase().includes(q.toLowerCase())
   ));
@@ -363,13 +485,16 @@ function openEdit(id, name, email) {
 }
 
 async function saveEdit() {
-  const id=document.getElementById('edit-id').value;
-  const name=document.getElementById('edit-name').value.trim();
-  const email=document.getElementById('edit-email').value.trim();
-  if (!name||!email) { showAlert('edit-alert','err','All fields required.'); return; }
-  const d = await (await fetch(`/api/admin/companies/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({company_name:name,email})})).json();
+  const id = document.getElementById('edit-id').value;
+  const name = document.getElementById('edit-name').value.trim();
+  const email = document.getElementById('edit-email').value.trim();
+  if (!name || !email) { showAlert('edit-alert','err','All fields required.'); return; }
+  const d = await (await fetch(`/api/admin/companies/${id}`, {
+    method:'PUT', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ company_name: name, email })
+  })).json();
   if (d.ok) { closeModal('edit'); loadAll(); }
-  else showAlert('edit-alert','err',d.error||'Failed to save.');
+  else showAlert('edit-alert','err', d.error || 'Failed to save.');
 }
 
 function openReset(id, name) {
@@ -381,10 +506,13 @@ function openReset(id, name) {
 }
 
 async function saveReset() {
-  const id=document.getElementById('reset-id').value;
-  const pass=document.getElementById('reset-pass').value;
-  if (pass.length<6) { showAlert('reset-alert','err','Password must be at least 6 characters.'); return; }
-  const d = await (await fetch(`/api/admin/companies/${id}/reset-password`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pass})})).json();
+  const id = document.getElementById('reset-id').value;
+  const pass = document.getElementById('reset-pass').value;
+  if (pass.length < 6) { showAlert('reset-alert','err','Password must be at least 6 characters.'); return; }
+  const d = await (await fetch(`/api/admin/companies/${id}/reset-password`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ password: pass })
+  })).json();
   if (d.ok) { closeModal('reset'); }
   else showAlert('reset-alert','err','Failed.');
 }
@@ -396,22 +524,25 @@ function openDelete(id, name) {
 }
 
 async function confirmDelete() {
-  const id=document.getElementById('delete-id').value;
-  await fetch(`/api/admin/companies/${id}`,{method:'DELETE'});
+  const id = document.getElementById('delete-id').value;
+  await fetch(`/api/admin/companies/${id}`, { method:'DELETE' });
   closeModal('delete');
   loadAll();
 }
 
+// ============================================================
+// LOGS
+// ============================================================
 async function loadLogs() {
   logsData = await (await fetch('/api/admin/logs')).json();
   renderLogs(logsData);
 }
 
 function renderLogs(data) {
-  const tbody=document.getElementById('logs-tbody');
-  if (!data.length) { tbody.innerHTML='<tr><td colspan="5" class="empty">No logs yet.</td></tr>'; return; }
-  const badgeMap={logged_in:'badge-login',logged_out:'badge-logout',registered:'badge-register',password_reset:'badge-reset'};
-  tbody.innerHTML=data.map(l=>`
+  const tbody = document.getElementById('logs-tbody');
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No logs yet.</td></tr>'; return; }
+  const badgeMap = { logged_in:'badge-login', logged_out:'badge-logout', registered:'badge-register', password_reset:'badge-reset' };
+  tbody.innerHTML = data.map(l => `
     <tr>
       <td class="mono" style="font-size:11px;color:var(--text-muted);">${(l.timestamp||'').split('.')[0]}</td>
       <td>${l.company_name||'—'}</td>
@@ -422,117 +553,314 @@ function renderLogs(data) {
 }
 
 function filterLogs(q) {
-  renderLogs(logsData.filter(l=>
-    (l.company_name||'').toLowerCase().includes(q.toLowerCase())||
-    (l.email||'').toLowerCase().includes(q.toLowerCase())||
+  renderLogs(logsData.filter(l =>
+    (l.company_name||'').toLowerCase().includes(q.toLowerCase()) ||
+    (l.email||'').toLowerCase().includes(q.toLowerCase()) ||
     (l.action||'').toLowerCase().includes(q.toLowerCase())
   ));
 }
 
 async function confirmClearLogs() {
   if (!confirm('Clear all access logs? This cannot be undone.')) return;
-  await fetch('/api/admin/logs',{method:'DELETE'});
+  await fetch('/api/admin/logs', { method:'DELETE' });
   loadLogs();
 }
 
+// ============================================================
+// ADMINS
+// ============================================================
 async function loadAdmins() {
   const admins = await (await fetch('/api/admin/admins')).json();
   const tbody = document.getElementById('admins-tbody');
-  if (!admins.length) { tbody.innerHTML='<tr><td colspan="5" class="empty">No admins yet.</td></tr>'; return; }
-  tbody.innerHTML = admins.map((a,i) => `
+  if (!admins.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No admins yet.</td></tr>'; return; }
+  tbody.innerHTML = admins.map((a, i) => `
     <tr>
       <td class="mono" style="color:var(--text-muted)">${i+1}</td>
-      <td><strong>${a.company_name}</strong> ${a.email==='gandhijidaksh@gmail.com'?'<span style="background:rgba(210,153,34,0.2);color:#d29922;border:1px solid rgba(210,153,34,0.4);font-size:10px;padding:1px 6px;border-radius:10px;font-family:var(--mono);">SUPERADMIN</span>':''}</td>
+      <td><strong>${a.company_name}</strong> ${a.email === 'gandhijidaksh@gmail.com' ? '<span style="background:rgba(210,153,34,0.2);color:#d29922;border:1px solid rgba(210,153,34,0.4);font-size:10px;padding:1px 6px;border-radius:10px;font-family:var(--mono);">SUPERADMIN</span>' : ''}</td>
       <td style="font-size:12px;">${a.email}</td>
       <td class="mono" style="font-size:11px;color:var(--text-muted);">${(a.created_at||'').split('.')[0]}</td>
-      <td>${a.email==='gandhijidaksh@gmail.com'
+      <td>${a.email === 'gandhijidaksh@gmail.com'
         ? '<span style="color:var(--text-muted);font-size:12px;">Protected</span>'
-        : '<button class="btn btn-red btn-sm" onclick="deleteAdmin('+a.id+')">🗑 Delete</button>'
+        : `<button class="btn btn-red btn-sm" onclick="deleteAdmin(${a.id})">🗑 Delete</button>`
       }</td>
     </tr>`).join('');
 }
 
 async function createAdmin() {
-  const name=document.getElementById('new-admin-name').value.trim();
-  const email=document.getElementById('new-admin-email').value.trim();
-  const password=document.getElementById('new-admin-password').value;
-  if (!name||!email||!password) { showAlert('create-admin-alert','err','All fields required.'); return; }
-  const d = await (await fetch('/api/admin/create-admin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password})})).json();
+  const name = document.getElementById('new-admin-name').value.trim();
+  const email = document.getElementById('new-admin-email').value.trim();
+  const password = document.getElementById('new-admin-password').value;
+  if (!name || !email || !password) { showAlert('create-admin-alert','err','All fields required.'); return; }
+  const d = await (await fetch('/api/admin/create-admin', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ name, email, password })
+  })).json();
   if (d.ok) {
     showAlert('create-admin-alert','ok','✓ Admin account created successfully.');
-    document.getElementById('new-admin-name').value='';
-    document.getElementById('new-admin-email').value='';
-    document.getElementById('new-admin-password').value='';
+    document.getElementById('new-admin-name').value = '';
+    document.getElementById('new-admin-email').value = '';
+    document.getElementById('new-admin-password').value = '';
     loadAdmins();
   } else {
-    showAlert('create-admin-alert','err',d.error||'Failed.');
+    showAlert('create-admin-alert','err', d.error || 'Failed.');
   }
 }
 
 async function deleteAdmin(id) {
   if (!confirm('Delete this admin account? They will lose admin access.')) return;
-  const d = await (await fetch(`/api/admin/admins/${id}`,{method:'DELETE'})).json();
+  const d = await (await fetch(`/api/admin/admins/${id}`, { method:'DELETE' })).json();
   if (d.ok) loadAdmins();
-  else alert(d.error||'Failed.');
+  else alert(d.error || 'Failed.');
 }
 
+// ============================================================
+// SETTINGS
+// ============================================================
 async function loadSettings() {
   const d = await (await fetch('/api/admin/settings')).json();
-  document.getElementById('set-email').value=d.smtp_email||'';
-  document.getElementById('set-password').value=d.smtp_password||'';
-  document.getElementById('set-host').value=d.smtp_host||'smtp.gmail.com';
-  document.getElementById('set-port').value=d.smtp_port||'587';
+  document.getElementById('set-email').value = d.smtp_email || '';
+  document.getElementById('set-password').value = d.smtp_password || '';
+  document.getElementById('set-host').value = d.smtp_host || 'smtp.gmail.com';
+  document.getElementById('set-port').value = d.smtp_port || '587';
 }
 
 async function saveSettings() {
-  const d = await (await fetch('/api/admin/settings',{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      smtp_email:document.getElementById('set-email').value.trim(),
-      smtp_password:document.getElementById('set-password').value,
-      smtp_host:document.getElementById('set-host').value.trim(),
-      smtp_port:document.getElementById('set-port').value.trim()
+  const d = await (await fetch('/api/admin/settings', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      smtp_email:    document.getElementById('set-email').value.trim(),
+      smtp_password: document.getElementById('set-password').value,
+      smtp_host:     document.getElementById('set-host').value.trim(),
+      smtp_port:     document.getElementById('set-port').value.trim()
     })
   })).json();
-  showAlert('settings-alert',d.ok?'ok':'err',d.ok?'✓ Settings saved successfully.':'Failed to save.');
+  showAlert('settings-alert', d.ok ? 'ok' : 'err', d.ok ? '✓ Settings saved successfully.' : 'Failed to save.');
 }
 
 async function testEmail() {
   showAlert('settings-alert','ok','Sending test email...');
-  const d = await (await fetch('/api/admin/test-email',{method:'POST'})).json();
-  showAlert('settings-alert',d.ok?'ok':'err',d.message);
+  const d = await (await fetch('/api/admin/test-email', { method:'POST' })).json();
+  showAlert('settings-alert', d.ok ? 'ok' : 'err', d.message);
 }
 
+// ============================================================
+// COMPANY PROFILES TAB
+// ============================================================
+async function loadAdminProfiles() {
+  document.getElementById('profiles-list').innerHTML =
+    '<div class="empty">Loading company profiles...</div>';
+  try {
+    const res = await fetch('/api/admin/profiles');
+    if (!res.ok) throw new Error('API error');
+    allProfilesData = await res.json();
+    renderProfilesSummary(allProfilesData);
+    renderAdminProfiles(allProfilesData);
+  } catch(e) {
+    document.getElementById('profiles-list').innerHTML =
+      '<div class="empty" style="color:var(--accent-red);">Failed to load profiles. Make sure the /api/admin/profiles endpoint is deployed.</div>';
+  }
+}
+
+function renderProfilesSummary(data) {
+  document.getElementById('ps-total').textContent   = data.length;
+  document.getElementById('ps-filled').textContent  = data.filter(c => c.contact_name).length;
+  document.getElementById('ps-docs').textContent    = data.filter(c => (c.doc_count||0) > 0).length;
+  document.getElementById('ps-pending').textContent = data.filter(c => !c.is_verified).length;
+}
+
+function filterProfiles() {
+  const q      = document.getElementById('profiles-search').value.toLowerCase();
+  const filter = document.getElementById('profiles-filter').value;
+  const filtered = allProfilesData.filter(c => {
+    const matchText = !q || c.company_name.toLowerCase().includes(q) || (c.email||'').toLowerCase().includes(q);
+    const matchFilter =
+      filter === ''         ? true :
+      filter === 'docs'     ? (c.doc_count||0) > 0 :
+      filter === 'nodocs'   ? (c.doc_count||0) === 0 :
+      filter === 'filled'   ? !!c.contact_name :
+      filter === 'verified' ? !!c.is_verified :
+      filter === 'pending'  ? !c.is_verified : true;
+    return matchText && matchFilter;
+  });
+  renderAdminProfiles(filtered);
+}
+
+function renderAdminProfiles(data) {
+  const container = document.getElementById('profiles-list');
+  if (!data.length) {
+    container.innerHTML = '<div class="empty">No companies match the filter.</div>';
+    return;
+  }
+  container.innerHTML = data.map(c => {
+    const docBadge = (c.doc_count||0) > 0
+      ? `<span class="co-badge hasdocs">📂 ${c.doc_count} doc${c.doc_count>1?'s':''}</span>`
+      : `<span class="co-badge nodocs">No docs</span>`;
+    const verifiedBadge = c.is_verified
+      ? '<span class="co-badge verified">✓ Verified</span>'
+      : '<span class="co-badge pending">⏳ Pending</span>';
+    const profileBadge = c.contact_name
+      ? '<span class="co-badge filled">Profile filled</span>'
+      : '<span class="co-badge nodocs">No profile</span>';
+    return `
+    <div class="co-card" id="co-card-${c.id}">
+      <div class="co-card-header" onclick="toggleProfile(${c.id})">
+        <div style="min-width:0;">
+          <div class="co-name">${c.company_name}</div>
+          <div class="co-email">${c.email}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+          <div class="co-badges">${verifiedBadge}${profileBadge}${docBadge}</div>
+          <span class="co-chevron" id="co-chev-${c.id}">▶</span>
+        </div>
+      </div>
+      <div class="co-body" id="co-body-${c.id}">
+        <div id="co-detail-${c.id}">
+          <div class="empty">Loading...</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function toggleProfile(id) {
+  const body  = document.getElementById(`co-body-${id}`);
+  const chev  = document.getElementById(`co-chev-${id}`);
+  const isOpen = body.classList.contains('open');
+
+  // Close all
+  document.querySelectorAll('.co-body.open').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.co-chevron.open').forEach(el => el.classList.remove('open'));
+
+  if (!isOpen) {
+    body.classList.add('open');
+    chev.classList.add('open');
+    await loadProfileDetail(id);
+  }
+}
+
+async function loadProfileDetail(companyId) {
+  const detail = document.getElementById(`co-detail-${companyId}`);
+  detail.innerHTML = '<div class="empty">Loading...</div>';
+  try {
+    const res  = await fetch(`/api/admin/profile/${companyId}`);
+    const data = await res.json();
+    const p  = data.profile   || {};
+    const docs = data.documents || [];
+    const co   = data.company  || {};
+
+    const docMap = {};
+    docs.forEach(d => { docMap[d.doc_type] = d; });
+
+    const docRows = ['esg','plastic','extra'].map(type => {
+      const d = docMap[type];
+      if (d) {
+        const dt = d.uploaded_at
+          ? new Date(d.uploaded_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})
+          : '—';
+        return `<div class="doc-row">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info">
+            <div class="doc-name" title="${d.filename}">${d.filename}</div>
+            <div class="doc-meta">${DOC_LABELS[type]} · ${d.file_size_kb} KB · Uploaded ${dt}</div>
+          </div>
+          <a href="/api/admin/document/${companyId}/${type}/download"
+             class="btn btn-green btn-sm" style="text-decoration:none;flex-shrink:0;">⬇ Download</a>
+        </div>`;
+      }
+      return `<div class="doc-empty">${DOC_LABELS[type]} — <em>not uploaded yet</em></div>`;
+    }).join('');
+
+    // Get credit stats from allProfilesData (already loaded)
+    const cs = allProfilesData.find(c => c.id === companyId) || {};
+
+    const fv = (val, cls='') => val
+      ? `<div class="pf-value ${cls}">${val}</div>`
+      : `<div class="pf-value empty">Not provided</div>`;
+
+    detail.innerHTML = `
+      <div class="profile-detail-grid">
+        <!-- LEFT: Contact -->
+        <div>
+          <div class="section-divider">Contact Details</div>
+          <div class="pf"><div class="pf-label">Registered Email</div><div class="pf-value">${co.email||'—'}</div></div>
+          <div class="pf"><div class="pf-label">Concern Person</div>${fv(p.contact_name)}</div>
+          <div class="pf"><div class="pf-label">Mobile</div>${fv(p.mobile)}</div>
+          <div class="pf"><div class="pf-label">Address</div>${fv(p.address)}</div>
+          <div class="pf"><div class="pf-label">GSTIN</div>${p.gstin ? `<div class="pf-value" style="font-family:var(--mono);">${p.gstin}</div>` : '<div class="pf-value empty">Not provided</div>'}</div>
+          <div class="pf"><div class="pf-label">Registered On</div><div class="pf-value">${co.created_at ? new Date(co.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—'}</div></div>
+          <div class="pf"><div class="pf-label">Status</div><div class="pf-value">${co.is_verified ? '<span style="color:var(--accent-green);">✓ Verified</span>' : '<span style="color:var(--accent-amber);">⏳ Pending Verification</span>'}</div></div>
+          ${p.updated_at ? `<div class="pf"><div class="pf-label">Profile Last Updated</div><div class="pf-value" style="font-size:12px;">${new Date(p.updated_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</div></div>` : ''}
+        </div>
+        <!-- RIGHT: Documents -->
+        <div>
+          <div class="section-divider">Compliance Documents</div>
+          ${docRows}
+        </div>
+      </div>
+      <!-- Activity Stats -->
+      <div style="padding:0 18px;">
+        <div class="section-divider" style="margin-bottom:12px;">Activity Summary</div>
+      </div>
+      <div class="co-stats">
+        <div class="co-stat-box">
+          <div class="co-stat-val" style="color:var(--accent-teal);">${parseFloat(cs.total_pcc||0).toFixed(2)}</div>
+          <div class="co-stat-lbl">PCC Credits</div>
+        </div>
+        <div class="co-stat-box">
+          <div class="co-stat-val" style="color:var(--accent-green);">${parseFloat(cs.total_ppc||0).toFixed(2)}</div>
+          <div class="co-stat-lbl">PPC Credits</div>
+        </div>
+        <div class="co-stat-box">
+          <div class="co-stat-val" style="color:var(--accent-blue);">${parseInt(cs.pcc_count||0) + parseInt(cs.ppc_count||0)}</div>
+          <div class="co-stat-lbl">Total Entries</div>
+        </div>
+        <div class="co-stat-box">
+          <div class="co-stat-val" style="color:var(--accent-amber);">${Math.round(cs.total_co2||0).toLocaleString()}</div>
+          <div class="co-stat-lbl">CO₂ Saved (kg)</div>
+        </div>
+      </div>
+      <div style="padding:12px 18px 18px;display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-teal btn-sm" onclick="downloadReport(${companyId},'${esc(co.company_name||'')}','excel')">📥 Excel Report</button>
+        <button class="btn btn-teal btn-sm" onclick="downloadReport(${companyId},'${esc(co.company_name||'')}','pdf')">📄 PDF Report</button>
+      </div>`;
+  } catch(e) {
+    detail.innerHTML = `<div class="empty" style="color:var(--accent-red);">Failed to load details for this company.</div>`;
+  }
+}
+
+// ============================================================
+// REPORTS (Excel / PDF) — unchanged from original
+// ============================================================
 async function downloadReport(id, name, format) {
   const res = await fetch(`/api/admin/report/${id}/json`);
   const data = await res.json();
-  if (format==='excel') generateExcel(data,name);
-  else generatePDF(data,name);
+  if (format === 'excel') generateExcel(data, name);
+  else generatePDF(data, name);
 }
 
 function generateExcel(data, name) {
-  const MONTHS=data.months;
-  let csv=`PET Plastic Credit Report — ${data.company.company_name}\nEmail: ${data.company.email}\nGenerated: ${new Date().toLocaleDateString('en-IN')}\n\n`;
-  csv+=`PET COLLECTION CREDITS (PCC)\nMonth,Date,Category,Weight (t),ESG Score,ESG Weightage,Location F,Eco E,PCC\n`;
-  data.pcc.forEach(r=>{csv+=`${MONTHS[r.month_idx]},${r.date_str},${r.category},${r.weight},${r.esg},${r.esg_g},${r.loc_f},${r.eco_e},${r.pcc.toFixed(4)}\n`;});
-  const totalPCC=data.pcc.reduce((s,r)=>s+r.pcc,0);
-  csv+=`\nPCC Monthly Summary\nMonth,Total Weight (t),Total PCC\n`;
-  MONTHS.forEach((m,i)=>{const rows=data.pcc.filter(r=>r.month_idx===i);if(rows.length){csv+=`${m},${rows.reduce((s,r)=>s+r.weight,0).toFixed(2)},${rows.reduce((s,r)=>s+r.pcc,0).toFixed(4)}\n`;}});
-  csv+=`TOTAL,,${totalPCC.toFixed(4)}\n`;
-  csv+=`\nPET PROCESSING CREDITS (PPC)\nMonth,Date,Product,Weight (t),ESG Score,ESG Weightage,Service Life,Exposure P,W,PPC\n`;
-  data.ppc.forEach(r=>{csv+=`${MONTHS[r.month_idx]},${r.date_str},${r.product},${r.weight},${r.esg},${r.esg_g},${r.service_life},${r.exposure_p},${r.proc_w.toFixed(4)},${r.ppc.toFixed(4)}\n`;});
-  const totalPPC=data.ppc.reduce((s,r)=>s+r.ppc,0);
-  csv+=`\nPPC Monthly Summary\nMonth,Total Weight (t),Total PPC\n`;
-  MONTHS.forEach((m,i)=>{const rows=data.ppc.filter(r=>r.month_idx===i);if(rows.length){csv+=`${m},${rows.reduce((s,r)=>s+r.weight,0).toFixed(2)},${rows.reduce((s,r)=>s+r.ppc,0).toFixed(4)}\n`;}});
-  csv+=`TOTAL,,${totalPPC.toFixed(4)}\n`;
-  csv+=`\nCO2 SAVINGS\nType,Month,Date,Category / Product,Weight (t),CO2 Rate (kg/t),CO2 Saved (kg)\n`;
-  let tCO2=0;
-  data.pcc.forEach(r=>{const co2=r.weight*430;tCO2+=co2;csv+=`PCC,${MONTHS[r.month_idx]},${r.date_str},${r.category},${r.weight},430,${Math.round(co2)}\n`;});
-  data.ppc.forEach(r=>{const rate=CO2_R[r.product]||430;const co2=r.weight*rate;tCO2+=co2;csv+=`PPC,${MONTHS[r.month_idx]},${r.date_str},${r.product},${r.weight},${rate},${Math.round(co2)}\n`;});
-  csv+=`TOTAL CO2 SAVED (kg),,,,,, ${Math.round(tCO2)}\n\nCOMBINED SUMMARY\nTotal PCC,${totalPCC.toFixed(4)}\nTotal PPC,${totalPPC.toFixed(4)}\nCombined Credits,${(totalPCC+totalPPC).toFixed(4)}\nTotal CO2 Saved (kg),${Math.round(tCO2)}\n`;
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=`${name.replace(/\s+/g,'_')}_PET_Credit_Report.csv`;a.click();URL.revokeObjectURL(url);
+  const MONTHS = data.months;
+  let csv = `PET Plastic Credit Report — ${data.company.company_name}\nEmail: ${data.company.email}\nGenerated: ${new Date().toLocaleDateString('en-IN')}\n\n`;
+  csv += `PET COLLECTION CREDITS (PCC)\nMonth,Date,Category,Weight (t),ESG Score,ESG Weightage,Location F,Eco E,PCC\n`;
+  data.pcc.forEach(r => { csv += `${MONTHS[r.month_idx]},${r.date_str},${r.category},${r.weight},${r.esg},${r.esg_g},${r.loc_f},${r.eco_e},${r.pcc.toFixed(4)}\n`; });
+  const totalPCC = data.pcc.reduce((s,r) => s+r.pcc, 0);
+  csv += `\nPCC Monthly Summary\nMonth,Total Weight (t),Total PCC\n`;
+  MONTHS.forEach((m,i) => { const rows=data.pcc.filter(r=>r.month_idx===i); if(rows.length){csv+=`${m},${rows.reduce((s,r)=>s+r.weight,0).toFixed(2)},${rows.reduce((s,r)=>s+r.pcc,0).toFixed(4)}\n`;} });
+  csv += `TOTAL,,${totalPCC.toFixed(4)}\n`;
+  csv += `\nPET PROCESSING CREDITS (PPC)\nMonth,Date,Product,Weight (t),ESG Score,ESG Weightage,Service Life,Exposure P,W,PPC\n`;
+  data.ppc.forEach(r => { csv += `${MONTHS[r.month_idx]},${r.date_str},${r.product},${r.weight},${r.esg},${r.esg_g},${r.service_life},${r.exposure_p},${r.proc_w.toFixed(4)},${r.ppc.toFixed(4)}\n`; });
+  const totalPPC = data.ppc.reduce((s,r) => s+r.ppc, 0);
+  csv += `\nPPC Monthly Summary\nMonth,Total Weight (t),Total PPC\n`;
+  MONTHS.forEach((m,i) => { const rows=data.ppc.filter(r=>r.month_idx===i); if(rows.length){csv+=`${m},${rows.reduce((s,r)=>s+r.weight,0).toFixed(2)},${rows.reduce((s,r)=>s+r.ppc,0).toFixed(4)}\n`;} });
+  csv += `TOTAL,,${totalPPC.toFixed(4)}\n`;
+  csv += `\nCO2 SAVINGS\nType,Month,Date,Category / Product,Weight (t),CO2 Rate (kg/t),CO2 Saved (kg)\n`;
+  let tCO2 = 0;
+  data.pcc.forEach(r => { const co2=r.weight*430; tCO2+=co2; csv+=`PCC,${MONTHS[r.month_idx]},${r.date_str},${r.category},${r.weight},430,${Math.round(co2)}\n`; });
+  data.ppc.forEach(r => { const rate=CO2_R[r.product]||430; const co2=r.weight*rate; tCO2+=co2; csv+=`PPC,${MONTHS[r.month_idx]},${r.date_str},${r.product},${r.weight},${rate},${Math.round(co2)}\n`; });
+  csv += `TOTAL CO2 SAVED (kg),,,,,, ${Math.round(tCO2)}\n\nCOMBINED SUMMARY\nTotal PCC,${totalPCC.toFixed(4)}\nTotal PPC,${totalPPC.toFixed(4)}\nCombined Credits,${(totalPCC+totalPPC).toFixed(4)}\nTotal CO2 Saved (kg),${Math.round(tCO2)}\n`;
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=`${name.replace(/\s+/g,'_')}_PET_Credit_Report.csv`; a.click(); URL.revokeObjectURL(url);
 }
 
 function generatePDF(data, name) {
@@ -548,7 +876,6 @@ function generatePDF(data, name) {
     ...data.pcc.map(r=>{const co2=r.weight*430;tCO2+=co2;return`<tr><td>PCC</td><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.category}</td><td>${r.weight}</td><td>430</td><td>${r.weight}×430</td><td><strong>${Math.round(co2).toLocaleString()}</strong></td></tr>`;}),
     ...data.ppc.map(r=>{const rate=CO2_R[r.product]||430;const co2=r.weight*rate;tCO2+=co2;return`<tr><td>PPC</td><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.product}</td><td>${r.weight}</td><td>${rate}</td><td>${r.weight}×${rate}</td><td><strong>${Math.round(co2).toLocaleString()}</strong></td></tr>`;})
   ];
-
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>PET Credit Report — ${data.company.company_name}</title>
   <style>body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;padding:32px;}h1{font-size:20px;color:#1a9e8f;margin-bottom:4px;}h2{font-size:15px;color:#333;margin:24px 0 8px;border-bottom:2px solid #1a9e8f;padding-bottom:4px;}h3{font-size:13px;color:#555;margin:16px 0 6px;}.meta{color:#666;font-size:12px;margin-bottom:24px;}.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}.summary-box{background:#f0faf9;border:1px solid #1a9e8f;border-radius:6px;padding:12px;text-align:center;}.summary-val{font-size:20px;font-weight:bold;color:#1a9e8f;}.summary-lbl{font-size:11px;color:#666;margin-top:2px;}table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:12px;}th{background:#1a9e8f;color:white;padding:7px 10px;text-align:left;}td{padding:6px 10px;border-bottom:1px solid #e0e0e0;}tr:nth-child(even) td{background:#f9f9f9;}.total-row td{background:#e6f7f5!important;font-weight:700;}.footer{margin-top:32px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px;}@media print{body{padding:16px;}}</style>
   </head><body>
@@ -560,8 +887,7 @@ function generatePDF(data, name) {
     <div class="summary-box"><div class="summary-val">${(totalPCC+totalPPC).toFixed(2)}</div><div class="summary-lbl">Combined Credits</div></div>
     <div class="summary-box"><div class="summary-val">${Math.round(tCO2||0).toLocaleString()}</div><div class="summary-lbl">CO₂ Saved (kg)</div></div>
   </div>
-  <h2>Collection Credits (PCC)</h2>
-  <h3>Monthly Summary</h3>
+  <h2>Collection Credits (PCC)</h2><h3>Monthly Summary</h3>
   <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PCC Credits</th></tr>
   ${pccMonthly.map(r=>`<tr><td>${r.month}</td><td>${r.count}</td><td>${r.weight.toFixed(2)}</td><td><strong>${r.credits.toFixed(4)}</strong></td></tr>`).join('')}
   <tr class="total-row"><td colspan="3">Total</td><td>${totalPCC.toFixed(4)}</td></tr></table>
@@ -570,8 +896,7 @@ function generatePDF(data, name) {
   <h3>All PCC Entries</h3>
   <table><tr><th>Month</th><th>Date</th><th>Category</th><th>Weight (t)</th><th>ESG</th><th>ESG Wt.</th><th>F</th><th>E</th><th>PCC</th></tr>
   ${data.pcc.map(r=>`<tr><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.category}</td><td>${r.weight}</td><td>${r.esg}</td><td>${r.esg_g}</td><td>${r.loc_f}</td><td>${r.eco_e}</td><td><strong>${r.pcc.toFixed(4)}</strong></td></tr>`).join('')}</table>
-  <h2>Processing Credits (PPC)</h2>
-  <h3>Monthly Summary</h3>
+  <h2>Processing Credits (PPC)</h2><h3>Monthly Summary</h3>
   <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PPC Credits</th></tr>
   ${ppcMonthly.map(r=>`<tr><td>${r.month}</td><td>${r.count}</td><td>${r.weight.toFixed(2)}</td><td><strong>${r.credits.toFixed(4)}</strong></td></tr>`).join('')}
   <tr class="total-row"><td colspan="3">Total</td><td>${totalPPC.toFixed(4)}</td></tr></table>
@@ -586,15 +911,17 @@ function generatePDF(data, name) {
   <tr class="total-row"><td colspan="7">Total CO₂ Saved</td><td>${Math.round(tCO2).toLocaleString()} kg</td></tr></table>
   <div class="footer">Indian PET Plastic Credit Framework · IIT Delhi · Prof Sovik Das · Prof A K Nema · Prof Sudip K. Pattanayek · Dr Anil Dhanda · Developed by Daksh Gandhi</div>
   </body></html>`;
-
-  const win=window.open('','_blank');
+  const win = window.open('','_blank');
   win.document.write(html);
   win.document.close();
 }
 
+// ============================================================
+// LOGOUT
+// ============================================================
 async function doLogout() {
-  await fetch('/api/logout',{method:'POST'});
-  window.location.href='/login';
+  await fetch('/api/logout', { method:'POST' });
+  window.location.href = '/login';
 }
 
 loadAll();

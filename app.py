@@ -3,15 +3,16 @@ Indian PET Plastic Credit Framework
 Flask Backend — app.py (Supabase/PostgreSQL version)
 """
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
-import os, random, string
+import os, random, string, io
 from datetime import datetime, timedelta
 from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import psycopg2
+import psycopg2.extras
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -45,6 +46,7 @@ def fetchall(cursor):
 def init_db():
     conn = get_db()
     c = conn.cursor()
+    # Superadmin seed
     c.execute("SELECT id FROM companies WHERE email='gandhijidaksh@gmail.com'")
     existing = fetchone(c)
     if not existing:
@@ -54,6 +56,33 @@ def init_db():
                    generate_password_hash('admin123')))
     else:
         c.execute("UPDATE companies SET is_admin=1 WHERE email='gandhijidaksh@gmail.com'")
+
+    # Create company_profiles table
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS company_profiles (
+            company_id   INTEGER PRIMARY KEY,
+            contact_name TEXT DEFAULT '',
+            mobile       TEXT DEFAULT '',
+            address      TEXT DEFAULT '',
+            gstin        TEXT DEFAULT '',
+            updated_at   TIMESTAMP DEFAULT NOW()
+        )
+    """)
+
+    # Create company_documents table
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS company_documents (
+            id           SERIAL PRIMARY KEY,
+            company_id   INTEGER NOT NULL,
+            doc_type     TEXT NOT NULL,
+            filename     TEXT NOT NULL,
+            file_size_kb INTEGER DEFAULT 0,
+            file_data    BYTEA,
+            uploaded_at  TIMESTAMP DEFAULT NOW(),
+            UNIQUE(company_id, doc_type)
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -78,7 +107,7 @@ def send_email(to_email, subject, html_body):
         msg['Subject'] = subject
         from email.utils import formataddr
         msg['From'] = formataddr(('IIT Delhi PET Credit Portal', smtp_email))
-        msg['To']      = to_email
+        msg['To']   = to_email
         msg.attach(MIMEText(html_body, 'html'))
         with smtplib.SMTP(smtp_host, smtp_port) as server:
             server.starttls()
@@ -146,6 +175,9 @@ def log_action(company_id, company_name, email, action):
     except Exception as e:
         print(f'[LOG ERROR] {e}')
 
+# ============================================================
+# PAGE ROUTES
+# ============================================================
 @app.route('/')
 def index():
     if 'company_id' in session:
@@ -174,6 +206,9 @@ def dashboard():
 def admin_dashboard():
     return render_template('admin.html')
 
+# ============================================================
+# AUTH ROUTES
+# ============================================================
 @app.route('/api/register', methods=['POST'])
 def register():
     data         = request.get_json()
@@ -245,7 +280,7 @@ def login():
         session['is_admin']     = True
         log_action(company['id'], company['company_name'], email, 'logged_in')
         return jsonify({'ok': True, 'redirect': url_for('admin_dashboard')})
-    otp = create_otp(email, 'login')
+    otp  = create_otp(email, 'login')
     sent = send_email(email, 'Your PET Credit Portal login OTP',
         f'''<div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px;background:#0d1117;color:#e6edf3;border-radius:12px;">
         <h2 style="color:#1a9e8f;">♻️ PET Plastic Credit Portal</h2>
@@ -327,6 +362,9 @@ def logout():
     session.clear()
     return jsonify({'ok': True, 'redirect': url_for('login_page')})
 
+# ============================================================
+# PCC ENTRIES
+# ============================================================
 @app.route('/api/pcc', methods=['GET'])
 @login_required
 def get_pcc():
@@ -382,6 +420,9 @@ def delete_pcc(entry_id):
     conn.close()
     return jsonify({'ok': True})
 
+# ============================================================
+# PPC ENTRIES
+# ============================================================
 @app.route('/api/ppc', methods=['GET'])
 @login_required
 def get_ppc():
@@ -440,6 +481,126 @@ def delete_ppc(entry_id):
     conn.close()
     return jsonify({'ok': True})
 
+# ============================================================
+# COMPANY PROFILE (company-side)
+# ============================================================
+@app.route('/api/profile', methods=['GET'])
+@login_required
+def get_profile():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('SELECT * FROM company_profiles WHERE company_id=%s', (session['company_id'],))
+    row = fetchone(c)
+    conn.close()
+    if not row:
+        return jsonify({'contact_name':'','mobile':'','address':'','gstin':''})
+    return jsonify(row)
+
+@app.route('/api/profile', methods=['POST'])
+@login_required
+def save_profile():
+    d = request.get_json()
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        INSERT INTO company_profiles (company_id, contact_name, mobile, address, gstin, updated_at)
+        VALUES (%s,%s,%s,%s,%s,NOW())
+        ON CONFLICT (company_id) DO UPDATE SET
+            contact_name = EXCLUDED.contact_name,
+            mobile       = EXCLUDED.mobile,
+            address      = EXCLUDED.address,
+            gstin        = EXCLUDED.gstin,
+            updated_at   = NOW()
+    """, (session['company_id'], d.get('contact',''), d.get('mobile',''),
+          d.get('address',''), d.get('gstin','')))
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True})
+
+# ============================================================
+# COMPANY DOCUMENTS (company-side)
+# ============================================================
+@app.route('/api/document/<doc_type>', methods=['GET'])
+@login_required
+def get_document_meta(doc_type):
+    if doc_type not in ('esg', 'plastic', 'extra'):
+        return jsonify({'exists': False}), 400
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""SELECT doc_type, filename, file_size_kb, uploaded_at
+                 FROM company_documents WHERE company_id=%s AND doc_type=%s""",
+              (session['company_id'], doc_type))
+    row = fetchone(c)
+    conn.close()
+    if not row:
+        return jsonify({'exists': False})
+    if row.get('uploaded_at'):
+        row['uploaded_at'] = str(row['uploaded_at'])
+    row['exists'] = True
+    return jsonify(row)
+
+@app.route('/api/document/<doc_type>', methods=['POST'])
+@login_required
+def upload_document(doc_type):
+    if doc_type not in ('esg', 'plastic', 'extra'):
+        return jsonify({'ok': False, 'error': 'Invalid document type'}), 400
+    if 'file' not in request.files:
+        return jsonify({'ok': False, 'error': 'No file provided'}), 400
+    f = request.files['file']
+    if not f.filename:
+        return jsonify({'ok': False, 'error': 'Empty filename'}), 400
+    file_bytes = f.read()
+    if len(file_bytes) > 10 * 1024 * 1024:
+        return jsonify({'ok': False, 'error': 'File exceeds 10 MB limit'}), 400
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        INSERT INTO company_documents (company_id, doc_type, filename, file_size_kb, file_data, uploaded_at)
+        VALUES (%s,%s,%s,%s,%s,NOW())
+        ON CONFLICT (company_id, doc_type) DO UPDATE SET
+            filename     = EXCLUDED.filename,
+            file_size_kb = EXCLUDED.file_size_kb,
+            file_data    = EXCLUDED.file_data,
+            uploaded_at  = NOW()
+    """, (session['company_id'], doc_type, f.filename,
+          len(file_bytes) // 1024, psycopg2.Binary(file_bytes)))
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True, 'filename': f.filename, 'size_kb': len(file_bytes) // 1024})
+
+@app.route('/api/document/<doc_type>/download', methods=['GET'])
+@login_required
+def download_own_document(doc_type):
+    """Company downloads their own document."""
+    if doc_type not in ('esg', 'plastic', 'extra'):
+        return jsonify({'error': 'Invalid doc type'}), 400
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT filename, file_data FROM company_documents WHERE company_id=%s AND doc_type=%s",
+              (session['company_id'], doc_type))
+    row = fetchone(c)
+    conn.close()
+    if not row or not row['file_data']:
+        return jsonify({'error': 'Not found'}), 404
+    return send_file(io.BytesIO(bytes(row['file_data'])),
+                     download_name=row['filename'], as_attachment=True)
+
+@app.route('/api/document/<doc_type>', methods=['DELETE'])
+@login_required
+def delete_document(doc_type):
+    if doc_type not in ('esg', 'plastic', 'extra'):
+        return jsonify({'ok': False}), 400
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("DELETE FROM company_documents WHERE company_id=%s AND doc_type=%s",
+              (session['company_id'], doc_type))
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True})
+
+# ============================================================
+# ADMIN — COMPANIES
+# ============================================================
 @app.route('/api/admin/companies', methods=['GET'])
 @admin_required
 def admin_companies():
@@ -492,6 +653,8 @@ def admin_delete_company(company_id):
     c = conn.cursor()
     c.execute('DELETE FROM pcc_entries WHERE company_id=%s', (company_id,))
     c.execute('DELETE FROM ppc_entries WHERE company_id=%s', (company_id,))
+    c.execute('DELETE FROM company_documents WHERE company_id=%s', (company_id,))
+    c.execute('DELETE FROM company_profiles WHERE company_id=%s', (company_id,))
     c.execute('DELETE FROM companies WHERE id=%s', (company_id,))
     conn.commit()
     conn.close()
@@ -513,6 +676,9 @@ def admin_reset_password(company_id):
     conn.close()
     return jsonify({'ok': True})
 
+# ============================================================
+# ADMIN — LOGS
+# ============================================================
 @app.route('/api/admin/logs', methods=['GET'])
 @admin_required
 def admin_logs():
@@ -536,6 +702,9 @@ def admin_clear_logs():
     conn.close()
     return jsonify({'ok': True})
 
+# ============================================================
+# ADMIN — SUMMARY
+# ============================================================
 @app.route('/api/admin/summary', methods=['GET'])
 @admin_required
 def admin_summary():
@@ -552,11 +721,14 @@ def admin_summary():
     conn.close()
     return jsonify({
         'total_companies': total_companies,
-        'total_pcc': round(float(total_pcc), 4),
-        'total_ppc': round(float(total_ppc), 4),
-        'total_logins': total_logins
+        'total_pcc':       round(float(total_pcc), 4),
+        'total_ppc':       round(float(total_ppc), 4),
+        'total_logins':    total_logins
     })
 
+# ============================================================
+# ADMIN — REPORT
+# ============================================================
 @app.route('/api/admin/report/<int:company_id>/json', methods=['GET'])
 @admin_required
 def admin_company_report(company_id):
@@ -577,14 +749,100 @@ def admin_company_report(company_id):
     CO2_RATES = {'Bottle-to-bottle PET':1700,'Reusable shopping bag':1800,
                  'Polyester apparel':1800,'Blanket / Comforter':430,'Carpet / Rug':430,
                  'Geotextile':430,'Plastic crate':430,'WPC panel':250,'Road construction':250}
-    total_co2 = sum(r['weight']*430 for r in pcc_list)
-    total_co2 += sum(r['weight']*CO2_RATES.get(r['product'],430) for r in ppc_list)
+    total_co2  = sum(r['weight'] * 430 for r in pcc_list)
+    total_co2 += sum(r['weight'] * CO2_RATES.get(r['product'], 430) for r in ppc_list)
     company = dict(company)
     if company.get('created_at'):
         company['created_at'] = str(company['created_at'])
     return jsonify({'company': company, 'pcc': pcc_list, 'ppc': ppc_list,
                     'months': MONTHS, 'total_co2': round(total_co2, 2)})
 
+# ============================================================
+# ADMIN — COMPANY PROFILES (read-only view)
+# ============================================================
+@app.route('/api/admin/profiles', methods=['GET'])
+@admin_required
+def admin_all_profiles():
+    """List all companies with profile completion + doc count for the profiles tab."""
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        SELECT c.id, c.company_name, c.email, c.created_at, c.is_verified,
+               p.contact_name, p.mobile, p.address, p.gstin,
+               p.updated_at as profile_updated,
+               (SELECT COUNT(*) FROM company_documents d WHERE d.company_id=c.id) as doc_count,
+               (SELECT COALESCE(SUM(pe.pcc),0) FROM pcc_entries pe WHERE pe.company_id=c.id) as total_pcc,
+               (SELECT COALESCE(SUM(pp.ppc),0) FROM ppc_entries pp WHERE pp.company_id=c.id) as total_ppc,
+               (SELECT COUNT(*) FROM pcc_entries WHERE company_id=c.id) as pcc_count,
+               (SELECT COUNT(*) FROM ppc_entries WHERE company_id=c.id) as ppc_count,
+               (SELECT COALESCE(SUM(weight),0)*430 FROM pcc_entries WHERE company_id=c.id) +
+               (SELECT COALESCE(SUM(weight * CASE product
+                 WHEN 'Bottle-to-bottle PET' THEN 1700 WHEN 'Reusable shopping bag' THEN 1800
+                 WHEN 'Polyester apparel' THEN 1800    WHEN 'Blanket / Comforter' THEN 430
+                 WHEN 'Carpet / Rug' THEN 430          WHEN 'Geotextile' THEN 430
+                 WHEN 'Plastic crate' THEN 430         WHEN 'WPC panel' THEN 250
+                 WHEN 'Road construction' THEN 250     ELSE 430 END),0)
+               FROM ppc_entries WHERE company_id=c.id) as total_co2
+        FROM companies c
+        LEFT JOIN company_profiles p ON p.company_id = c.id
+        WHERE c.is_admin = 0
+        ORDER BY c.company_name
+    """)
+    rows = fetchall(c)
+    conn.close()
+    for r in rows:
+        if r.get('created_at'):    r['created_at']    = str(r['created_at'])
+        if r.get('profile_updated'): r['profile_updated'] = str(r['profile_updated'])
+        r['doc_count'] = int(r.get('doc_count') or 0)
+    return jsonify(rows)
+
+@app.route('/api/admin/profile/<int:company_id>', methods=['GET'])
+@admin_required
+def admin_get_company_profile(company_id):
+    """Full profile + documents for one company (accordion detail view)."""
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('SELECT * FROM companies WHERE id=%s', (company_id,))
+    company = fetchone(c)
+    if not company:
+        conn.close()
+        return jsonify({'error': 'Not found'}), 404
+    c.execute('SELECT * FROM company_profiles WHERE company_id=%s', (company_id,))
+    profile = fetchone(c)
+    c.execute("""SELECT doc_type, filename, file_size_kb, uploaded_at
+                 FROM company_documents WHERE company_id=%s ORDER BY doc_type""", (company_id,))
+    docs = fetchall(c)
+    conn.close()
+    for d in docs:
+        if d.get('uploaded_at'):
+            d['uploaded_at'] = str(d['uploaded_at'])
+    company = dict(company)
+    if company.get('created_at'):
+        company['created_at'] = str(company['created_at'])
+    if company.get('password'):
+        del company['password']   # never send password hash
+    return jsonify({'company': company, 'profile': profile or {}, 'documents': docs})
+
+@app.route('/api/admin/document/<int:company_id>/<doc_type>/download', methods=['GET'])
+@admin_required
+def admin_download_document(company_id, doc_type):
+    """Admin downloads any company's document."""
+    if doc_type not in ('esg', 'plastic', 'extra'):
+        return jsonify({'error': 'Invalid doc type'}), 400
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT filename, file_data FROM company_documents WHERE company_id=%s AND doc_type=%s",
+              (company_id, doc_type))
+    row = fetchone(c)
+    conn.close()
+    if not row or not row['file_data']:
+        return jsonify({'error': 'Not found'}), 404
+    return send_file(io.BytesIO(bytes(row['file_data'])),
+                     download_name=row['filename'], as_attachment=True)
+
+# ============================================================
+# ADMIN — ADMINS
+# ============================================================
 @app.route('/api/admin/create-admin', methods=['POST'])
 @admin_required
 def create_admin():
@@ -637,6 +895,9 @@ def list_admins():
             a['created_at'] = str(a['created_at'])
     return jsonify(admins)
 
+# ============================================================
+# ADMIN — SETTINGS
+# ============================================================
 @app.route('/api/admin/settings', methods=['GET'])
 @admin_required
 def admin_get_settings():
@@ -674,6 +935,9 @@ def admin_test_email():
                       '<h2>✅ Email is working correctly.</h2>')
     return jsonify({'ok': sent, 'message': 'Test email sent!' if sent else 'Failed — check SMTP settings.'})
 
+# ============================================================
+# ENTRY POINT
+# ============================================================
 if __name__ == '__main__':
     init_db()
     print("\n✅ PET Plastic Credit Portal running at http://127.0.0.1:5000")
