@@ -410,6 +410,16 @@
 
   <!-- ===== SUMMARY MODE ===== -->
   <div id="mode-summary" class="hidden">
+    <!-- Export bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+      <div style="font-family:var(--display);font-size:16px;font-weight:800;color:var(--text-primary);">📊 Annual Summary</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-secondary" style="font-size:12px;" onclick="exportDashboardPDF('full')">📄 Full Report PDF</button>
+        <button class="btn btn-secondary" style="font-size:12px;" onclick="exportDashboardPDF('pcc')">📋 PCC Report</button>
+        <button class="btn btn-secondary" style="font-size:12px;" onclick="exportDashboardPDF('ppc')">🏭 PPC Report</button>
+        <button class="btn btn-secondary" style="font-size:12px;" onclick="exportDashboardPDF('co2')">🌍 CO₂ Report</button>
+      </div>
+    </div>
     <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
       <div class="stat-card teal"><div class="stat-label">Total PCC (Annual)</div><div class="stat-value" id="sum-pcc">0.00</div><div class="stat-sub">collection credits</div></div>
       <div class="stat-card green"><div class="stat-label">Total PPC (Annual)</div><div class="stat-value" id="sum-ppc">0.00</div><div class="stat-sub">processing credits</div></div>
@@ -1321,35 +1331,47 @@ const profileState = {
   extraFile: null,   extraMeta: null
 };
 
-function renderProfile() {
+async function renderProfile() {
   // Company name from header (Flask template variable {{ company_name }})
   const companyName = document.getElementById('header-company-name').textContent || '';
   document.getElementById('profile-company').value = companyName;
 
-  // Email is pre-populated by Flask via value="{{ email }}" in the HTML.
-  // If for any reason it's empty, fall back to localStorage.
+  // Email pre-populated by Flask value="{{ email }}" — fallback to server fetch
   const emailEl = document.getElementById('profile-email');
-  if (!emailEl.value) {
+
+  // Load editable fields from server
+  try {
+    const res = await fetch('/api/profile');
+    if (res.ok) {
+      const d = await res.json();
+      document.getElementById('profile-contact').value = d.contact_name || '';
+      document.getElementById('profile-mobile').value  = d.mobile       || '';
+      document.getElementById('profile-address').value = d.address      || '';
+      document.getElementById('profile-gstin').value   = d.gstin        || '';
+    }
+  } catch(e) {
+    // Fall back to localStorage if server unavailable
     const saved = JSON.parse(localStorage.getItem('petProfileData') || '{}');
-    emailEl.value = saved.email || '';
+    document.getElementById('profile-contact').value = saved.contact || '';
+    document.getElementById('profile-mobile').value  = saved.mobile  || '';
+    document.getElementById('profile-address').value = saved.address || '';
+    document.getElementById('profile-gstin').value   = saved.gstin   || '';
   }
 
-  // Restore saved editable fields from localStorage
-  const saved = JSON.parse(localStorage.getItem('petProfileData') || '{}');
-  document.getElementById('profile-contact').value = saved.contact || '';
-  document.getElementById('profile-mobile').value  = saved.mobile  || '';
-  document.getElementById('profile-address').value = saved.address || '';
-  document.getElementById('profile-gstin').value   = saved.gstin   || '';
-
-  // Restore saved documents state
-  ['esg','plastic','extra'].forEach(type => {
-    const docData = JSON.parse(localStorage.getItem(`petDoc_${type}`) || 'null');
-    if (docData) {
-      _renderDocSaved(type, docData.name, docData.sizeKB);
-    } else {
-      _renderDocEmpty(type);
-    }
-  });
+  // Load document metadata from server
+  for (const type of ['esg','plastic','extra']) {
+    try {
+      const res = await fetch(`/api/document/${type}`);
+      if (res.ok) {
+        const d = await res.json();
+        if (d.exists) {
+          _renderDocSaved(type, d.filename, d.file_size_kb);
+        } else {
+          _renderDocEmpty(type);
+        }
+      }
+    } catch(e) { _renderDocEmpty(type); }
+  }
 
   // Update activity totals
   const totalPCC = Object.values(pccData).reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.pcc,0),0);
@@ -1381,7 +1403,9 @@ function _renderDocSaved(type, name, sizeKB) {
     <span style="font-size:18px;">📄</span>
     <div>
       <div style="font-family:var(--mono);font-size:12px;color:var(--accent-green);font-weight:600;">${name}</div>
-      <div style="font-size:11px;color:var(--text-muted);">${sizeKB} KB · Saved</div>
+      <div style="font-size:11px;color:var(--text-muted);">${sizeKB} KB · Saved on server
+        <a href="/api/document/${type}/download" style="color:var(--accent-teal);margin-left:8px;text-decoration:none;">⬇ Download</a>
+      </div>
     </div>
   </div>`;
   zone.classList.add('has-file');
@@ -1390,14 +1414,20 @@ function _renderDocSaved(type, name, sizeKB) {
   if (delBtn) delBtn.style.removeProperty('display');
 }
 
-function saveProfile() {
+async function saveProfile() {
   const data = {
-    email:   document.getElementById('profile-email').value,
     contact: document.getElementById('profile-contact').value,
     mobile:  document.getElementById('profile-mobile').value,
     address: document.getElementById('profile-address').value,
     gstin:   document.getElementById('profile-gstin').value
   };
+  // Save to server
+  await fetch('/api/profile', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  // Also cache locally as fallback
   localStorage.setItem('petProfileData', JSON.stringify(data));
   const toast = document.getElementById('profile-toast');
   toast.style.display = 'block';
@@ -1425,31 +1455,47 @@ function handleProfileUpload(type, input) {
   zone.classList.add('has-file');
   profileState[`${type}File`] = file;
   profileState[`${type}Meta`] = { name: file.name, sizeKB };
-  // Enable Save, hide Delete (not saved yet)
   document.getElementById(`${type}-save-btn`).disabled = false;
   const delBtn = document.getElementById(`${type}-delete-btn`);
   if (delBtn) delBtn.style.display = 'none';
 }
 
-function saveDoc(type) {
+async function saveDoc(type) {
+  const file = profileState[`${type}File`];
   const meta = profileState[`${type}Meta`];
-  if (!meta) return;
-  // Persist metadata to localStorage (actual file object can't be stored, but name+size confirm it)
-  localStorage.setItem(`petDoc_${type}`, JSON.stringify(meta));
-  _renderDocSaved(type, meta.name, meta.sizeKB);
-  // Show brief confirmation
+  if (!file || !meta) return;
   const btn = document.getElementById(`${type}-save-btn`);
-  const orig = btn.textContent;
-  btn.textContent = '✅ Saved!';
-  setTimeout(() => { btn.textContent = orig; }, 1500);
+  btn.disabled = true;
+  btn.textContent = '⏳ Uploading...';
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch(`/api/document/${type}`, { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.ok) {
+      _renderDocSaved(type, data.filename, data.size_kb);
+      btn.textContent = '✅ Saved!';
+      setTimeout(() => { btn.textContent = '💾 Save'; }, 2000);
+    } else {
+      alert('Upload failed: ' + (data.error || 'Unknown error'));
+      btn.disabled = false;
+      btn.textContent = '💾 Save';
+    }
+  } catch(e) {
+    alert('Upload failed. Please try again.');
+    btn.disabled = false;
+    btn.textContent = '💾 Save';
+  }
 }
 
-function deleteDoc(type) {
-  if (!confirm(`Remove the saved ${type === 'esg' ? 'ESG Report' : type === 'plastic' ? 'Plastic Report' : 'Additional Document'}?`)) return;
-  localStorage.removeItem(`petDoc_${type}`);
+async function deleteDoc(type) {
+  const label = type === 'esg' ? 'ESG Report' : type === 'plastic' ? 'Plastic Report' : 'Additional Document';
+  if (!confirm(`Remove the saved ${label} from the server?`)) return;
+  try {
+    await fetch(`/api/document/${type}`, { method: 'DELETE' });
+  } catch(e) {}
   profileState[`${type}File`] = null;
   profileState[`${type}Meta`] = null;
-  // Reset file input
   const inputEl = document.getElementById(`${type}-file-input`);
   if (inputEl) inputEl.value = '';
   _renderDocEmpty(type);
@@ -1614,6 +1660,136 @@ async function deleteFromServer(type, entryId) {
   await fetch(`/api/${type}/${entryId}`, { method: 'DELETE' });
 }
 
+
+// ============================================================
+// PDF EXPORT — Company Dashboard
+// ============================================================
+function exportDashboardPDF(section) {
+  const companyName = document.getElementById('header-company-name').textContent || 'Company';
+  const now = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+
+  const MONTHS_L = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+  const CO2_RATES = {
+    'Bottle-to-bottle PET':1700,'Reusable shopping bag':1800,'Polyester apparel':1800,
+    'Blanket / Comforter':430,'Carpet / Rug':430,'Geotextile':430,
+    'Plastic crate':430,'WPC panel':250,'Road construction':250
+  };
+
+  // Flatten all entries from string-keyed data store
+  const allPCC = Object.entries(pccData).flatMap(([k,arr]) =>
+    arr.map(e => ({...e, monthName: MONTHS_L[parseInt(k.split('_')[1])]}))
+  );
+  const allPPC = Object.entries(ppcData).flatMap(([k,arr]) =>
+    arr.map(e => ({...e, monthName: MONTHS_L[parseInt(k.split('_')[1])]}))
+  );
+
+  const totalPCC = allPCC.reduce((s,e)=>s+e.pcc,0);
+  const totalPPC = allPPC.reduce((s,e)=>s+e.ppc,0);
+
+  // Monthly summaries
+  const pccMonthly = MONTHS_L.map(m => {
+    const rows = allPCC.filter(e=>e.monthName===m);
+    return {month:m, count:rows.length, weight:rows.reduce((s,e)=>s+e.weight,0), credits:rows.reduce((s,e)=>s+e.pcc,0)};
+  }).filter(r=>r.count>0);
+  const ppcMonthly = MONTHS_L.map(m => {
+    const rows = allPPC.filter(e=>e.monthName===m);
+    return {month:m, count:rows.length, weight:rows.reduce((s,e)=>s+e.weight,0), credits:rows.reduce((s,e)=>s+e.ppc,0)};
+  }).filter(r=>r.count>0);
+
+  // CO2
+  let totalCO2 = 0;
+  const co2Rows = [
+    ...allPCC.map(e => { const co2=e.weight*430; totalCO2+=co2; return {type:'PCC',month:e.monthName,date:e.date,label:e.category,weight:e.weight,rate:430,co2}; }),
+    ...allPPC.map(e => { const rate=CO2_RATES[e.product]||430; const co2=e.weight*rate; totalCO2+=co2; return {type:'PPC',month:e.monthName,date:e.date,label:e.product,weight:e.weight,rate,co2}; })
+  ];
+
+  // Category/product breakdown
+  const catGroup = {};
+  allPCC.forEach(e => { catGroup[e.category] = (catGroup[e.category]||0)+e.pcc; });
+  const prodGroup = {};
+  allPPC.forEach(e => { prodGroup[e.product] = (prodGroup[e.product]||0)+e.ppc; });
+
+  const css = `body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;padding:32px;margin:0;}
+    h1{font-size:20px;color:#1a9e8f;margin-bottom:4px;}
+    h2{font-size:15px;color:#333;margin:24px 0 8px;border-bottom:2px solid #1a9e8f;padding-bottom:4px;}
+    h3{font-size:13px;color:#555;margin:16px 0 6px;}
+    .meta{color:#666;font-size:12px;margin-bottom:20px;}
+    .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}
+    .summary-box{background:#f0faf9;border:1px solid #1a9e8f;border-radius:6px;padding:12px;text-align:center;}
+    .summary-val{font-size:20px;font-weight:bold;color:#1a9e8f;}
+    .summary-lbl{font-size:11px;color:#666;margin-top:2px;}
+    table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:12px;}
+    th{background:#1a9e8f;color:white;padding:7px 10px;text-align:left;}
+    td{padding:6px 10px;border-bottom:1px solid #e0e0e0;}
+    tr:nth-child(even) td{background:#f9f9f9;}
+    .total-row td{background:#e6f7f5!important;font-weight:700;}
+    .footer{margin-top:32px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px;}
+    @media print{body{padding:16px;}}`;
+
+  const header = `<h1>♻️ PET Plastic Credit Report</h1>
+    <div class="meta"><strong>${companyName}</strong><br>Generated: ${now} · IIT Delhi PET Plastic Credit Framework</div>`;
+
+  const summaryBox = `<div class="summary-grid">
+    <div class="summary-box"><div class="summary-val">${totalPCC.toFixed(2)}</div><div class="summary-lbl">Total PCC</div></div>
+    <div class="summary-box"><div class="summary-val">${totalPPC.toFixed(2)}</div><div class="summary-lbl">Total PPC</div></div>
+    <div class="summary-box"><div class="summary-val">${(totalPCC+totalPPC).toFixed(2)}</div><div class="summary-lbl">Combined Credits</div></div>
+    <div class="summary-box"><div class="summary-val">${Math.round(totalCO2).toLocaleString()}</div><div class="summary-lbl">CO₂ Saved (kg)</div></div>
+  </div>`;
+
+  const pccSection = `<h2>Collection Credits (PCC)</h2>
+    <h3>Monthly Summary</h3>
+    <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PCC Credits</th></tr>
+    ${pccMonthly.map(r=>`<tr><td>${r.month}</td><td>${r.count}</td><td>${r.weight.toFixed(2)}</td><td><strong>${r.credits.toFixed(4)}</strong></td></tr>`).join('')}
+    <tr class="total-row"><td colspan="3">Total</td><td>${totalPCC.toFixed(4)}</td></tr></table>
+    <h3>Category Breakdown</h3>
+    <table><tr><th>Category</th><th>PCC Credits</th></tr>
+    ${Object.entries(catGroup).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${k}</td><td>${v.toFixed(4)}</td></tr>`).join('')}</table>
+    <h3>All PCC Entries</h3>
+    <table><tr><th>Month</th><th>Entry Date</th><th>Record Date</th><th>Category</th><th>Weight (t)</th><th>ESG</th><th>ESG Wt.</th><th>F</th><th>E</th><th>PCC</th></tr>
+    ${allPCC.map(e=>`<tr><td>${e.monthName}</td><td>${e.date}</td><td>${e.record_date||'—'}</td><td>${e.category}</td><td>${e.weight}</td><td>${e.esg}</td><td>${e.G}</td><td>${e.F}</td><td>${e.E}</td><td><strong>${e.pcc.toFixed(4)}</strong></td></tr>`).join('')}
+    <tr class="total-row"><td colspan="9">Total PCC</td><td>${totalPCC.toFixed(4)}</td></tr></table>`;
+
+  const ppcSection = `<h2>Processing Credits (PPC)</h2>
+    <h3>Monthly Summary</h3>
+    <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PPC Credits</th></tr>
+    ${ppcMonthly.map(r=>`<tr><td>${r.month}</td><td>${r.count}</td><td>${r.weight.toFixed(2)}</td><td><strong>${r.credits.toFixed(4)}</strong></td></tr>`).join('')}
+    <tr class="total-row"><td colspan="3">Total</td><td>${totalPPC.toFixed(4)}</td></tr></table>
+    <h3>Product Breakdown</h3>
+    <table><tr><th>Product</th><th>PPC Credits</th></tr>
+    ${Object.entries(prodGroup).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${k}</td><td>${v.toFixed(4)}</td></tr>`).join('')}</table>
+    <h3>All PPC Entries</h3>
+    <table><tr><th>Month</th><th>Entry Date</th><th>Record Date</th><th>Product</th><th>Weight (t)</th><th>ESG</th><th>ESG Wt.</th><th>Life</th><th>P</th><th>W</th><th>PPC</th></tr>
+    ${allPPC.map(e=>`<tr><td>${e.monthName}</td><td>${e.date}</td><td>${e.record_date||'—'}</td><td>${e.product}</td><td>${e.weight}</td><td>${e.esg}</td><td>${e.G}</td><td>${e.life}</td><td>${e.P}</td><td>${e.W.toFixed(4)}</td><td><strong>${e.ppc.toFixed(4)}</strong></td></tr>`).join('')}
+    <tr class="total-row"><td colspan="10">Total PPC</td><td>${totalPPC.toFixed(4)}</td></tr></table>`;
+
+  const co2Section = `<h2>CO₂ Savings</h2>
+    <table><tr><th>Type</th><th>Month</th><th>Entry Date</th><th>Category / Product</th><th>Weight (t)</th><th>CO₂ Rate (kg/t)</th><th>CO₂ Saved (kg)</th></tr>
+    ${co2Rows.map(r=>`<tr><td>${r.type}</td><td>${r.month}</td><td>${r.date}</td><td>${r.label}</td><td>${r.weight}</td><td>${r.rate}</td><td><strong>${Math.round(r.co2).toLocaleString()}</strong></td></tr>`).join('')}
+    <tr class="total-row"><td colspan="6">Total CO₂ Saved</td><td>${Math.round(totalCO2).toLocaleString()} kg</td></tr></table>`;
+
+  const footer = `<div class="footer">Indian PET Plastic Credit Framework · IIT Delhi · Prof Sovik Das · Prof A K Nema · Prof Sudip K. Pattanayek · Dr Anil Dhanda · Developed by Daksh Gandhi</div>`;
+
+  let body = '';
+  const titles = {full:'Full Annual Report', pcc:'Collection Credits (PCC) Report', ppc:'Processing Credits (PPC) Report', co2:'CO₂ Savings Report'};
+  if (section === 'full') body = summaryBox + pccSection + ppcSection + co2Section;
+  else if (section === 'pcc') body = summaryBox + pccSection;
+  else if (section === 'ppc') body = summaryBox + ppcSection;
+  else if (section === 'co2') body = summaryBox + co2Section;
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <title>${titles[section]} — ${companyName}</title>
+    <style>${css}</style></head><body>
+    ${header}
+    <h2 style="border:none;margin-top:0;font-size:13px;color:#666;">${titles[section]}</h2>
+    ${body}${footer}
+    <script>window.onload=function(){window.print();}<\/script>
+    </body></html>`;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+}
 
 // ============================================================
 // LOGOUT
