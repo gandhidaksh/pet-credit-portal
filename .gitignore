@@ -3,5 +3,17 @@ __pycache__/
 *.pyc
 .env
 *.log
-.DS_Store.env
 .DS_Store
+
+# Python virtual environment — never commit this, it's machine-specific and huge
+.venv/
+venv/
+
+# Geospatial datasets — too large for a normal git repo (wris_rivers.parquet alone
+# is ~150MB, over GitHub's 100MB per-file hard limit). Download instructions are
+# in README.md instead of committing these directly.
+Coastline/
+Ecosensitive zone/
+Flood+ Innundation/
+Protected Areas/
+Rivers+ Streams/

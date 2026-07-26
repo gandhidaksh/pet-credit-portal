@@ -19,6 +19,29 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'pet-credit-iitdelhi-2026-xK9m2pQnv8')
 
+# --- Geospatial classifier (lat/lon -> collection category, F, E, evidence) ---
+# Loaded lazily on first use — the 5 India datasets take a couple seconds to read
+# and reproject, so we do it once per worker process, not on every request.
+# The 5 dataset folders are gitignored (one file alone is ~150MB, over GitHub's
+# 100MB limit) — so a fresh clone or a fresh Render deploy won't have them yet.
+# Self-heal instead of crashing: if they're missing, download them first.
+_geo_classifier = None
+def get_classifier():
+    global _geo_classifier
+    if _geo_classifier is None:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        rivers_path = os.path.join(base_dir, "Rivers+ Streams", "wris_rivers.parquet")
+        if not os.path.exists(rivers_path):
+            print("[geo] datasets not found, downloading (one-time, ~200MB, may take a minute)...")
+            from download_geo_data import download_all
+            download_all()
+        from geo_classifier import GeoClassifier
+        _geo_classifier = GeoClassifier(verbose=False)
+    return _geo_classifier
+
+# Rough India bounding box — reject obviously-wrong coordinates before hitting the classifier
+INDIA_BBOX = {'lat_min': 6.0, 'lat_max': 38.0, 'lon_min': 68.0, 'lon_max': 98.0}
+
 import urllib.parse
 
 def get_db():
@@ -384,10 +407,12 @@ def add_pcc():
     c = conn.cursor()
     record_date = datetime.now().strftime('%d %B %Y')
     c.execute('''INSERT INTO pcc_entries
-        (company_id, month_idx, date_str, record_date, category, weight, esg, loc_f, eco_e, esg_g, pcc)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
+        (company_id, month_idx, date_str, record_date, category, weight, esg, loc_f, eco_e, esg_g, pcc,
+         lat, lon, verified, evidence, confidence)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
         (session['company_id'], d['month_idx'], d['date_str'], record_date, d['category'],
-         d['weight'], d['esg'], d['loc_f'], d['eco_e'], d['esg_g'], d['pcc']))
+         d['weight'], d['esg'], d['loc_f'], d['eco_e'], d['esg_g'], d['pcc'],
+         d.get('lat'), d.get('lon'), bool(d.get('verified', False)), d.get('evidence'), d.get('confidence')))
     new_id = c.fetchone()[0]
     conn.commit()
     conn.close()
@@ -400,14 +425,66 @@ def update_pcc(entry_id):
     conn = get_db()
     c = conn.cursor()
     c.execute('''UPDATE pcc_entries SET
-        date_str=%s, category=%s, weight=%s, esg=%s, loc_f=%s, eco_e=%s, esg_g=%s, pcc=%s
+        date_str=%s, category=%s, weight=%s, esg=%s, loc_f=%s, eco_e=%s, esg_g=%s, pcc=%s,
+        lat=%s, lon=%s, verified=%s, evidence=%s, confidence=%s
         WHERE id=%s AND company_id=%s''',
         (d['date_str'], d['category'], d['weight'], d['esg'],
          d['loc_f'], d['eco_e'], d['esg_g'], d['pcc'],
+         d.get('lat'), d.get('lon'), bool(d.get('verified', False)), d.get('evidence'), d.get('confidence'),
          entry_id, session['company_id']))
     conn.commit()
     conn.close()
     return jsonify({'ok': True})
+
+@app.route('/api/classify-location', methods=['POST'])
+@login_required
+def classify_location():
+    d = request.get_json(silent=True) or {}
+    try:
+        lat = float(d['lat'])
+        lon = float(d['lon'])
+    except (KeyError, TypeError, ValueError):
+        return jsonify({'error': 'lat and lon are required numeric fields'}), 400
+
+    if not (INDIA_BBOX['lat_min'] <= lat <= INDIA_BBOX['lat_max'] and
+            INDIA_BBOX['lon_min'] <= lon <= INDIA_BBOX['lon_max']):
+        return jsonify({'error': 'coordinates fall outside India — check lat/lon order and values'}), 400
+
+    try:
+        result = get_classifier().classify(lat, lon)
+    except Exception as e:
+        return jsonify({'error': f'classification failed: {e}'}), 500
+
+    return jsonify(result)
+
+@app.route('/api/pcc/bulk-classify', methods=['POST'])
+@login_required
+def bulk_classify_location():
+    d = request.get_json(silent=True) or {}
+    points = d.get('points')
+    if not isinstance(points, list) or not points:
+        return jsonify({'error': 'points array required'}), 400
+    if len(points) > 500:
+        return jsonify({'error': 'max 500 points per batch'}), 400
+
+    clf = get_classifier()
+    results = []
+    for p in points:
+        try:
+            lat = float(p.get('lat'))
+            lon = float(p.get('lon'))
+        except (TypeError, ValueError):
+            results.append({'error': 'invalid lat/lon'})
+            continue
+        if not (INDIA_BBOX['lat_min'] <= lat <= INDIA_BBOX['lat_max'] and
+                INDIA_BBOX['lon_min'] <= lon <= INDIA_BBOX['lon_max']):
+            results.append({'error': 'coordinates outside India'})
+            continue
+        try:
+            results.append(clf.classify(lat, lon))
+        except Exception as e:
+            results.append({'error': f'classification failed: {e}'})
+    return jsonify({'results': results})
 
 @app.route('/api/pcc/<int:entry_id>', methods=['DELETE'])
 @login_required
@@ -443,11 +520,11 @@ def add_ppc():
     record_date = datetime.now().strftime('%d %B %Y')
     c.execute('''INSERT INTO ppc_entries
         (company_id, month_idx, date_str, record_date, product, weight, esg,
-         service_life, exposure_p, proc_w, esg_g, ppc)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
+         service_life, exposure_p, proc_w, esg_g, ppc, weight_gross, weight_wasted)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
         (session['company_id'], d['month_idx'], d['date_str'], record_date, d['product'],
          d['weight'], d['esg'], d['service_life'], d['exposure_p'],
-         d['proc_w'], d['esg_g'], d['ppc']))
+         d['proc_w'], d['esg_g'], d['ppc'], d.get('weight_gross'), d.get('weight_wasted')))
     new_id = c.fetchone()[0]
     conn.commit()
     conn.close()
@@ -461,10 +538,12 @@ def update_ppc(entry_id):
     c = conn.cursor()
     c.execute('''UPDATE ppc_entries SET
         date_str=%s, product=%s, weight=%s, esg=%s,
-        service_life=%s, exposure_p=%s, proc_w=%s, esg_g=%s, ppc=%s
+        service_life=%s, exposure_p=%s, proc_w=%s, esg_g=%s, ppc=%s,
+        weight_gross=%s, weight_wasted=%s
         WHERE id=%s AND company_id=%s''',
         (d['date_str'], d['product'], d['weight'], d['esg'],
          d['service_life'], d['exposure_p'], d['proc_w'], d['esg_g'], d['ppc'],
+         d.get('weight_gross'), d.get('weight_wasted'),
          entry_id, session['company_id']))
     conn.commit()
     conn.close()
