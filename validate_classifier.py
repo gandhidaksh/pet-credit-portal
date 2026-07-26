@@ -33,7 +33,22 @@ METHODOLOGY, AND ITS HONEST LIMITS (read before citing these numbers)
   weaker position to defend than being precise about what it actually shows.
 """
 
-from geo_classifier import GeoClassifier
+import pyproj
+from geo_classifier import GeoClassifier, METRIC_CRS, GEO_CRS
+
+# geo_classifier.py only keeps the metric-CRS (reprojected) copy of each dataset in
+# memory now — an earlier version kept both the raw lat/lon copy AND the metric copy
+# of everything, which (combined with loading every unused source column) was enough
+# to exceed a 512MB Render instance's memory limit on the first real classify() call.
+# This script needs lat/lon points for its test cases, so it reprojects the handful
+# of sampled geometries back to degrees itself, rather than the classifier keeping a
+# second full copy of every dataset just for this one dev/test script's benefit.
+_to_geo = pyproj.Transformer.from_crs(METRIC_CRS, GEO_CRS, always_xy=True)
+
+
+def to_lat_lon(point_m):
+    lon, lat = _to_geo.transform(point_m.x, point_m.y)
+    return lat, lon
 
 
 def infer_method(category):
@@ -48,39 +63,42 @@ def build_ground_truth(clf, n_per_class=5):
     cases = []
 
     # 1. ESZ interior points -> expect eco-sensitive True
-    esz_sample = clf.esz.sample(n=min(n_per_class, len(clf.esz)), random_state=42)
+    esz_sample = clf.esz_m.sample(n=min(n_per_class, len(clf.esz_m)), random_state=42)
     for _, row in esz_sample.iterrows():
-        pt = row.geometry.representative_point()
+        pt_m = row.geometry.representative_point()
+        lat, lon = to_lat_lon(pt_m)
         cases.append({
-            "label": "ESZ (interior point)", "lat": pt.y, "lon": pt.x,
+            "label": "ESZ (interior point)", "lat": lat, "lon": lon,
             "expect_eco": True, "source": row.get("Name") or row.get("Map_Name") or "unnamed ESZ",
         })
 
     # 2. Protected Area interior points that do NOT also fall inside an ESZ —
     #    per the report, PA alone is NOT a credit category, so these should come
     #    back non-eco-sensitive (E=1.0), confirming PA no longer leaks into scoring.
-    pa_pool = clf.pa.sample(n=min(n_per_class * 4, len(clf.pa)), random_state=7)
+    pa_pool = clf.pa_m.sample(n=min(n_per_class * 4, len(clf.pa_m)), random_state=7)
     added = 0
     for _, row in pa_pool.iterrows():
         if added >= n_per_class:
             break
-        pt = row.geometry.representative_point()
-        if clf.esz[clf.esz.contains(pt)].empty:
+        pt_m = row.geometry.representative_point()
+        if clf.esz_m[clf.esz_m.contains(pt_m)].empty:
+            lat, lon = to_lat_lon(pt_m)
             cases.append({
-                "label": "Protected Area (non-scoring)", "lat": pt.y, "lon": pt.x,
+                "label": "Protected Area (non-scoring)", "lat": lat, "lon": lon,
                 "expect_eco": False, "source": row.get("pa_name") or row.get("name") or "unnamed PA",
             })
             added += 1
 
     # 3. River vertices -> expect method == Floating
-    river_sample = clf.rivers.sample(n=min(n_per_class, len(clf.rivers)), random_state=99)
+    river_sample = clf.rivers_m.sample(n=min(n_per_class, len(clf.rivers_m)), random_state=99)
     for _, row in river_sample.iterrows():
         geom = row.geometry
         line = geom if geom.geom_type == "LineString" else list(geom.geoms)[0]
         coords = list(line.coords)
-        coord = coords[len(coords) // 2]
+        coord_m = coords[len(coords) // 2]
+        lon, lat = _to_geo.transform(coord_m[0], coord_m[1])
         cases.append({
-            "label": "River (vertex)", "lat": coord[1], "lon": coord[0],
+            "label": "River (vertex)", "lat": lat, "lon": lon,
             "expect_method": "Floating",
             "source": row.get("rivname") or f"WRIS segment {row.get('objectid')}",
         })

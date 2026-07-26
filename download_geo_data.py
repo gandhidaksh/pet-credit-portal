@@ -1,12 +1,17 @@
 """
-Downloads the 5 geospatial datasets geo_classifier.py needs, into the exact
-folder structure it expects. Safe to run repeatedly — skips any file that
-already exists and is a reasonable size (so it won't re-download ~200MB on
-every Render deploy once cached, though Render's disk is ephemeral so it will
-still re-download on a fresh build).
+DEV-ONLY TOOL. geo_classifier.py no longer needs this at runtime — it loads
+small, pre-simplified files that are committed directly to git (see
+preprocess_geo_data.py). This script is only needed if you want to regenerate
+those files from the original raw government datasets (e.g. because the
+source data was updated).
+
+Downloads the 5 RAW geospatial datasets into the exact folder structure
+preprocess_geo_data.py expects to read them from. Safe to run repeatedly —
+skips any file that already exists and is a reasonable size.
 
 Usage:
-    python download_geo_data.py
+    python download_geo_data.py        # get the raw files
+    python preprocess_geo_data.py      # turn them into the small committed files
 
 All 5 files are CC0, direct-download, no signup required, from bharatlas.com.
 """

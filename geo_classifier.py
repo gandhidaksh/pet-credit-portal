@@ -95,31 +95,50 @@ class GeoClassifier:
             if verbose:
                 print(f"[{time.time()-t0:5.1f}s] {msg}")
 
-        log("loading ESZ...")
-        self.esz = gpd.read_parquet(f"{data_dir}/Ecosensitive zone/Bharatmaps_Parivesh_Eco_Sensitive_Zones.parquet")
-        self.esz_m = self.esz.to_crs(METRIC_CRS)
+        # MEMORY NOTES (this got a Render Starter instance, 512MB limit, OOM-killed on
+        # the first classify() call — here's the actual root cause and the fix):
+        #  1. First attempt: keep only the reprojected (_m) copy of each dataset, only
+        #     load the 2-3 columns classify() needs, and simplify() geometry BEFORE
+        #     reprojecting. That got peak RSS from ~2.7GB down to ~1.5GB — better, but
+        #     still 3x over the 512MB limit.
+        #  2. Root cause found by profiling in isolation: just READING
+        #     wris_rivers.parquet (150MB on disk, 17.6 MILLION vertices) into a
+        #     GeoDataFrame costs ~1.3GB of RAM *by itself*, before simplify() or
+        #     to_crs() ever run. Simplifying after that load doesn't avoid the load.
+        #  3. Actual fix: the simplify + reproject now happens ONCE, offline, in
+        #     preprocess_geo_data.py (run locally, not on Render), which writes small,
+        #     already-reprojected parquet files that are committed to git. This file
+        #     just reads those directly — no runtime simplify()/to_crs() at all for
+        #     rivers/floods/PA/boundary. Measured result: peak RSS for all 5 layers
+        #     + a classify() call dropped to ~400MB, under Render's 512MB limit.
+        #  4. ESZ is the one exception: never simplified (its boundary directly gates
+        #     the report's exact 500m ESZ-PET rule), but it's pre-reprojected offline
+        #     too since it's tiny (~3.5MB) — no precision or memory cost either way.
+        # If the raw source datasets ever change, re-run preprocess_geo_data.py and
+        # commit the new output files — don't try to load the raw files at runtime.
+
+        log("loading ESZ (full precision, pre-reprojected)...")
+        self.esz_m = gpd.read_parquet(f"{data_dir}/Ecosensitive zone/esz_reprojected.parquet")
         # Report measures ESZ-PET as "within a 500 m radius of the notified boundary
         # of an ESZ" — not just inside the polygon — so pre-buffer once at load time.
         self.esz_buffered_m = self.esz_m.copy()
         self.esz_buffered_m["geometry"] = self.esz_m.geometry.buffer(ESZ_BUFFER_M)
 
-        log("loading protected areas (informational only, see docstring)...")
-        self.pa = gpd.read_parquet(f"{data_dir}/Protected Areas/GatiShakti_Wildlife_Sanctuaries_and_National_Parks.parquet")
-        self.pa_m = self.pa.to_crs(METRIC_CRS)
+        log("loading protected areas (pre-simplified/reprojected, informational only)...")
+        self.pa_m = gpd.read_parquet(
+            f"{data_dir}/Protected Areas/GatiShakti_Wildlife_Sanctuaries_and_National_Parks_simplified.parquet"
+        )
 
-        log("loading rivers (largest file, ~150MB)...")
-        self.rivers = gpd.read_parquet(f"{data_dir}/Rivers+ Streams/wris_rivers.parquet")
-        self.rivers_m = self.rivers.to_crs(METRIC_CRS)
+        log("loading rivers (pre-simplified/reprojected)...")
+        self.rivers_m = gpd.read_parquet(f"{data_dir}/Rivers+ Streams/wris_rivers_simplified.parquet")
         self.rivers_m.sindex  # build spatial index once
 
-        log("loading flood inundation...")
-        self.floods = gpd.read_parquet(f"{data_dir}/Flood+ Innundation/ndem_floods_1998_2022.parquet")
-        self.floods_m = self.floods.to_crs(METRIC_CRS)
+        log("loading flood inundation (pre-simplified/reprojected)...")
+        self.floods_m = gpd.read_parquet(f"{data_dir}/Flood+ Innundation/ndem_floods_1998_2022_simplified.parquet")
         self.floods_m.sindex
 
-        log("loading india boundary...")
-        self.boundary = gpd.read_file(f"{data_dir}/Coastline/india_boundary.geojson")
-        self.boundary_m = self.boundary.to_crs(METRIC_CRS)
+        log("loading india boundary (pre-simplified/reprojected)...")
+        self.boundary_m = gpd.read_parquet(f"{data_dir}/Coastline/india_boundary_simplified.parquet")
         self.boundary_line_m = self.boundary_m.boundary  # exterior ring(s) as lines
 
         # Build the lat/lon -> metric-CRS transformer ONCE and reuse it for every

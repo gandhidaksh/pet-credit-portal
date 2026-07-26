@@ -9,11 +9,19 @@ __pycache__/
 .venv/
 venv/
 
-# Geospatial datasets — too large for a normal git repo (wris_rivers.parquet alone
-# is ~150MB, over GitHub's 100MB per-file hard limit). Download instructions are
-# in README.md instead of committing these directly.
-Coastline/
-Ecosensitive zone/
-Flood+ Innundation/
-Protected Areas/
-Rivers+ Streams/
+# Geospatial datasets — the ORIGINAL raw government files are too large for a
+# normal git repo (wris_rivers.parquet alone is ~150MB, over GitHub's 100MB
+# per-file hard limit). Download instructions for these raw files are in
+# README.md. They are NOT needed to run the app or deploy to Render — only to
+# regenerate the small files below via preprocess_geo_data.py.
+#
+# The small *_simplified.parquet / esz_reprojected.parquet / *_simplified.geojson
+# files ARE committed (they're what geo_classifier.py actually loads, ~40MB
+# total combined) — see geo_classifier.py's memory notes for why. Only the
+# raw originals are excluded below, by exact filename.
+Coastline/india_boundary.geojson
+Ecosensitive zone/Bharatmaps_Parivesh_Eco_Sensitive_Zones.parquet
+Ecosensitive zone/Bharatmaps_Parivesh_Eco_Sensitive_Zones.geojson
+Flood+ Innundation/ndem_floods_1998_2022.parquet
+Protected Areas/GatiShakti_Wildlife_Sanctuaries_and_National_Parks.parquet
+Rivers+ Streams/wris_rivers.parquet

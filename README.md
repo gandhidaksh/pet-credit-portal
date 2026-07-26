@@ -14,6 +14,8 @@ pet-plastic-credit/
 ├── app.py                  ← Flask backend
 ├── geo_classifier.py       ← Lat/lon -> collection category classifier (ESZ/river/coastline/flood)
 ├── validate_classifier.py  ← 20-point accuracy test for geo_classifier.py
+├── preprocess_geo_data.py  ← Dev-only: regenerate the small committed geo files from raw sources
+├── download_geo_data.py    ← Dev-only: download the raw sources (input to preprocess_geo_data.py)
 ├── requirements.txt        ← Python dependencies
 ├── database.db             ← SQLite database (auto-created on first run)
 ├── migrations/              ← SQL migrations to run against Supabase, in order (001, 002, 003)
@@ -24,9 +26,10 @@ pet-plastic-credit/
 └── README.md
 ```
 
-Note: the 5 geospatial datasets (Eco-Sensitive Zones, Protected Areas, Rivers, Flood Inundation,
-India Boundary) are NOT committed to this repo — the rivers file alone is ~150MB, over GitHub's
-100MB per-file limit. See **Geospatial Data Setup** below to download them.
+Note: `geo_classifier.py` reads small, pre-simplified/pre-reprojected copies of the 5 geospatial
+datasets (~40MB total, committed directly to this repo — see **Geospatial Data Setup** below). The
+original raw government files (~230MB combined, one alone over GitHub's 100MB limit) are NOT
+committed and are only needed if you want to regenerate the small files from scratch.
 
 ---
 
@@ -37,9 +40,9 @@ India Boundary) are NOT committed to this repo — the rivers file alone is ~150
 pip install -r requirements.txt
 ```
 
-### 2. Download the geospatial datasets
-See **Geospatial Data Setup** below — `geo_classifier.py` won't run without these 5 folders present
-alongside it.
+### 2. Geospatial data
+Nothing to download — the small pre-processed files `geo_classifier.py` needs are already in this
+repo. See **Geospatial Data Setup** below for details, or if you need to regenerate them.
 
 ### 3. Run the database migrations
 In the Supabase SQL editor, run each file in `migrations/` **in order** (001, then 002, then 003).
@@ -58,22 +61,41 @@ http://localhost:5000
 
 ## Geospatial Data Setup
 
-`geo_classifier.py` needs these 5 folders to exist in the project root (same level as `app.py`).
-All are CC0, direct-download, no signup required, from [bharatlas.com](https://bharatlas.com):
+`geo_classifier.py` loads 5 small, pre-simplified files that are already committed to this repo
+(same level as `app.py`) — nothing to download for normal use or deployment:
 
-| Folder | File | Source |
+| Folder | File (committed, ~40MB total) | Source |
 |---|---|---|
-| `Ecosensitive zone/` | `Bharatmaps_Parivesh_Eco_Sensitive_Zones.parquet` | MoEFCC-notified ESZs, Parivesh 2024 |
-| `Coastline/` | `india_boundary.geojson` | National boundary (coastline proxy — see limitations below) |
-| `Rivers+ Streams/` | `wris_rivers.parquet` | CWC WRIS river/stream line segments (~150MB) |
-| `Flood+ Innundation/` | `ndem_floods_1998_2022.parquet` | NDEM/NRSC historical flood extents |
-| `Protected Areas/` | `GatiShakti_Wildlife_Sanctuaries_and_National_Parks.parquet` | Wildlife sanctuaries & national parks |
+| `Ecosensitive zone/` | `esz_reprojected.parquet` | MoEFCC-notified ESZs, Parivesh 2024 (full precision, not simplified) |
+| `Coastline/` | `india_boundary_simplified.parquet` | National boundary (coastline proxy — see limitations below) |
+| `Rivers+ Streams/` | `wris_rivers_simplified.parquet` | CWC WRIS river/stream line segments |
+| `Flood+ Innundation/` | `ndem_floods_1998_2022_simplified.parquet` | NDEM/NRSC historical flood extents |
+| `Protected Areas/` | `GatiShakti_Wildlife_Sanctuaries_and_National_Parks_simplified.parquet` | Wildlife sanctuaries & national parks |
 
 Verify they load correctly:
 ```bash
 python geo_classifier.py       # runs 3 sanity-check points
 python validate_classifier.py  # runs the full 20-point accuracy test
 ```
+
+### Why "pre-simplified", and how to regenerate
+
+Render's free/Starter instance (512MB RAM) was getting OOM-killed the first time
+`/api/classify-location` ran, because just reading the *raw* `wris_rivers.parquet` (150MB on disk,
+17.6 million vertices) into memory costs ~1.3GB by itself — before any of our own processing runs.
+`preprocess_geo_data.py` fixes this by doing the simplification and CRS reprojection **once,
+offline**, and saving the small result — so Render only ever reads an already-small file. Peak
+memory for the whole app went from ~1.5GB to ~400MB.
+
+You only need to touch the raw files if the source government datasets change:
+
+1. Download the 5 raw files (CC0, no signup, from [bharatlas.com](https://bharatlas.com)) into
+   `Ecosensitive zone/Bharatmaps_Parivesh_Eco_Sensitive_Zones.parquet`,
+   `Coastline/india_boundary.geojson`, `Rivers+ Streams/wris_rivers.parquet`,
+   `Flood+ Innundation/ndem_floods_1998_2022.parquet`,
+   `Protected Areas/GatiShakti_Wildlife_Sanctuaries_and_National_Parks.parquet`.
+2. Run `python preprocess_geo_data.py` — it reads the raw files and writes the 5 small files above.
+3. Commit the new small files. The raw originals stay gitignored (too large / not needed at runtime).
 
 **Known limitation:** the coastline check uses India's national boundary outline as a proxy for
 the actual High Tide Line / CRZ boundary, since no dedicated coastline layer has been sourced yet.
