@@ -14,6 +14,15 @@ All 5 files are CC0, direct-download, no signup required, from bharatlas.com.
 import os
 import urllib.request
 
+# bharatlas.com returns 403 Forbidden to Python's default urllib request (its
+# default User-Agent, "Python-urllib/x.y", gets blocked by basic anti-bot
+# protection). Spoofing a normal browser User-Agent is the standard fix.
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Accept": "*/*",
+}
+
 FILES = [
     (
         "https://bharatlas.com/api/dl/environment/forests/Bharatmaps_Parivesh_Eco_Sensitive_Zones.parquet",
@@ -53,7 +62,13 @@ def download_all():
 
         print(f"downloading: {rel_path} ...")
         try:
-            urllib.request.urlretrieve(url, dest)
+            req = urllib.request.Request(url, headers=HEADERS)
+            with urllib.request.urlopen(req, timeout=120) as resp, open(dest, "wb") as out:
+                while True:
+                    chunk = resp.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    out.write(chunk)
             size_mb = os.path.getsize(dest) / (1024 * 1024)
             print(f"  done ({size_mb:.1f} MB)")
         except Exception as e:
