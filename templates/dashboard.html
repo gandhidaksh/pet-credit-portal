@@ -2054,6 +2054,12 @@ async function loadFromServer() {
     renderStats('pcc'); renderStats('ppc');
     renderMonthChart('pcc');
     renderSummary();
+    // Fix: if the user is already on (or switches to) the CO2 Savings / Profile tab
+    // before this async fetch resolves, those panels render once against empty
+    // pccData/ppcData and never redraw -- only a manual tab switch re-triggers them.
+    // Re-render here so they pick up the real data as soon as it arrives.
+    renderInsights();
+    renderProfile();
 
     // Also load email into profile from session
     try {
