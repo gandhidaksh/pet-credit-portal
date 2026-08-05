@@ -205,7 +205,7 @@
             <th>#</th><th>Company Name</th><th>Email</th>
             <th>Verified</th><th>Registered</th>
             <th>PCC Entries</th><th>PPC Entries</th>
-            <th>Total PCC</th><th>Total PPC</th><th>Total CO₂ (kg)</th>
+            <th>Total PCC</th><th>Total PPC</th><th>Total CO₂ (t, processing)</th>
             <th>Actions</th>
           </tr></thead>
           <tbody id="companies-tbody"><tr><td colspan="11" class="empty">Loading...</td></tr></tbody>
@@ -391,7 +391,10 @@
 
 <script>
 let companiesData = [], logsData = [], allProfilesData = [];
-const CO2_R = {'Bottle-to-bottle PET':1700,'Reusable shopping bag':1800,'Polyester apparel':1800,'Blanket / Comforter':430,'Carpet / Rug':430,'Geotextile':430,'Plastic crate':430,'WPC panel':250,'Road construction':250};
+// Rates in tonnes CO2 / tonne PET (t/t) -- kept in the same unit as every other CO2 figure in
+// the app. Road construction: 0, not 0.25 -- report gives 3.5 t CO2/km of road (NPC India), not
+// a per-tonne rate, so it's excluded from CO2 totals rather than mis-credited. See dashboard.html.
+const CO2_R = {'Bottle-to-bottle PET':1.7,'Reusable shopping bag':1.8,'Polyester apparel':1.8,'Blanket / Comforter':0.43,'Carpet / Rug':0.43,'Geotextile':0.43,'Plastic crate':0.43,'WPC panel':0.25,'Road construction':0};
 const DOC_LABELS = { esg:'📊 Audited ESG Report', plastic:'♻️ Plastic Collected Report', extra:'📎 Additional Documents' };
 
 // ============================================================
@@ -454,7 +457,7 @@ function renderCompanies(data) {
       <td class="green">${c.ppc_count}</td>
       <td class="teal">${parseFloat(c.total_pcc).toFixed(2)}</td>
       <td class="green">${parseFloat(c.total_ppc).toFixed(2)}</td>
-      <td style="color:#f0a500;font-family:var(--mono);">${Math.round(c.total_co2||0).toLocaleString()}</td>
+      <td style="color:#f0a500;font-family:var(--mono);">${parseFloat(c.total_co2||0).toFixed(2)}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <button class="btn btn-teal btn-sm" onclick="openEdit(${c.id},'${esc(c.company_name)}','${c.email}')">✏️ Edit</button>
@@ -815,8 +818,8 @@ async function loadProfileDetail(companyId) {
           <div class="co-stat-lbl">Total Entries</div>
         </div>
         <div class="co-stat-box">
-          <div class="co-stat-val" style="color:var(--accent-amber);">${Math.round(cs.total_co2||0).toLocaleString()}</div>
-          <div class="co-stat-lbl">CO₂ Saved (kg)</div>
+          <div class="co-stat-val" style="color:var(--accent-amber);">${parseFloat(cs.total_co2||0).toFixed(2)}</div>
+          <div class="co-stat-lbl">CO₂ Saved (t, processing)</div>
         </div>
       </div>
       <div style="padding:12px 18px 18px;display:flex;gap:8px;justify-content:flex-end;">
@@ -853,11 +856,12 @@ function generateExcel(data, name) {
   csv += `\nPPC Monthly Summary\nMonth,Total Weight (t),Total PPC\n`;
   MONTHS.forEach((m,i) => { const rows=data.ppc.filter(r=>r.month_idx===i); if(rows.length){csv+=`${m},${rows.reduce((s,r)=>s+r.weight,0).toFixed(2)},${rows.reduce((s,r)=>s+r.ppc,0).toFixed(4)}\n`;} });
   csv += `TOTAL,,${totalPPC.toFixed(4)}\n`;
-  csv += `\nCO2 SAVINGS\nType,Month,Date,Category / Product,Weight (t),CO2 Rate (kg/t),CO2 Saved (kg)\n`;
+  // CO2 tracked on PPC entries only, not PCC -- see CO2_R comment for why (avoids double-
+  // counting the same material's avoided emissions at both collection and processing).
+  csv += `\nCO2 SAVINGS (tonnes CO2 per tonne PET, processing stage only)\nType,Month,Date,Category / Product,Weight (t),CO2 Rate (t/t),CO2 Saved (t)\n`;
   let tCO2 = 0;
-  data.pcc.forEach(r => { const co2=r.weight*430; tCO2+=co2; csv+=`PCC,${MONTHS[r.month_idx]},${r.date_str},${r.category},${r.weight},430,${Math.round(co2)}\n`; });
-  data.ppc.forEach(r => { const rate=CO2_R[r.product]||430; const co2=r.weight*rate; tCO2+=co2; csv+=`PPC,${MONTHS[r.month_idx]},${r.date_str},${r.product},${r.weight},${rate},${Math.round(co2)}\n`; });
-  csv += `TOTAL CO2 SAVED (kg),,,,,, ${Math.round(tCO2)}\n\nCOMBINED SUMMARY\nTotal PCC,${totalPCC.toFixed(4)}\nTotal PPC,${totalPPC.toFixed(4)}\nCombined Credits,${(totalPCC+totalPPC).toFixed(4)}\nTotal CO2 Saved (kg),${Math.round(tCO2)}\n`;
+  data.ppc.forEach(r => { const rate = r.product in CO2_R ? CO2_R[r.product] : 0.43; const co2=r.weight*rate; tCO2+=co2; csv+=`PPC,${MONTHS[r.month_idx]},${r.date_str},${r.product},${r.weight},${rate},${r.product==='Road construction'?'n/a (per km, not per tonne)':co2.toFixed(3)}\n`; });
+  csv += `TOTAL CO2 SAVED (t),,,,,, ${tCO2.toFixed(3)}\n\nCOMBINED SUMMARY\nTotal PCC,${totalPCC.toFixed(4)}\nTotal PPC,${totalPPC.toFixed(4)}\nCombined Credits,${(totalPCC+totalPPC).toFixed(4)}\nTotal CO2 Saved (t, processing only),${tCO2.toFixed(3)}\n`;
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href=url; a.download=`${name.replace(/\s+/g,'_')}_PET_Credit_Report.csv`; a.click(); URL.revokeObjectURL(url);
@@ -871,11 +875,12 @@ function generatePDF(data, name) {
   const ppcMonthly=MONTHS.map((m,i)=>{const rows=data.ppc.filter(r=>r.month_idx===i);return{month:m,count:rows.length,weight:rows.reduce((s,r)=>s+r.weight,0),credits:rows.reduce((s,r)=>s+r.ppc,0)};}).filter(r=>r.count>0);
   const catGroup={};data.pcc.forEach(r=>{catGroup[r.category]=(catGroup[r.category]||0)+r.pcc;});
   const prodGroup={};data.ppc.forEach(r=>{prodGroup[r.product]=(prodGroup[r.product]||0)+r.ppc;});
+  // CO2 tracked on PPC entries only, not PCC -- see CO2_R comment for why (avoids double-
+  // counting the same material's avoided emissions at both collection and processing).
   let tCO2=0;
-  const co2Rows=[
-    ...data.pcc.map(r=>{const co2=r.weight*430;tCO2+=co2;return`<tr><td>PCC</td><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.category}</td><td>${r.weight}</td><td>430</td><td>${r.weight}×430</td><td><strong>${Math.round(co2).toLocaleString()}</strong></td></tr>`;}),
-    ...data.ppc.map(r=>{const rate=CO2_R[r.product]||430;const co2=r.weight*rate;tCO2+=co2;return`<tr><td>PPC</td><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.product}</td><td>${r.weight}</td><td>${rate}</td><td>${r.weight}×${rate}</td><td><strong>${Math.round(co2).toLocaleString()}</strong></td></tr>`;})
-  ];
+  const co2Rows=data.ppc.map(r=>{const rate = r.product in CO2_R ? CO2_R[r.product] : 0.43;const co2=r.weight*rate;tCO2+=co2;return r.product==='Road construction'
+      ? `<tr><td>PPC</td><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.product}</td><td>${r.weight}</td><td colspan="3" style="color:#888;font-style:italic;">n/a — reported per km of road, not per tonne of plastic</td></tr>`
+      : `<tr><td>PPC</td><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.product}</td><td>${r.weight}</td><td>${rate}</td><td>${r.weight}×${rate}</td><td><strong>${co2.toFixed(3)}</strong></td></tr>`;});
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>PET Credit Report — ${data.company.company_name}</title>
   <style>body{font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a;padding:32px;}h1{font-size:20px;color:#1a9e8f;margin-bottom:4px;}h2{font-size:15px;color:#333;margin:24px 0 8px;border-bottom:2px solid #1a9e8f;padding-bottom:4px;}h3{font-size:13px;color:#555;margin:16px 0 6px;}.meta{color:#666;font-size:12px;margin-bottom:24px;}.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}.summary-box{background:#f0faf9;border:1px solid #1a9e8f;border-radius:6px;padding:12px;text-align:center;}.summary-val{font-size:20px;font-weight:bold;color:#1a9e8f;}.summary-lbl{font-size:11px;color:#666;margin-top:2px;}table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:12px;}th{background:#1a9e8f;color:white;padding:7px 10px;text-align:left;}td{padding:6px 10px;border-bottom:1px solid #e0e0e0;}tr:nth-child(even) td{background:#f9f9f9;}.total-row td{background:#e6f7f5!important;font-weight:700;}.footer{margin-top:32px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px;}@media print{body{padding:16px;}}</style>
   </head><body>
@@ -885,7 +890,7 @@ function generatePDF(data, name) {
     <div class="summary-box"><div class="summary-val">${totalPCC.toFixed(2)}</div><div class="summary-lbl">Total PCC</div></div>
     <div class="summary-box"><div class="summary-val">${totalPPC.toFixed(2)}</div><div class="summary-lbl">Total PPC</div></div>
     <div class="summary-box"><div class="summary-val">${(totalPCC+totalPPC).toFixed(2)}</div><div class="summary-lbl">Combined Credits</div></div>
-    <div class="summary-box"><div class="summary-val">${Math.round(tCO2||0).toLocaleString()}</div><div class="summary-lbl">CO₂ Saved (kg)</div></div>
+    <div class="summary-box"><div class="summary-val">${(tCO2||0).toFixed(2)}</div><div class="summary-lbl">CO₂ Saved (t, processing)</div></div>
   </div>
   <h2>Collection Credits (PCC)</h2><h3>Monthly Summary</h3>
   <table><tr><th>Month</th><th>Entries</th><th>Weight (t)</th><th>PCC Credits</th></tr>
@@ -906,9 +911,10 @@ function generatePDF(data, name) {
   <table><tr><th>Month</th><th>Date</th><th>Product</th><th>Weight (t)</th><th>ESG</th><th>ESG Wt.</th><th>Life</th><th>P</th><th>W</th><th>PPC</th></tr>
   ${data.ppc.map(r=>`<tr><td>${MONTHS[r.month_idx]}</td><td>${r.date_str}</td><td>${r.product}</td><td>${r.weight}</td><td>${r.esg}</td><td>${r.esg_g}</td><td>${r.service_life}</td><td>${r.exposure_p}</td><td>${r.proc_w.toFixed(4)}</td><td><strong>${r.ppc.toFixed(4)}</strong></td></tr>`).join('')}</table>
   <h2>CO₂ Savings</h2>
-  <table><tr><th>Type</th><th>Month</th><th>Date</th><th>Category / Product</th><th>Weight (t)</th><th>CO₂ Rate</th><th>Calculation</th><th>CO₂ Saved (kg)</th></tr>
+  <p style="font-size:11px;color:#666;">Tracked at the processing (PPC) stage only, to avoid double-counting the same material's avoided emissions at both collection and processing.</p>
+  <table><tr><th>Type</th><th>Month</th><th>Date</th><th>Category / Product</th><th>Weight (t)</th><th>CO₂ Rate (t/t)</th><th>Calculation</th><th>CO₂ Saved (t)</th></tr>
   ${co2Rows.join('')}
-  <tr class="total-row"><td colspan="7">Total CO₂ Saved</td><td>${Math.round(tCO2).toLocaleString()} kg</td></tr></table>
+  <tr class="total-row"><td colspan="7">Total CO₂ Saved</td><td>${tCO2.toFixed(3)} t</td></tr></table>
   <div class="footer">Indian PET Plastic Credit Framework · IIT Delhi · Prof Sovik Das · Prof A K Nema · Prof Sudip K. Pattanayek · Dr Anil Dhanda · Developed by Daksh Gandhi</div>
   </body></html>`;
   const win = window.open('','_blank');

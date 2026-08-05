@@ -700,12 +700,20 @@ def admin_companies():
                COUNT(DISTINCT q.id) as ppc_count,
                COALESCE(SUM(p.pcc),0) as total_pcc,
                COALESCE(SUM(q.ppc),0) as total_ppc,
-               (SELECT COALESCE(SUM(weight),0)*430 FROM pcc_entries WHERE company_id=c.id) +
+               -- CO2 is tracked on PPC (processing) entries only, in tonnes CO2 per tonne PET
+               -- (t/t). Not on PCC: the report has no collection-stage CO2 figure, and since the
+               -- same material typically earns a PCC credit on collection then a PPC credit when
+               -- later processed (see the report's own worked example), adding a PCC-side CO2
+               -- estimate on top of the PPC-side one would double-count the same avoided-emissions
+               -- event -- once as a guess, once for real. See CO2_RATES comment below.
                (SELECT COALESCE(SUM(weight * CASE product
-                 WHEN %s THEN 1700 WHEN %s THEN 1800 WHEN %s THEN 1800
-                 WHEN %s THEN 430  WHEN %s THEN 430  WHEN %s THEN 430
-                 WHEN %s THEN 430  WHEN %s THEN 250  WHEN %s THEN 250
-                 ELSE 430 END),0) FROM ppc_entries WHERE company_id=c.id) as total_co2
+                 WHEN %s THEN 1.7  WHEN %s THEN 1.8  WHEN %s THEN 1.8
+                 WHEN %s THEN 0.43 WHEN %s THEN 0.43 WHEN %s THEN 0.43
+                 -- Road construction: report gives 3.5 t CO2/km of road, not a per-tonne-of-plastic
+                 -- rate -- not convertible without assuming road width/bitumen content, so it is
+                 -- excluded from the CO2 total (0) rather than mis-credited at another product's rate.
+                 WHEN %s THEN 0.43 WHEN %s THEN 0.25 WHEN %s THEN 0
+                 ELSE 0.43 END),0) FROM ppc_entries WHERE company_id=c.id) as total_co2
         FROM companies c
         LEFT JOIN pcc_entries p ON p.company_id = c.id
         LEFT JOIN ppc_entries q ON q.company_id = c.id
@@ -834,11 +842,29 @@ def admin_company_report(company_id):
     conn.close()
     MONTHS = ['January','February','March','April','May','June',
               'July','August','September','October','November','December']
-    CO2_RATES = {'Bottle-to-bottle PET':1700,'Reusable shopping bag':1800,
-                 'Polyester apparel':1800,'Blanket / Comforter':430,'Carpet / Rug':430,
-                 'Geotextile':430,'Plastic crate':430,'WPC panel':250,'Road construction':250}
-    total_co2  = sum(r['weight'] * 430 for r in pcc_list)
-    total_co2 += sum(r['weight'] * CO2_RATES.get(r['product'], 430) for r in ppc_list)
+    # Rates are tonnes CO2 saved per tonne of PET (t/t -- same numeric value as the report's own
+    # kg-per-kg ratios, just relabeled to keep every CO2 figure in this app in one consistent
+    # unit). Taken from the IIT Delhi report's climate co-benefits section (ALPLA 2017, TecRecyc,
+    # Greiner 2024, NPC India, Zhang et al. 2020):
+    #   - Bottle-to-bottle PET (1.7), Reusable shopping bag / Polyester apparel (1.8),
+    #     WPC panel (0.25) are the report's directly-stated figures.
+    #   - Blanket/Comforter, Carpet/Rug, Geotextile, Plastic crate (0.43) use the report's own
+    #     fallback method -- "product-level carbon footprint values provide a basis for
+    #     estimating emission benefits [when] direct CO2 savings are not explicitly reported"
+    #     -- applying the r-PET flakes carbon footprint (0.43 t/t, Greiner 2024) as a proxy.
+    #   - Road construction is set to 0 (excluded), NOT 0.25: the report reports this pathway as
+    #     3.5 t CO2 saved per km of road built, a different unit that can't be converted to a
+    #     per-tonne-of-plastic rate without assuming road width/bitumen content, so crediting it
+    #     at another product's rate would misrepresent the report.
+    CO2_RATES = {'Bottle-to-bottle PET':1.7,'Reusable shopping bag':1.8,
+                 'Polyester apparel':1.8,'Blanket / Comforter':0.43,'Carpet / Rug':0.43,
+                 'Geotextile':0.43,'Plastic crate':0.43,'WPC panel':0.25,'Road construction':0}
+    # CO2 is tracked on PPC (processing) entries only -- not PCC. The report has no collection-
+    # stage CO2 figure, and since the same material typically earns a PCC credit on collection
+    # then a PPC credit when later processed, adding a PCC-side CO2 estimate on top of the PPC-
+    # side one would double-count the same avoided-emissions event. total_co2 is in tonnes CO2
+    # (weight is already tonnes of PET).
+    total_co2 = sum(r['weight'] * CO2_RATES.get(r['product'], 0.43) for r in ppc_list)
     company = dict(company)
     if company.get('created_at'):
         company['created_at'] = str(company['created_at'])
@@ -863,13 +889,15 @@ def admin_all_profiles():
                (SELECT COALESCE(SUM(pp.ppc),0) FROM ppc_entries pp WHERE pp.company_id=c.id) as total_ppc,
                (SELECT COUNT(*) FROM pcc_entries WHERE company_id=c.id) as pcc_count,
                (SELECT COUNT(*) FROM ppc_entries WHERE company_id=c.id) as ppc_count,
-               (SELECT COALESCE(SUM(weight),0)*430 FROM pcc_entries WHERE company_id=c.id) +
+               -- CO2 is tracked on PPC entries only, not PCC -- see CO2_RATES comment in
+               -- admin_company_report() for why (avoids double-counting the same material's
+               -- avoided emissions at both collection and processing). Rates in t CO2/t PET.
                (SELECT COALESCE(SUM(weight * CASE product
-                 WHEN 'Bottle-to-bottle PET' THEN 1700 WHEN 'Reusable shopping bag' THEN 1800
-                 WHEN 'Polyester apparel' THEN 1800    WHEN 'Blanket / Comforter' THEN 430
-                 WHEN 'Carpet / Rug' THEN 430          WHEN 'Geotextile' THEN 430
-                 WHEN 'Plastic crate' THEN 430         WHEN 'WPC panel' THEN 250
-                 WHEN 'Road construction' THEN 250     ELSE 430 END),0)
+                 WHEN 'Bottle-to-bottle PET' THEN 1.7  WHEN 'Reusable shopping bag' THEN 1.8
+                 WHEN 'Polyester apparel' THEN 1.8     WHEN 'Blanket / Comforter' THEN 0.43
+                 WHEN 'Carpet / Rug' THEN 0.43         WHEN 'Geotextile' THEN 0.43
+                 WHEN 'Plastic crate' THEN 0.43        WHEN 'WPC panel' THEN 0.25
+                 WHEN 'Road construction' THEN 0       ELSE 0.43 END),0)
                FROM ppc_entries WHERE company_id=c.id) as total_co2
         FROM companies c
         LEFT JOIN company_profiles p ON p.company_id = c.id

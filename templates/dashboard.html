@@ -560,12 +560,12 @@
           <table class="factor-table" style="width:100%;">
             <thead><tr><th>Application</th><th>CO₂ Saving</th><th>Source</th></tr></thead>
             <tbody>
-              <tr><td>PET bottle-to-bottle</td><td class="factor-val">1.7 kg CO₂/kg</td><td style="color:var(--text-muted);">ALPLA, 2017</td></tr>
-              <tr><td>Textile / r-PET fibre</td><td class="factor-val">1.8 kg CO₂/kg</td><td style="color:var(--text-muted);">TecRecyc</td></tr>
-              <tr><td>Wood-plastic composite</td><td class="factor-val">0.25 kg CO₂/kg</td><td style="color:var(--text-muted);">Greiner, 2024</td></tr>
-              <tr><td>Road construction</td><td class="factor-val">3.5 t CO₂/km</td><td style="color:var(--text-muted);">NPC India</td></tr>
-              <tr><td>r-PET flakes (footprint)</td><td class="factor-val">0.43 kg CO₂e/kg</td><td style="color:var(--text-muted);">Greiner, 2024</td></tr>
-              <tr><td>r-PET fibre (footprint)</td><td class="factor-val">0.96 kg CO₂/kg</td><td style="color:var(--text-muted);">Zhang et al.</td></tr>
+              <tr><td>PET bottle-to-bottle</td><td class="factor-val">1.7 t CO₂/t</td><td style="color:var(--text-muted);">ALPLA, 2017</td></tr>
+              <tr><td>Textile / r-PET fibre</td><td class="factor-val">1.8 t CO₂/t</td><td style="color:var(--text-muted);">TecRecyc</td></tr>
+              <tr><td>Wood-plastic composite</td><td class="factor-val">0.25 t CO₂/t</td><td style="color:var(--text-muted);">Greiner, 2024</td></tr>
+              <tr><td>Road construction</td><td class="factor-val">3.5 t CO₂/km</td><td style="color:var(--text-muted);">NPC India — per km of road, not per tonne; excluded from CO₂ totals</td></tr>
+              <tr><td>r-PET flakes (footprint)</td><td class="factor-val">0.43 t CO₂e/t</td><td style="color:var(--text-muted);">Greiner, 2024</td></tr>
+              <tr><td>r-PET fibre (footprint)</td><td class="factor-val">0.96 t CO₂/t</td><td style="color:var(--text-muted);">Zhang et al.</td></tr>
             </tbody>
           </table>
         </div>
@@ -585,18 +585,19 @@
         <div class="card-body">
           <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Per <strong style="color:var(--text-primary);">tonne</strong> of PET processed · sourced from peer-reviewed LCA studies</div>
           <div id="co2-bars"></div>
+          <div style="font-size:10.5px;color:var(--text-muted);margin-top:10px;font-style:italic;">Road construction isn't shown here — the report reports it as 3.5 t CO₂ saved per km of road built (NPC India), not per tonne of plastic, so it isn't comparable to the other rates above and isn't counted toward CO₂ totals.</div>
         </div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">📊 Live CO₂ Savings Estimate from Your Data</div></div>
         <div class="card-body">
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Based on PCC and PPC entries you have added.</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Based on PPC (processing) entries you have added.</div>
           <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center;">
             <div style="font-family:var(--display);font-size:36px;font-weight:800;color:var(--accent-green);" id="insight-co2-ppc">0</div>
-            <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">kg CO₂ saved (PCC + PPC combined)</div>
+            <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">t CO₂ saved (processing only)</div>
           </div>
           <div id="co2-table" style="margin-top:16px;"></div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:12px;line-height:1.6;">Sources: ALPLA 2017 · TecRecyc · Greiner 2024 · NPC India · Zhang et al. 2020</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:12px;line-height:1.6;">Rates sourced directly from the report: ALPLA 2017 · TecRecyc · Greiner 2024 · NPC India · Zhang et al. 2020. CO₂ is tracked at the processing (PPC) stage only, not at collection (PCC) — the report has no collection-stage CO₂ figure, and the same material typically earns both a PCC and a later PPC credit, so adding a CO₂ estimate at both stages would double-count the same avoided-emissions event.</div>
         </div>
       </div>
     </div>
@@ -606,12 +607,12 @@
         <table class="factor-table" style="width:100%;">
           <thead><tr><th>Application</th><th>CO₂ Saving</th><th>Source</th></tr></thead>
           <tbody>
-            <tr><td>PET bottle-to-bottle recycling</td><td class="factor-val">1.7 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:11px;">ALPLA, 2017</td></tr>
-            <tr><td>Textile / r-PET fibre</td><td class="factor-val">1.8 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:11px;">TecRecyc</td></tr>
-            <tr><td>Wood-plastic composite (WPC)</td><td class="factor-val">0.25 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:11px;">Greiner, 2024</td></tr>
-            <tr><td>Road construction</td><td class="factor-val">3.5 t CO₂/km</td><td style="color:var(--text-muted);font-size:11px;">NPC India</td></tr>
-            <tr><td>r-PET flakes (carbon footprint)</td><td class="factor-val">0.43 kg CO₂e/kg</td><td style="color:var(--text-muted);font-size:11px;">Greiner, 2024</td></tr>
-            <tr><td>r-PET fibre (carbon footprint)</td><td class="factor-val">0.96 kg CO₂/kg</td><td style="color:var(--text-muted);font-size:11px;">Zhang et al., 2020</td></tr>
+            <tr><td>PET bottle-to-bottle recycling</td><td class="factor-val">1.7 t CO₂/t</td><td style="color:var(--text-muted);font-size:11px;">ALPLA, 2017</td></tr>
+            <tr><td>Textile / r-PET fibre</td><td class="factor-val">1.8 t CO₂/t</td><td style="color:var(--text-muted);font-size:11px;">TecRecyc</td></tr>
+            <tr><td>Wood-plastic composite (WPC)</td><td class="factor-val">0.25 t CO₂/t</td><td style="color:var(--text-muted);font-size:11px;">Greiner, 2024</td></tr>
+            <tr><td>Road construction</td><td class="factor-val">3.5 t CO₂/km</td><td style="color:var(--text-muted);font-size:11px;">NPC India — per km of road, not per tonne of plastic; excluded from CO₂ totals below</td></tr>
+            <tr><td>r-PET flakes (carbon footprint)</td><td class="factor-val">0.43 t CO₂e/t</td><td style="color:var(--text-muted);font-size:11px;">Greiner, 2024</td></tr>
+            <tr><td>r-PET fibre (carbon footprint)</td><td class="factor-val">0.96 t CO₂/t</td><td style="color:var(--text-muted);font-size:11px;">Zhang et al., 2020</td></tr>
           </tbody>
         </table>
       </div>
@@ -740,7 +741,7 @@
               </div>
               <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;text-align:center;">
                 <div style="font-family:var(--display);font-size:24px;font-weight:800;color:var(--accent-amber);" id="profile-co2-total">0</div>
-                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;font-family:var(--mono);">CO₂ SAVED (kg)</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;font-family:var(--mono);">CO₂ SAVED (t, processing)</div>
               </div>
             </div>
           </div>
@@ -1120,16 +1121,25 @@ const PPC_PRODUCTS = {
   'Road construction':     { life: 12,   P: 0.3 }
 };
 
+// Tonnes CO2 saved per tonne of PET (t/t -- every CO2 figure in this app uses this one unit;
+// same numeric value as the report's own kg-per-kg ratios, just relabeled for consistency).
+// Source: IIT Delhi report's climate co-benefits section (ALPLA 2017, TecRecyc, Greiner 2024,
+// NPC India, Zhang et al. 2020). Bottle-to-bottle/bag/apparel/WPC are the report's directly-
+// stated figures. Blanket/Carpet/Geotextile/crate reuse the report's own fallback -- the r-PET
+// flakes carbon footprint (0.43 t/t, Greiner 2024) -- for products it doesn't give a direct
+// number for. Road construction is 0 (excluded), NOT 0.25: the report reports 3.5 t CO2 saved
+// per KM of road, not per tonne of plastic -- not convertible without assuming road
+// width/bitumen content, so crediting it at another product's rate would be wrong.
 const CO2_SAVINGS = {
-  'Bottle-to-bottle PET': 1700,
-  'Reusable shopping bag': 1800,
-  'Polyester apparel': 1800,
-  'Blanket / Comforter': 430,
-  'Carpet / Rug': 430,
-  'Geotextile': 430,
-  'Plastic crate': 430,
-  'WPC panel': 250,
-  'Road construction': 250
+  'Bottle-to-bottle PET': 1.7,
+  'Reusable shopping bag': 1.8,
+  'Polyester apparel': 1.8,
+  'Blanket / Comforter': 0.43,
+  'Carpet / Rug': 0.43,
+  'Geotextile': 0.43,
+  'Plastic crate': 0.43,
+  'WPC panel': 0.25,
+  'Road construction': 0
 };
 
 // keyed by "YYYY_M" (e.g. "2026_3" = April 2026)
@@ -1802,13 +1812,13 @@ async function renderProfile() {
   const totalPCC = Object.values(pccData).reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.pcc,0),0);
   const totalPPC = Object.values(ppcData).reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.ppc,0),0);
   const totalW   = [...Object.values(pccData),...Object.values(ppcData)].reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.weight,0),0);
-  const CO2_RATE_PCC = 430;
-  let totalCO2 = Object.values(pccData).reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.weight*CO2_RATE_PCC,0),0);
-  totalCO2 += Object.values(ppcData).reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.weight*(CO2_SAVINGS[e.product]||430),0),0);
+  // CO2 tracked on PPC entries only -- not PCC, to avoid double-counting the same material's
+  // avoided emissions once at collection (a guess) and again at processing (the real figure).
+  let totalCO2 = Object.values(ppcData).reduce((s,arr)=>s+arr.reduce((a,e)=>a+e.weight*(e.product in CO2_SAVINGS ? CO2_SAVINGS[e.product] : 0.43),0),0);
   document.getElementById('profile-pcc-total').textContent    = fmt(totalPCC);
   document.getElementById('profile-ppc-total').textContent    = fmt(totalPPC);
   document.getElementById('profile-weight-total').textContent = fmtT(totalW);
-  document.getElementById('profile-co2-total').textContent    = Math.round(totalCO2).toLocaleString();
+  document.getElementById('profile-co2-total').textContent    = totalCO2.toFixed(2);
 }
 
 function _renderDocEmpty(type) {
@@ -1931,42 +1941,39 @@ async function deleteDoc(type) {
 // ============================================================
 function renderInsights() {
   const co2Div = document.getElementById('co2-bars');
-  const co2Entries = Object.entries(CO2_SAVINGS).sort((a,b)=>b[1]-a[1]);
+  // Road construction excluded here: its report figure is 3.5 t CO2 per KM of road, not a
+  // per-tonne rate, so it isn't comparable to the other bars (see CO2_SAVINGS comment).
+  const co2Entries = Object.entries(CO2_SAVINGS).filter(([label]) => label !== 'Road construction').sort((a,b)=>b[1]-a[1]);
   const maxCO2 = co2Entries[0][1];
   co2Div.innerHTML = co2Entries.map(([label, val]) => `
     <div class="breakdown-row">
       <div class="breakdown-label" style="font-size:11px;">${label}</div>
       <div class="breakdown-bar-wrap"><div class="breakdown-bar" style="width:${(val/maxCO2*100).toFixed(1)}%;background:var(--accent-green)"></div></div>
-      <div class="breakdown-val" style="color:var(--accent-green);">${val>=1000?(val/1000).toFixed(2)+'t':val+' kg'} CO₂/t</div>
+      <div class="breakdown-val" style="color:var(--accent-green);">${val.toFixed(2)} t CO₂/t</div>
     </div>`).join('');
 
-  const CO2_RATE_PCC = 430;
+  // CO2 tracked on PPC entries only -- not PCC. The report has no collection-stage CO2 figure,
+  // and since the same material typically earns a PCC credit on collection then a PPC credit
+  // when later processed, adding a PCC-side CO2 estimate on top of the PPC-side one would
+  // double-count the same avoided-emissions event -- once as a guess, once for real.
   let totalCO2 = 0;
-  let pccRows = [], ppcRows = [];
+  let ppcRows = [];
 
-  Object.entries(pccData).forEach(([key, arr]) => {
-    const mIdx = parseInt(key.split('_')[1]);
-    arr.forEach(e => {
-      const co2 = e.weight * CO2_RATE_PCC;
-      totalCO2 += co2;
-      pccRows.push({ month: MONTHS_FULL[mIdx], date: e.date, label: e.category, weight: e.weight, rate: CO2_RATE_PCC, co2 });
-    });
-  });
   Object.entries(ppcData).forEach(([key, arr]) => {
     const mIdx = parseInt(key.split('_')[1]);
     arr.forEach(e => {
-      const rate = CO2_SAVINGS[e.product] || 430;
+      const rate = e.product in CO2_SAVINGS ? CO2_SAVINGS[e.product] : 0.43;
       const co2  = e.weight * rate;
       totalCO2 += co2;
       ppcRows.push({ month: MONTHS_FULL[mIdx], date: e.date, label: e.product, weight: e.weight, rate, co2 });
     });
   });
 
-  document.getElementById('insight-co2-ppc').textContent = Math.round(totalCO2).toLocaleString();
+  document.getElementById('insight-co2-ppc').textContent = totalCO2.toFixed(2);
 
   const tableDiv = document.getElementById('co2-table');
-  if (!pccRows.length && !ppcRows.length) {
-    tableDiv.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:24px;font-style:italic;">Add PCC or PPC entries to see CO₂ calculations here.</div>';
+  if (!ppcRows.length) {
+    tableDiv.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:24px;font-style:italic;">Add PPC (processing) entries to see CO₂ calculations here. CO₂ savings are only tracked at the processing stage, to avoid double-counting the same material\'s avoided emissions at both collection and processing.</div>';
     return;
   }
 
@@ -1981,31 +1988,36 @@ function renderInsights() {
           <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);">Category / Product</th>
           <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);">Weight (t)</th>
           <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--border);">CO₂ Rate</th>
-          <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:${color};border-bottom:1px solid var(--border);">CO₂ Saved (kg)</th>
+          <th style="background:var(--bg);padding:8px 10px;text-align:left;font-family:var(--mono);font-size:11px;color:${color};border-bottom:1px solid var(--border);">CO₂ Saved (t)</th>
         </tr></thead>
         <tbody>
-          ${rows.map(r=>`<tr style="border-bottom:1px solid rgba(48,54,61,0.4);">
+          ${rows.map(r=>r.label==='Road construction' ? `<tr style="border-bottom:1px solid rgba(48,54,61,0.4);">
             <td style="padding:8px 10px;color:var(--text-secondary);">${r.month}</td>
             <td style="padding:8px 10px;color:var(--text-primary);">${r.date}</td>
             <td style="padding:8px 10px;color:var(--text-secondary);">${r.label}</td>
             <td style="padding:8px 10px;font-family:var(--mono);">${r.weight}</td>
-            <td style="padding:8px 10px;font-family:var(--mono);color:var(--text-muted);">${r.rate} kg/t</td>
-            <td style="padding:8px 10px;font-family:var(--mono);font-weight:600;color:${color};">${Math.round(r.co2).toLocaleString()}</td>
+            <td colspan="2" style="padding:8px 10px;color:var(--text-muted);font-style:italic;font-size:11px;">n/a — reported per km of road, not per tonne</td>
+          </tr>` : `<tr style="border-bottom:1px solid rgba(48,54,61,0.4);">
+            <td style="padding:8px 10px;color:var(--text-secondary);">${r.month}</td>
+            <td style="padding:8px 10px;color:var(--text-primary);">${r.date}</td>
+            <td style="padding:8px 10px;color:var(--text-secondary);">${r.label}</td>
+            <td style="padding:8px 10px;font-family:var(--mono);">${r.weight}</td>
+            <td style="padding:8px 10px;font-family:var(--mono);color:var(--text-muted);">${r.rate} t/t</td>
+            <td style="padding:8px 10px;font-family:var(--mono);font-weight:600;color:${color};">${r.co2.toFixed(3)}</td>
           </tr>`).join('')}
           <tr style="background:rgba(46,160,67,0.08);">
             <td colspan="5" style="padding:10px;font-weight:700;color:var(--text-primary);font-family:var(--mono);">SUBTOTAL</td>
-            <td style="padding:10px;font-family:var(--mono);font-weight:800;color:${color};font-size:14px;">${Math.round(total).toLocaleString()} kg</td>
+            <td style="padding:10px;font-family:var(--mono);font-weight:800;color:${color};font-size:14px;">${total.toFixed(3)} t</td>
           </tr>
         </tbody>
       </table></div>`;
   };
 
   tableDiv.innerHTML = `
-    ${tableHTML(pccRows,'📋 PCC Collection — CO₂ Savings','var(--accent-teal)')}
     ${tableHTML(ppcRows,'🏭 PPC Processing — CO₂ Savings','var(--accent-green)')}
     <div style="background:rgba(46,160,67,0.1);border:1px solid rgba(46,160,67,0.3);border-radius:6px;padding:14px 18px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;">
-      <span style="font-family:var(--display);font-weight:700;color:var(--text-primary);">🌍 TOTAL CO₂ SAVED (PCC + PPC)</span>
-      <span style="font-family:var(--mono);font-size:20px;font-weight:800;color:var(--accent-green);">${Math.round(totalCO2).toLocaleString()} kg</span>
+      <span style="font-family:var(--display);font-weight:700;color:var(--text-primary);">🌍 TOTAL CO₂ SAVED (Processing only — see note above)</span>
+      <span style="font-family:var(--mono);font-size:20px;font-weight:800;color:var(--accent-green);">${totalCO2.toFixed(2)} t</span>
     </div>`;
 }
 
@@ -2095,10 +2107,12 @@ function exportDashboardPDF(section) {
 
   const MONTHS_L = ['January','February','March','April','May','June',
                     'July','August','September','October','November','December'];
+  // Rates in tonnes CO2 / tonne PET (t/t). Road construction: 0, not 0.25 -- see CO2_SAVINGS
+  // comment above for why.
   const CO2_RATES = {
-    'Bottle-to-bottle PET':1700,'Reusable shopping bag':1800,'Polyester apparel':1800,
-    'Blanket / Comforter':430,'Carpet / Rug':430,'Geotextile':430,
-    'Plastic crate':430,'WPC panel':250,'Road construction':250
+    'Bottle-to-bottle PET':1.7,'Reusable shopping bag':1.8,'Polyester apparel':1.8,
+    'Blanket / Comforter':0.43,'Carpet / Rug':0.43,'Geotextile':0.43,
+    'Plastic crate':0.43,'WPC panel':0.25,'Road construction':0
   };
 
   // Flatten all entries from string-keyed data store
@@ -2122,12 +2136,10 @@ function exportDashboardPDF(section) {
     return {month:m, count:rows.length, weight:rows.reduce((s,e)=>s+e.weight,0), credits:rows.reduce((s,e)=>s+e.ppc,0)};
   }).filter(r=>r.count>0);
 
-  // CO2
+  // CO2 -- tracked on PPC entries only, not PCC, to avoid double-counting the same material's
+  // avoided emissions once at collection (a guess) and again at processing (the real figure).
   let totalCO2 = 0;
-  const co2Rows = [
-    ...allPCC.map(e => { const co2=e.weight*430; totalCO2+=co2; return {type:'PCC',month:e.monthName,date:e.date,label:e.category,weight:e.weight,rate:430,co2}; }),
-    ...allPPC.map(e => { const rate=CO2_RATES[e.product]||430; const co2=e.weight*rate; totalCO2+=co2; return {type:'PPC',month:e.monthName,date:e.date,label:e.product,weight:e.weight,rate,co2}; })
-  ];
+  const co2Rows = allPPC.map(e => { const rate = e.product in CO2_RATES ? CO2_RATES[e.product] : 0.43; const co2=e.weight*rate; totalCO2+=co2; return {type:'PPC',month:e.monthName,date:e.date,label:e.product,weight:e.weight,rate,co2}; });
 
   // Category/product breakdown
   const catGroup = {};
@@ -2159,7 +2171,7 @@ function exportDashboardPDF(section) {
     <div class="summary-box"><div class="summary-val">${totalPCC.toFixed(2)}</div><div class="summary-lbl">Total PCC</div></div>
     <div class="summary-box"><div class="summary-val">${totalPPC.toFixed(2)}</div><div class="summary-lbl">Total PPC</div></div>
     <div class="summary-box"><div class="summary-val">${(totalPCC+totalPPC).toFixed(2)}</div><div class="summary-lbl">Combined Credits</div></div>
-    <div class="summary-box"><div class="summary-val">${Math.round(totalCO2).toLocaleString()}</div><div class="summary-lbl">CO₂ Saved (kg)</div></div>
+    <div class="summary-box"><div class="summary-val">${totalCO2.toFixed(2)}</div><div class="summary-lbl">CO₂ Saved (t, processing)</div></div>
   </div>`;
 
   const pccSection = `<h2>Collection Credits (PCC)</h2>
@@ -2189,9 +2201,13 @@ function exportDashboardPDF(section) {
     <tr class="total-row"><td colspan="10">Total PPC</td><td>${totalPPC.toFixed(4)}</td></tr></table>`;
 
   const co2Section = `<h2>CO₂ Savings</h2>
-    <table><tr><th>Type</th><th>Month</th><th>Entry Date</th><th>Category / Product</th><th>Weight (t)</th><th>CO₂ Rate (kg/t)</th><th>CO₂ Saved (kg)</th></tr>
-    ${co2Rows.map(r=>`<tr><td>${r.type}</td><td>${r.month}</td><td>${r.date}</td><td>${r.label}</td><td>${r.weight}</td><td>${r.rate}</td><td><strong>${Math.round(r.co2).toLocaleString()}</strong></td></tr>`).join('')}
-    <tr class="total-row"><td colspan="6">Total CO₂ Saved</td><td>${Math.round(totalCO2).toLocaleString()} kg</td></tr></table>`;
+    <p style="font-size:11px;color:#666;">Tracked at the processing (PPC) stage only. The report has no collection-stage CO₂ figure, and since the same material typically earns a PCC credit on collection then a PPC credit when later processed, adding a CO₂ estimate at both stages would double-count the same avoided-emissions event.</p>
+    <table><tr><th>Type</th><th>Month</th><th>Entry Date</th><th>Category / Product</th><th>Weight (t)</th><th>CO₂ Rate (t/t)</th><th>CO₂ Saved (t)</th></tr>
+    ${co2Rows.map(r=>r.label==='Road construction'
+      ? `<tr><td>${r.type}</td><td>${r.month}</td><td>${r.date}</td><td>${r.label}</td><td>${r.weight}</td><td colspan="2" style="color:#888;font-style:italic;">n/a — reported per km of road (NPC India), not per tonne of plastic</td></tr>`
+      : `<tr><td>${r.type}</td><td>${r.month}</td><td>${r.date}</td><td>${r.label}</td><td>${r.weight}</td><td>${r.rate}</td><td><strong>${r.co2.toFixed(3)}</strong></td></tr>`
+    ).join('')}
+    <tr class="total-row"><td colspan="6">Total CO₂ Saved</td><td>${totalCO2.toFixed(2)} t</td></tr></table>`;
 
   const footer = `<div class="footer">Indian PET Plastic Credit Framework · IIT Delhi · Prof Sovik Das · Prof A K Nema · Prof Sudip K. Pattanayek · Dr Anil Dhanda · Developed by Daksh Gandhi</div>`;
 
