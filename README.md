@@ -112,6 +112,12 @@ Email:    gandhijidaksh@gmail.com
 Password: admin123
 ```
 
+This password is only set **once** — the first time `app.py` runs against a fresh database
+(`init_db()` seeds the admin row only if it doesn't already exist yet). If you've since changed
+it — via **Forgot password?** on the login page, or by resetting it another way — this is no
+longer your real password, and the app has no way to show you the current one back (it's stored
+as a one-way hash, not recoverable). Use "Forgot password?" if you need to reset it.
+
 > ⚠️ Change the admin password and `app.secret_key` in `app.py` before deploying publicly.
 
 ---

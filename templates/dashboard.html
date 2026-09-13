@@ -863,8 +863,14 @@ function initPccMap() {
 }
 
 function setPccCoords(lat, lon, skipModalSync) {
-  document.getElementById('pcc-lat').value = lat.toFixed(6);
-  document.getElementById('pcc-lon').value = lon.toFixed(6);
+  // Don't overwrite the field the user is actively typing into — oninput on
+  // both boxes calls this (via syncPccMapFromInputs), so without this guard
+  // every keystroke re-formats the field's own value mid-edit and snaps the
+  // cursor to the end, which made it look like only the decimal digits were
+  // editable. The map/marker and the *other* box still update live either way.
+  const active = document.activeElement ? document.activeElement.id : null;
+  if (active !== 'pcc-lat') document.getElementById('pcc-lat').value = lat.toFixed(6);
+  if (active !== 'pcc-lon') document.getElementById('pcc-lon').value = lon.toFixed(6);
   if (pccMap) {
     pccMarker = placeMarker(pccMap, pccMarker, lat, lon);
     pccMap.setView([lat, lon], Math.max(pccMap.getZoom(), 9));

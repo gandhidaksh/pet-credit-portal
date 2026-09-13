@@ -78,10 +78,18 @@ def fetchall(cursor):
 def init_db():
     conn = get_db()
     c = conn.cursor()
-    # Superadmin seed
+    # Superadmin seed — 'admin123' is only ever written here, the ONE time this
+    # row doesn't exist yet. If the account already exists, its real password
+    # (which may since have been changed via Forgot Password, the Admins tab,
+    # or an admin resetting their own login) is left untouched. just_seeded
+    # tells the startup banner below whether it's safe to print 'admin123' —
+    # printing it unconditionally on every run was misleading once someone
+    # actually changed the password, since the hash isn't reversible and the
+    # code has no way to know or show what the current password actually is.
     c.execute("SELECT id FROM companies WHERE email='gandhijidaksh@gmail.com'")
     existing = fetchone(c)
-    if not existing:
+    just_seeded = not existing
+    if just_seeded:
         c.execute('''INSERT INTO companies (company_name, email, password, is_verified, is_admin)
                      VALUES (%s, %s, %s, 1, 1)''',
                   ('IIT Delhi Admin', 'gandhijidaksh@gmail.com',
@@ -117,6 +125,7 @@ def init_db():
 
     conn.commit()
     conn.close()
+    return just_seeded
 
 def get_setting(key):
     conn = get_db()
@@ -1055,8 +1064,19 @@ def admin_test_email():
 # ENTRY POINT
 # ============================================================
 if __name__ == '__main__':
-    init_db()
+    just_seeded = init_db()
     print("\n✅ PET Plastic Credit Portal running at http://127.0.0.1:5000")
-    print("   Admin login: gandhijidaksh@gmail.com / admin123\n")
+    if just_seeded:
+        # Only true the very first time this database is initialised — the
+        # password is only ever 'admin123' at that point. On every later
+        # startup the account already exists and may have a different,
+        # since-changed password that the app has no way to read back (it's
+        # stored as a one-way hash), so printing a fixed password here would
+        # go stale the moment it's changed.
+        print("   Admin account created — first-time login: gandhijidaksh@gmail.com / admin123")
+        print("   Change this password after logging in.\n")
+    else:
+        print("   Admin: log in with your existing gandhijidaksh@gmail.com credentials.")
+        print("   Forgot it? Use 'Forgot password?' on the login page.\n")
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)

@@ -2,7 +2,7 @@
 Quantitative validation harness for geo_classifier.GeoClassifier.
 
 WHAT THIS DOES
-Builds a ~20-point ground-truth set across the classifier's 4 outcome classes and
+Builds a ~27-point ground-truth set across the classifier's outcome classes and
 reports per-class and overall accuracy. Use the printed table/summary directly in
 the report or demo as the "quantitative evaluation" evidence.
 
@@ -21,6 +21,31 @@ METHODOLOGY, AND ITS HONEST LIMITS (read before citing these numbers)
 - River positive cases are sampled as vertices taken directly FROM the river
   line geometries — same logic: distance-to-self is 0 by construction, so this
   tests whether the buffer/distance logic is implemented correctly.
+- Ocean-bound positive cases are sampled the same way, as vertices taken
+  directly FROM the national-boundary line geo_classifier.py itself measures
+  coast_distance_m against, restricted to bounding boxes along the actual sea
+  coast so a land-border vertex (Pakistan/Nepal/Bangladesh side) of that same
+  boundary layer isn't picked instead. This was previously untested — there
+  was no way to hit the classifier's 500 m coastline threshold by clicking a
+  point on a map by eye, since that boundary layer is a *simplified* national
+  outline, not a precise, official HTL/CRZ line; this class replaces "guess a
+  beach's coordinates" with "sample the exact line the code checks against."
+- The report's Table 5 defines six category labels (Land-recovered, Floating,
+  Ocean-bound, and their three ESZ-overlap counterparts), but the classifier
+  computes them as CATEGORY_MAP[(method, is_eco_sensitive)] — a static lookup
+  over two INDEPENDENTLY determined values, not six separate code paths. So
+  the ESZ/PA/River/Coastline/Land-control cases above, which each test one
+  axis at a time, already logically cover all six combinations. Two explicit
+  combined cases are included anyway (ESZ x river overlap, ESZ x coastline
+  overlap, below) to show combined categories firing on real points rather
+  than resting on that lookup-table argument alone. The sixth and last
+  category, ESZ-PET (Land), isn't listed as its own explicit case only because
+  it already turns up, unlabelled, among the plain ESZ cases above (e.g. Gaga
+  Bird Sanctuary resolves to ESZ-PET (Land)).
+- Both ESZ-overlap cases independently re-check — against the raw river/
+  coastline layers directly, NOT by calling classify() first — that a real
+  notified ESZ polygon's point is also within the report's 500 m river or
+  coastline buffer, then confirm classify() agrees on both axes at once.
 - Land-control negative cases are picked from genuinely remote interior points
   (deep Thar Desert, central Deccan plateau) chosen for known geographic reasons
   (arid, non-riverine, no notified sensitive zones), not by pre-running the
@@ -103,7 +128,86 @@ def build_ground_truth(clf, n_per_class=5):
             "source": row.get("rivname") or f"WRIS segment {row.get('objectid')}",
         })
 
-    # 4. Remote interior control points -> expect Land-recovered, non-eco
+    # 4. Coastline vertices -> expect method == Ocean-bound
+    #    Sampled directly FROM the same national-boundary line geo_classifier.py
+    #    measures coast_distance_m against (india_boundary_simplified.parquet) —
+    #    same logic as the River-vertex cases above: distance-to-self is 0 by
+    #    construction, so this tests whether the buffer/distance logic for the
+    #    Ocean-bound branch is implemented correctly. Restricted to bounding
+    #    boxes along the actual sea coast (west coast south of the Pakistan
+    #    border latitude band; east coast south of the Bangladesh border
+    #    latitude band) so a land-border vertex of the same boundary layer
+    #    isn't picked by mistake — see geo_classifier.py's own docstring note
+    #    that this proxy "also picks up land borders."
+    coastal_vertices = []
+    for geom in clf.boundary_line_m.geometry:
+        lines = [geom] if geom.geom_type == "LineString" else list(geom.geoms)
+        for line in lines:
+            for x, y in line.coords:
+                lon, lat = _to_geo.transform(x, y)
+                west_coast = 68 <= lon <= 77.5 and lat <= 23.5
+                east_coast = 77.5 <= lon <= 87.5 and lat <= 21.5
+                if west_coast or east_coast:
+                    coastal_vertices.append((lat, lon))
+    step = max(1, len(coastal_vertices) // n_per_class)
+    for lat, lon in coastal_vertices[::step][:n_per_class]:
+        cases.append({
+            "label": "Coastline (vertex)", "lat": lat, "lon": lon,
+            "expect_method": "Ocean-bound",
+            "source": "india_boundary_simplified.parquet vertex",
+        })
+
+    # 5. ESZ x Floating overlap, and ESZ x Ocean-bound overlap -> expect
+    #    eco=True AND method=Floating / Ocean-bound (the combined "ESZ-PET
+    #    (Floating)" and "ESZ-PET (Ocean-bound)" categories from the report's
+    #    Table 5). The other test groups above deliberately validate the ESZ
+    #    axis and the method axis SEPARATELY, because the final category label
+    #    is just CATEGORY_MAP[(method, is_eco_sensitive)] — a static two-key
+    #    lookup, not a separate computation — so proving each axis correct
+    #    already logically covers all six combinations in the lookup table.
+    #    Both cases below exist anyway, as an explicit, labelled demonstration
+    #    of a combined category firing on real data rather than resting on
+    #    that lookup-table argument alone: each independently re-checks (using
+    #    the raw river/coastline layers directly, NOT by calling classify()
+    #    first) that a real notified ESZ polygon's point is also within the
+    #    report's 500 m river or coastline buffer, then confirms classify()
+    #    agrees on both axes at once. (ESZ-PET (Land) — the sixth and last
+    #    category — already turns up unlabelled among the plain "ESZ (interior
+    #    point)" cases above, e.g. Gaga Bird Sanctuary, so between the two
+    #    explicit cases here and that one, all six of the report's category
+    #    labels are exercised somewhere in this test set.)
+    esz_x_river = None
+    for _, row in clf.esz_m.iterrows():
+        pt_m = row.geometry.representative_point()
+        nearest_idx = clf.rivers_m.sindex.nearest(pt_m, return_all=False)[1][0]
+        river_dist_m = clf.rivers_m.iloc[nearest_idx].geometry.distance(pt_m)
+        if river_dist_m <= 500:
+            lat, lon = to_lat_lon(pt_m)
+            esz_x_river = {
+                "label": "ESZ x river overlap (ESZ-PET Floating)", "lat": lat, "lon": lon,
+                "expect_eco": True, "expect_method": "Floating",
+                "source": row.get("Name") or row.get("Map_Name") or "unnamed ESZ",
+            }
+            break
+    if esz_x_river:
+        cases.append(esz_x_river)
+
+    esz_x_coast = None
+    for _, row in clf.esz_m.iterrows():
+        pt_m = row.geometry.representative_point()
+        coast_dist_m = min(line.distance(pt_m) for line in clf.boundary_line_m.geometry)
+        if coast_dist_m <= 500:
+            lat, lon = to_lat_lon(pt_m)
+            esz_x_coast = {
+                "label": "ESZ x coastline overlap (ESZ-PET Ocean-bound)", "lat": lat, "lon": lon,
+                "expect_eco": True, "expect_method": "Ocean-bound",
+                "source": row.get("Name") or row.get("Map_Name") or "unnamed ESZ",
+            }
+            break
+    if esz_x_coast:
+        cases.append(esz_x_coast)
+
+    # 6. Remote interior control points -> expect Land-recovered, non-eco
     #    Chosen for independent geographic reasons (arid/non-riverine interior),
     #    not by pre-checking against the classifier.
     #    Note: an earlier candidate near Jaisalmer (26.85, 70.55) was dropped after
