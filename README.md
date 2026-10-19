@@ -108,8 +108,7 @@ the full breakdown of what's report-verified vs. still a proxy.
 ## Default Admin Login
 
 ```
-Email:    gandhijidaksh@gmail.com
-Password: admin123
+
 ```
 
 This password is only set **once** — the first time `app.py` runs against a fresh database
